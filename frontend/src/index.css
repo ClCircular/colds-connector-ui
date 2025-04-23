@@ -1,2 +1,20 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@layer utilities {
+  :root {
+    --gray: #cdd6da;
+    --mid-gray-text: #90a4ae;
+    --corporative-blue: #0096b9;
+    --mid-blue: #004693;
+    --darker-blue: #003768;
+    --corporative-green: #94bf43;
+    --alarms-red: #d00000;
+    --almost-white: #fafafa;
+    --almost-white-darker: #c5dde3;
+    --orange: #ffa500;
+    --black: #000000;
+    --white: #ffffff;
+    --almost-dark-blue: #132d4a;
+    --almost-dark-blue-darker: #0c1a26;
+  }
+}

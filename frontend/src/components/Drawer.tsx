@@ -14,12 +14,10 @@ export const Drawer: FC<{
         />
       )}
       <div
-        id='drawer-navigation'
-        className={`fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-64 dark:bg-gray-800 ${
-          open ? 'translate-x-0' : 'tra'
+        className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform duration-300 bg-white w-64 dark:bg-gray-800 ${
+          open ? 'translate-x-0' : 'translate-x-full'
         }`}
         tabIndex={-1}
-        aria-labelledby='drawer-navigation-label'
       >
         <h5
           id='drawer-navigation-label'
@@ -43,16 +41,16 @@ export const Drawer: FC<{
           >
             <path
               stroke='currentColor'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              stroke-width='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
               d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
             />
           </svg>
           <span className='sr-only'>Close menu</span>
         </button>
         <div className='py-4 overflow-y-auto'>
-          <Nav />
+          <Nav setOpen={setOpen} />
         </div>
       </div>
     </>
