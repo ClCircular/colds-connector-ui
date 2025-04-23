@@ -1,36 +1,14 @@
-import './App.css'
+import { useState } from 'react'
+import { Drawer } from './components/Drawer'
+import { Header } from './components/Header'
 
-function App() {
-  
-  const  jimenaFunciton =  async () => {
-    console.log('Jimena function')
-    const requestOptions = {
-      method: "POST",
-      body: JSON.stringify({
-        type: "GET",
-        "url": "/api/contracts"
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    let url = `http://localhost:8083`;
-    console.log(url);
-    console.log(requestOptions);
-    const response = await fetch(url, requestOptions);
-    const data = await response.json();
-    console.log(data);
-  }
+export const App = () => {
+  const [open, setOpen] = useState(false)
 
   return (
-    <>
-      <button
-        onClick={jimenaFunciton}
-      >
-        Jimena Button
-      </button>
-    </>
+    <main className='h-screen flex flex-col gap-4'>
+      <Drawer open={open} setOpen={setOpen} />
+      <Header setOpen={setOpen} />
+    </main>
   )
 }
-
-export default App
