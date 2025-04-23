@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import https from "https";
 import axios from "axios";
+import cors from "cors";
 
 const app = express();
 const port = 8083;
@@ -14,6 +15,7 @@ app.use(
     extended: true,
   })
 );
+app.use(cors({ credentials: true, origin: true }));
 
 let connectorUrl = "https://3.223.70.98:8080";
 let auth = {
