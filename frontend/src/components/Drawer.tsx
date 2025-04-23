@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { IoGridSharp } from 'react-icons/io5'
+import { Nav } from './Nav'
 
 export const Drawer: FC<{
   open: boolean
@@ -52,17 +52,7 @@ export const Drawer: FC<{
           <span className='sr-only'>Close menu</span>
         </button>
         <div className='py-4 overflow-y-auto'>
-          <ul className='space-y-2 font-medium'>
-            <li>
-              <a
-                href='#'
-                className='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'
-              >
-                <IoGridSharp />
-                <span className='ms-3'>Inicio</span>
-              </a>
-            </li>
-          </ul>
+          <Nav />
         </div>
       </div>
     </>
