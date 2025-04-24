@@ -6,6 +6,7 @@ interface Catalog {
   title: string
   description: string
   additional: any
+  numberOfResources: number
   _links: {
     self: {
       href: string

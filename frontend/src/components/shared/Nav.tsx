@@ -5,7 +5,8 @@ import {
   IoFileTrayFull,
   IoLink,
   IoCloudUpload,
-  IoSwapHorizontal
+  IoSwapHorizontal,
+  IoAlbums
 } from 'react-icons/io5'
 import { FC } from 'react'
 
@@ -39,6 +40,11 @@ export const Nav: FC<{
       href: '/exchanges',
       label: 'Intercambios',
       icon: <IoSwapHorizontal className='size-6' />
+    },
+    {
+      href: '/catalogs',
+      label: 'Catálogos',
+      icon: <IoAlbums className='size-6' />
     }
   ]
 

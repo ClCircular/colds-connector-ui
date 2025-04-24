@@ -5,6 +5,7 @@ import { DataConections } from '../pages/DataConections'
 import { OfferedData } from '../pages/OfferedData'
 import { Exchanges } from '../pages/Exchanges'
 import { MainPage } from '../pages/MainPage'
+import { Catalogs } from '../pages/Catalogs'
 
 export const Router = () => {
   return (
@@ -15,6 +16,7 @@ export const Router = () => {
       <Route path='/data-conections' component={DataConections} />
       <Route path='/offered-data' component={OfferedData} />
       <Route path='/exchanges' component={Exchanges} />
+      <Route path='/catalogs' component={Catalogs} />
       <Route>404 - Not Found</Route>
     </Switch>
   )

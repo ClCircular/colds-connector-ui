@@ -2,13 +2,17 @@ import { FC } from 'react'
 import { IoArrowForwardOutline } from 'react-icons/io5'
 import { Link } from 'wouter'
 
-interface CardProps {
+interface NavigationCardProps {
   title: string
   description: string
   link: string
 }
 
-export const Card: FC<CardProps> = ({ description, link, title }) => {
+export const NavigationCard: FC<NavigationCardProps> = ({
+  description,
+  link,
+  title
+}) => {
   return (
     <article className='max-w-sm p-6 min-h-52 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between'>
       <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>

@@ -2,7 +2,7 @@ import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
 // import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
-import { Card } from '../components/Card'
+import { NavigationCard } from '../components/NavigationCard'
 
 export const MainPage = () => {
   const offersData = useGetOffers()
@@ -45,7 +45,7 @@ export const MainPage = () => {
   return (
     <section className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 justify-items-center md:justify-items-stretch'>
       {cardsInfo.map((card) => (
-        <Card
+        <NavigationCard
           key={card.title}
           title={card.title}
           description={card.description}

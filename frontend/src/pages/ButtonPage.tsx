@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Loader } from '../components/Loader'
+import { Loader } from '../components/shared/Loader'
 
 export const ButtonPage = () => {
   const [response, setResponse] = useState('')
