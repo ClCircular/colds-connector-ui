@@ -23,7 +23,7 @@ export const NavigationCard: FC<NavigationCardProps> = ({
       </p>
       <Link
         href={link}
-        className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-[#94bf43] dark:focus:ring-blue-800'
+        className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none'
       >
         Navegar
         <IoArrowForwardOutline className='ms-2' />
