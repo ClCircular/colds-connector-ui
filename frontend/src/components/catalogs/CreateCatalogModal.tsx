@@ -12,16 +12,20 @@ export const CreateCatalogModal: FC<CreateCatalogModalProps> = ({
 }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const createCatalogMutation = useCreateCatalog()
+
+  const cleanUpOnSuccess = () => {
+    setTitle('')
+    setDescription('')
+    onClose()
+  }
+
+  const createCatalogMutation = useCreateCatalog(cleanUpOnSuccess)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     e.stopPropagation()
     if (!title || !description) return
     createCatalogMutation.mutate({ title, description })
-    setTitle('')
-    setDescription('')
-    onClose()
   }
 
   return (

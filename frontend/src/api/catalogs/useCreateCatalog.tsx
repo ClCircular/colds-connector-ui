@@ -1,4 +1,5 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 interface CatalogBody {
   title: string
@@ -51,16 +52,57 @@ const createCatalog = async (catalog: CatalogBody) => {
   return data as CatalogResponse
 }
 
-export const useCreateCatalog = () => {
+export const useCreateCatalog = (cleanUpOnSuccess: () => void) => {
+  const queryClient = useQueryClient()
+
   const mutation = useMutation({
     mutationFn: createCatalog,
     mutationKey: ['createCatalog'],
+    onMutate: async (newCatalog) => {
+      await queryClient.cancelQueries({ queryKey: ['catalogs'] })
+      const previousCatalogs = queryClient.getQueryData(['catalogs'])
+
+      queryClient.setQueryData(['catalogs'], (old: any) => {
+        return {
+          ...old,
+          _embedded: {
+            catalogs: [
+              ...old._embedded.catalogs,
+              {
+                ...newCatalog,
+                creationDate: new Date().toISOString(),
+                modificationDate: new Date().toISOString(),
+                numberOfResources: 0,
+                additional: {},
+                _links: {
+                  self: { href: '' },
+                  offers: { href: '' }
+                }
+              }
+            ]
+          }
+        }
+      })
+
+      return { previousCatalogs, newCatalog }
+    },
     onSuccess: (data) => {
       console.log('Catalog created successfully', data)
+      toast.success('Catalogo creado con éxito', {
+        description: `El catalogo ${data.title} ha sido creado con éxito.`,
+        duration: 3000
+      })
+      cleanUpOnSuccess()
     },
-    onError: (error) => {
-      console.error('Error creating catalog', error)
-    }
+    onError: (err, newTodo, context) => {
+      console.log('Error creating catalog', err)
+      toast.error('Error al crear el catalogo', {
+        description: `El catalogo ${newTodo.title} no ha podido ser creado.`,
+        duration: 3000
+      })
+      queryClient.setQueryData(['catalogs'], context?.previousCatalogs)
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['catalogs'] })
   })
   return mutation
 }
