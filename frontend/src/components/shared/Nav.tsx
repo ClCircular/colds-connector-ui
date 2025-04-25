@@ -15,7 +15,11 @@ export const Nav: FC<{
 }> = ({ setOpen }) => {
   const [location] = useLocation()
   const links = [
-    { href: '/', label: 'Inicio', icon: <IoHome className='size-6' /> },
+    {
+      href: '/',
+      label: 'Inicio',
+      icon: <IoHome className='size-6 text-inherit' />
+    },
     {
       href: '/politics',
       label: 'Políticas',
@@ -55,14 +59,22 @@ export const Nav: FC<{
           <Link href={link.href}>
             <p
               onClick={() => setOpen(false)} // 👉 Cierra el menú
-              className={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${
+              className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${
                 location === link.href
-                  ? 'text-blue-600 bg-gray-100 dark:text-blue-400 dark:bg-gray-700'
+                  ? 'text-[#94bf43] bg-gray-100 dark:text-blue-400 dark:bg-gray-700'
                   : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
               {link.icon && link.icon}
-              <span className='ms-3 text-lg'>{link.label}</span>
+              <span
+                className={`ms-3 text-lg ${
+                  location === link.href
+                    ? 'text-[#94bf43] bg-gray-100 dark:text-blue-400 dark:bg-gray-700'
+                    : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                {link.label}
+              </span>
             </p>
           </Link>
         </li>
