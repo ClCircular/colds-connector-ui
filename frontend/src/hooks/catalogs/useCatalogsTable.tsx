@@ -1,6 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { useGetCatalogs } from '../../api/catalogs/useGetCatalogs'
 import { useMemo } from 'react'
+import { IoAddCircleOutline } from 'react-icons/io5'
 
 interface CatalogRow {
   title: string
@@ -16,16 +17,30 @@ export const useCatalogsTable = () => {
   const columns = useMemo(
     () => [
       columnHelper.accessor('title', {
-        header: 'Title',
+        header: 'Titulo',
         cell: (info) => info.getValue()
       }),
       columnHelper.accessor('description', {
-        header: 'Description',
+        header: 'Descripcion',
         cell: (info) => info.getValue()
       }),
       columnHelper.accessor('numberOfResources', {
-        header: 'Number of Resources',
-        cell: (info) => info.getValue()
+        header: 'Número de recursos',
+        cell: (info) => info.getValue(),
+        meta: {
+          isNumeric: true,
+          filterVariant: 'range'
+        }
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: 'Acciones',
+        cell: () => (
+          <button className='inline-flex items-center gap-2 transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none cursor-pointer w-fit justify-center'>
+            Añadir recurso
+            <IoAddCircleOutline className='font-white size-5' />
+          </button>
+        )
       })
     ],
     [columnHelper]

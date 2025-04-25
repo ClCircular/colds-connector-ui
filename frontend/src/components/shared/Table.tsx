@@ -35,134 +35,146 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
     debugHeaders: true,
     debugColumns: false
   })
+
   return (
-    <table className=' w-full h-full p-2 bg-red-500'>
-      <thead className='bg-gray-100'>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <th key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <div
-                        {...{
-                          className: header.column.getCanSort()
-                            ? 'cursor-pointer select-none'
-                            : '',
-                          onClick: header.column.getToggleSortingHandler()
-                        }}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: ' 🔼',
-                          desc: ' 🔽'
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                      {header.column.getCanFilter() ? (
-                        <div>
-                          <Filter column={header.column} />
-                        </div>
-                      ) : null}
-                    </>
-                  )}
-                </th>
-              )
-            })}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row, index) => {
-          return (
-            <tr key={row.id} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-              {row.getVisibleCells().map((cell) => {
+    <div className='flex-1 overflow-x-auto px-0.5 w-full border border-gray-300 rounded-lg! shadow-md!'>
+      <table className=' w-full h-full p-2 '>
+        <thead className='bg-gray-100  border-b border-gray-300 sticky top-0 z-10 pb-2'>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
                 return (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  <th key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder ? null : (
+                      <div className='flex flex-col gap-2 py-2 items-center'>
+                        <div
+                          {...{
+                            className: header.column.getCanSort()
+                              ? 'cursor-pointer select-none'
+                              : '',
+                            onClick: header.column.getToggleSortingHandler()
+                          }}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {{
+                            asc: ' 🔼',
+                            desc: ' 🔽'
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                        {header.column.getCanFilter() ? (
+                          <div>
+                            <Filter column={header.column} />
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </th>
                 )
               })}
             </tr>
-          )
-        })}
-      </tbody>
-      <tfoot className='bg-gray-900 w-full py-2 px-4'>
-        <div className='flex items-center gap-8 w-full'>
-          <div className='flex items-center gap-4'>
-            <button
-              className='border rounded py-1 cursor-pointer px-3 '
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <FiChevronsLeft className='size-5' />
-            </button>
-            <button
-              className='border rounded py-1 cursor-pointer px-3'
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <IoChevronBackOutline className='size-5' />
-            </button>
-            <button
-              className='border rounded py-1 cursor-pointer px-3'
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <IoChevronForwardOutline className='size-5' />
-            </button>
-            <button
-              className='border rounded py-1 cursor-pointer px-3'
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <FiChevronsRight className='size-5' />
-            </button>
-          </div>
-          <span className='flex items-center gap-1'>
-            <div>Page</div>
-            <strong>
-              {table.getState().pagination.pageIndex + 1} of{' '}
-              {table.getPageCount()}
-            </strong>
-          </span>
-          <span className='flex items-center gap-1'>
-            | Go to page:
-            <input
-              type='number'
-              min='1'
-              max={table.getPageCount()}
-              defaultValue={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                table.setPageIndex(page)
-              }}
-              className='border p-1 rounded w-16'
-            />
-          </span>
-          <select
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value))
-            }}
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
-      </tfoot>
-    </table>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row, index) => {
+            return (
+              <tr
+                key={row.id}
+                className={` ${index % 2 === 0 ? 'bg-gray-50' : ''}`}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <td key={cell.id} className='py-2 text-center'>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+        <tfoot className='w-full py-2 px-4 border-t border-gray-300'>
+          <tr className='flex items-center gap-8 w-full py-2 px-4'>
+            <td className='flex items-center gap-4'>
+              <button
+                className='border rounded py-1 cursor-pointer px-3 '
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <FiChevronsLeft className='size-5' />
+              </button>
+              <button
+                className='border rounded py-1 cursor-pointer px-3'
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <IoChevronBackOutline className='size-5' />
+              </button>
+              <button
+                className='border rounded py-1 cursor-pointer px-3'
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <IoChevronForwardOutline className='size-5' />
+              </button>
+              <button
+                className='border rounded py-1 cursor-pointer px-3'
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <FiChevronsRight className='size-5' />
+              </button>
+            </td>
+            <td className='flex items-center gap-1'>
+              <div>Page</div>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of{' '}
+                {table.getPageCount()}
+              </strong>
+            </td>
+            <td className='flex items-center gap-1'>
+              | Go to page:
+              <input
+                type='number'
+                min='1'
+                max={table.getPageCount()}
+                defaultValue={table.getState().pagination.pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0
+                  table.setPageIndex(page)
+                }}
+                className='border p-1 rounded w-16'
+              />
+            </td>
+            <td>
+              <select
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => {
+                  table.setPageSize(Number(e.target.value))
+                }}
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </select>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   )
 }
 
 function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue()
+  //@ts-ignore
   const { filterVariant } = column.columnDef.meta ?? {}
 
   return filterVariant === 'range' ? (
@@ -176,7 +188,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [value, old?.[1]])
           }
           placeholder={`Min`}
-          className='w-24 border shadow rounded'
+          className='w-24 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
         />
         <DebouncedInput
           type='number'
@@ -185,7 +197,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [old?.[0], value])
           }
           placeholder={`Max`}
-          className='w-24 border shadow rounded'
+          className='w-24 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
         />
       </div>
       <div className='h-1' />
@@ -203,9 +215,9 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     </select>
   ) : (
     <DebouncedInput
-      className='w-36 border shadow rounded'
+      className='w-36 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
       onChange={(value) => column.setFilterValue(value)}
-      placeholder={`Search...`}
+      placeholder={`Buscar...`}
       type='text'
       value={(columnFilterValue ?? '') as string}
     />
