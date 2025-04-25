@@ -1,14 +1,28 @@
 import { IoCreateOutline } from 'react-icons/io5'
-import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { CatalogCard } from '../components/catalogs/CatalogCard'
+// import { Table } from '../components/shared/Table'
+// import { useCatalogsTable } from '../hooks/catalogs/useCatalogsTable'
+import { useState } from 'react'
+import { CreateCatalogModal } from '../components/catalogs/CreateCatalogModal'
+import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 
 export const Catalogs = () => {
+  const [open, setOpen] = useState(false)
   const catalogsData = useGetCatalogs()
+  // const { columns, rows } = useCatalogsTable()
+
+  const onClose = () => {
+    setOpen(false)
+  }
   return (
-    <section className='flex flex-col gap-2 p-4'>
+    <section className='flex flex-col gap-2 p-4 h-full'>
+      <CreateCatalogModal isOpen={open} onClose={onClose} />
       <div className='flex justify-between items-center mb-4'>
         <h1 className='text-lg font-semibold uppercase'>Catálogos</h1>
-        <button className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-[#94bf43] dark:focus:ring-blue-800 cursor-pointer capitalize'>
+        <button
+          className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+          onClick={() => setOpen(true)}
+        >
           Crear nuevo catálogo
           <IoCreateOutline className='ms-2 size-5 font-white' />
         </button>
@@ -29,6 +43,7 @@ export const Catalogs = () => {
           ))}
         </div>
       )}
+      {/* <Table columns={columns} rows={rows} /> */}
     </section>
   )
 }

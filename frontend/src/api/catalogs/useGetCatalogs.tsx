@@ -42,15 +42,10 @@ export const getCatalogs = async () => {
   }
   const url = `http://localhost:8083`
   console.log({ url, requestOptions })
-  try {
-    const response = await fetch(url, requestOptions)
-    const data = await response.json()
-    console.log({ data })
-    return data as IResponse
-  } catch (error) {
-    console.log({ error })
-    throw new Error('Error al llamar a la API')
-  }
+  const response = await fetch(url, requestOptions)
+  const data = (await response.json()) || {}
+  console.log({ data })
+  return data as IResponse
 }
 
 export const useGetCatalogs = () => {
@@ -58,6 +53,8 @@ export const useGetCatalogs = () => {
     queryKey: ['catalogs'],
     queryFn: getCatalogs,
     refetchOnWindowFocus: false,
+    retryOnMount: false,
+    refetchOnReconnect: false,
     retry: false,
     staleTime: 1000 * 60 * 60, // 1 hour
     gcTime: 1000 * 60 * 60 // 1 hour
