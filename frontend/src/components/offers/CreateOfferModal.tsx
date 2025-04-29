@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
 import { useCreateOfferForm } from '../../hooks/offers/useCreateOfferForm'
 
@@ -12,10 +12,31 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
   onClose,
   catalogId
 }) => {
-  const [keywordsText, setKeywordsText] = useState()
+  const [keywordsText, setKeywordsText] = useState<string>('')
   const { createOfferForm, onSubmit } = useCreateOfferForm({
     catalogId
   })
+
+  useEffect(() => {
+    if (keywordsText.includes(',')) {
+      const newKeyWord = keywordsText.split(',').shift()
+      const newKeyWordTrimmed = newKeyWord?.trim()
+      const actualValues = createOfferForm.getValues('keywords')
+      const isAlreadyInKeywords = actualValues?.includes(
+        newKeyWordTrimmed ?? ''
+      )
+      if (isAlreadyInKeywords) {
+        setKeywordsText('')
+        return
+      }
+      console.log({ actualValues })
+      createOfferForm.setValue('keywords', [
+        ...actualValues,
+        ...(newKeyWordTrimmed ? [newKeyWordTrimmed] : [])
+      ])
+      setKeywordsText('')
+    }
+  }, [keywordsText, createOfferForm])
 
   return (
     <div
@@ -38,11 +59,11 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
             </h3>
             <button
               type='button'
-              className='end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer group'
+              className='end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm size-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer group'
               data-modal-hide='authentication-modal'
               onClick={onClose}
             >
-              <IoClose className='group-hover:rotate-180 transition-transform size-6' />
+              <IoClose className='group-hover:rotate-90 transition-transform size-6' />
               <span className='sr-only'>Close modal</span>
             </button>
           </div>
@@ -62,9 +83,8 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   type='text'
                   id='title'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  placeholder='Introduce el titulo del catalogo'
-                  required
-                  {...createOfferForm.register('title')}
+                  placeholder='Introduce el titulo de la oferta de datos'
+                  {...(createOfferForm.register('title'), { required: true })}
                 />
               </div>
 
@@ -78,13 +98,117 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 <textarea
                   id='description'
                   rows={4}
-                  {...createOfferForm.register('description')}
+                  {...(createOfferForm.register('description'),
+                  { required: true })}
                   className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  placeholder='Introduce la descripcion del catalogo'
+                  placeholder='Introduce la descripcion de la oferta de datos'
                 ></textarea>
               </div>
+              {/* publisher */}
+              <div className='col-span-2'>
+                <label
+                  htmlFor='publisher'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  Publicador
+                </label>
+                <input
+                  type='text'
+                  id='publisher'
+                  {...(createOfferForm.register('publisher'),
+                  {
+                    required: true
+                  })}
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                  placeholder='Introduce el publicador de la oferta de datos'
+                />
+              </div>
+              <div className='col-span-2'>
+                <label
+                  htmlFor='sovereign'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  Soberano
+                </label>
+                <input
+                  type='text'
+                  id='sovereign'
+                  {...(createOfferForm.register('sovereign'),
+                  {
+                    required: true
+                  })}
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                  placeholder='Introduce el soberano de la oferta de datos'
+                />
+              </div>
+              <div className='col-span-2'>
+                <label
+                  htmlFor='paymentModality'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  Selecciona una modalidad de pago
+                </label>
+                <select
+                  id='paymentModality'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  {...(createOfferForm.register('paymentModality'),
+                  { required: true })}
+                >
+                  <option selected>Selecciona una modalidad de pago</option>
+                  <option value='free'>Gratis</option>
+                </select>
+              </div>
               <div className='col-span-2 flex flex-col'>
-                <input type='text' value={keywordsText} />
+                <label
+                  htmlFor='keywords'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  Palabras Clave
+                </label>
+                <input
+                  type='text'
+                  value={keywordsText}
+                  id='keywords'
+                  placeholder='Introduce las palabras clave separadas por comas'
+                  name='keywords'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 mb-2'
+                  onChange={(e) => {
+                    setKeywordsText(e.target.value)
+                  }}
+                />
+                <div className='flex gap-2 flex-wrap'>
+                  {createOfferForm.getValues('keywords')?.map((keyword) => (
+                    <div
+                      key={keyword}
+                      className='flex items-center justify-between gap-1 bg-gray-200 rounded-full px-2 py-1'
+                    >
+                      <span className='text-sm text-gray-700'>{keyword}</span>
+                      <button
+                        type='button'
+                        className='flex items-center justify-center size-5 cursor-pointer text-gray-500 hover:bg-gray-300 rounded-full'
+                        onClick={() => {
+                          const filteredKeywords = createOfferForm
+                            .getValues('keywords')
+                            .filter((k) => {
+                              console.log({ k, keyword })
+                              return k !== keyword
+                            })
+                          createOfferForm.setValue(
+                            'keywords',
+                            filteredKeywords,
+                            {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                              shouldTouch: true
+                            }
+                          )
+                        }}
+                      >
+                        <IoClose className='text-gray-500' />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             <button
@@ -92,7 +216,11 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
               className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
               disabled={
                 createOfferForm.formState.isSubmitting ||
-                createOfferForm.formState.isValidating
+                createOfferForm.formState.isValidating ||
+                createOfferForm.formState.isLoading ||
+                !createOfferForm.formState.isDirty ||
+                !createOfferForm.formState.isValid ||
+                createOfferForm.getValues('keywords').length === 0
               }
             >
               <IoAddCircleOutline className='font-white size-5' />
