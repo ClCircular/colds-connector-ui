@@ -36,13 +36,27 @@ app.use("/health", function (req, res) {
 
 // dynamic proxy towards the Dataspace Connector
 app.post("/", async (req, res) => {
-  console.log(req.body);
   let petition = req.body;
-  let body = petition.body;
   console.log(`Received petition ${JSON.stringify(petition)}`);
-  let dataFromConnector;
-  let fullURL = `${connectorUrl}${petition.url}`;
 
+  let body = petition.body;
+  let params = petition.params;
+  let requestParams = "";
+  let i = 0;
+  if (params != undefined) {
+    console.log("Adding request params to the endpointURL");
+    for (let key in params) {
+      if (i === 0) {
+        requestParams += "?" + key + "=" + params[key];
+      } else {
+        requestParams += "&" + key + "=" + params[key];
+      }
+      i++;
+    }
+  }
+  let dataFromConnector;
+  let fullURL = `${connectorUrl}${petition.url}${requestParams}`;
+  console.log(`Sending ${petition.type} request to ${fullURL}`);
   switch (petition.type) {
     case "GET":
       var response = await axios.get(fullURL, {
