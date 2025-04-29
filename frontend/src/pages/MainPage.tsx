@@ -28,7 +28,7 @@ export const MainPage = () => {
     {
       title: 'Datos Ofrecidos',
       description: `${offersData.data?._embedded?.resources.length} Oferta(s)`,
-      link: '/offered-data'
+      link: '/data-offers'
     },
     {
       title: 'Intercambios',

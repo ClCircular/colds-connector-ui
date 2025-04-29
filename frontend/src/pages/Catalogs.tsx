@@ -39,6 +39,7 @@ export const Catalogs = () => {
               title={catalog.title}
               description={catalog.description}
               numberOfResources={catalog.numberOfResources ?? 0}
+              catalogId={catalog._links.self.href.split('/').pop() ?? ''}
             />
           ))}
         </div>

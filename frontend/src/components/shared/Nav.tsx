@@ -36,7 +36,7 @@ export const Nav: FC<{
       icon: <IoLink className='size-6' />
     },
     {
-      href: '/offered-data',
+      href: '/data-offers',
       label: 'Datos Ofrecidos',
       icon: <IoCloudUpload className='size-6' />
     },
