@@ -8,6 +8,7 @@ interface OfferBody {
   publisher: string
   sovereign: string
   paymentModality: string
+  license: string
 }
 
 export interface OfferResponse {
