@@ -215,7 +215,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [value, old?.[1]])
           }
           placeholder={`Min`}
-          className='w-24 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
+          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400'
         />
         <DebouncedInput
           type='number'
@@ -224,7 +224,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [old?.[0], value])
           }
           placeholder={`Max`}
-          className='w-24 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
+          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400'
         />
       </div>
       <div className='h-1' />
@@ -242,7 +242,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     </select>
   ) : (
     <DebouncedInput
-      className='w-36 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400 placeholder:font-normal'
+      className='w-36 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal'
       onChange={(value) => column.setFilterValue(value)}
       placeholder={`Buscar...`}
       type='text'

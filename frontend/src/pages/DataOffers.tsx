@@ -1,6 +1,8 @@
 import { IoCreateOutline } from 'react-icons/io5'
 import { CreateOfferModal } from '../components/offers/CreateOfferModal'
 import { useState } from 'react'
+import { useDataOffersTable } from '../hooks/offers/useDataOffersTable'
+import { Table } from '../components/shared/Table'
 
 export const DataOffers = () => {
   const [open, setOpen] = useState(false)
@@ -8,6 +10,8 @@ export const DataOffers = () => {
   const onClose = () => {
     setOpen(false)
   }
+
+  const { columns, rows } = useDataOffersTable()
 
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>
@@ -22,6 +26,13 @@ export const DataOffers = () => {
           <IoCreateOutline className='ms-2 size-5 font-white' />
         </button>
       </div>
+      {rows.length === 0 ? (
+        <div className='flex justify-center items-center h-full'>
+          <p className='text-gray-500'>No hay ofertas de datos disponibles</p>
+        </div>
+      ) : (
+        <Table columns={columns} rows={rows} />
+      )}
     </section>
   )
 }
