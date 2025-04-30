@@ -1,21 +1,25 @@
 import { FC, useEffect, useState } from 'react'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
 import { useCreateOfferForm } from '../../hooks/offers/useCreateOfferForm'
+import { useGetCatalogs } from '../../api/catalogs/useGetCatalogs'
 
 interface CreateOfferModalProps {
   isOpen: boolean
   onClose: () => void
-  catalogId: string
+  catalogIdProp?: string
 }
 export const CreateOfferModal: FC<CreateOfferModalProps> = ({
   isOpen,
   onClose,
-  catalogId
+  catalogIdProp
 }) => {
+  const [catalogId, setCatalogId] = useState(catalogIdProp || '')
   const [keywordsText, setKeywordsText] = useState<string>('')
   const { createOfferForm, onSubmit } = useCreateOfferForm({
     catalogId
   })
+
+  const catalogsData = useGetCatalogs()
 
   useEffect(() => {
     if (keywordsText.includes(',')) {
@@ -163,6 +167,36 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   <option value='free'>Gratis</option>
                 </select>
               </div>
+              {/* Catalog if catalogIdProp is undefined */}
+              {!catalogIdProp && (
+                <div className='col-span-2'>
+                  <label
+                    htmlFor='catalog'
+                    className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                  >
+                    Selecciona un catálogo
+                  </label>
+                  <input
+                    list={`filter-options-catalog`}
+                    value={catalogId}
+                    name='catalog'
+                    id='catalog'
+                    onChange={(e) => setCatalogId(e.target.value)}
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  />
+                  <datalist id={`filter-options-catalog`}>
+                    {catalogsData.data?._embedded.catalogs.map((val) => (
+                      <option
+                        key={val.title}
+                        value={val._links.self.href.split('/').pop()}
+                      >
+                        {val.title}
+                      </option>
+                    ))}
+                  </datalist>
+                </div>
+              )}
+              {/* Keywords */}
               <div className='col-span-2 flex flex-col'>
                 <label
                   htmlFor='keywords'
