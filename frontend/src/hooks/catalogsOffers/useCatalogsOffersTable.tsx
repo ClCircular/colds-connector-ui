@@ -90,7 +90,8 @@ export const useCatalogsOffersTable = ({
         keywords: catalogOffer.keywords,
         publisher: catalogOffer.publisher,
         paymentModality: catalogOffer.paymentModality,
-        sovereign: catalogOffer.sovereign
+        sovereign: catalogOffer.sovereign,
+        language: catalogOffer.language || '-'
       })) ?? []
     )
   }, [

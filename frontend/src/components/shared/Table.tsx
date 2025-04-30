@@ -9,7 +9,12 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5'
+import {
+  IoChevronBackOutline,
+  IoChevronDownOutline,
+  IoChevronForwardOutline,
+  IoChevronUpOutline
+} from 'react-icons/io5'
 import { FiChevronsLeft, FiChevronsRight } from 'react-icons/fi'
 
 interface TableProps {
@@ -38,13 +43,17 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
 
   return (
     <div className='flex-1 overflow-x-auto px-0.5 w-full border border-gray-300 rounded-lg! shadow-md!'>
-      <table className=' w-full h-full p-2 '>
+      <table className='table-auto w-full h-full p-2'>
         <thead className='bg-gray-100  border-b border-gray-300 sticky top-0 z-10 pb-2'>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <th key={header.id} colSpan={header.colSpan}>
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className='text-gray-700'
+                  >
                     {header.isPlaceholder ? null : (
                       <div className='flex flex-col gap-2 py-2 items-center'>
                         <div
@@ -60,8 +69,10 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
                             header.getContext()
                           )}
                           {{
-                            asc: ' 🔼',
-                            desc: ' 🔽'
+                            asc: <IoChevronUpOutline className='inline ml-1' />,
+                            desc: (
+                              <IoChevronDownOutline className='inline ml-1' />
+                            )
                           }[header.column.getIsSorted() as string] ?? null}
                         </div>
                         {header.column.getCanFilter() ? (
@@ -98,72 +109,88 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
             )
           })}
         </tbody>
-        <tfoot className='w-full py-2 px-4 border-t border-gray-300'>
-          <tr className='flex items-center gap-8 w-full py-2 px-4'>
-            <td className='flex items-center gap-4'>
-              <button
-                className='border rounded py-1 cursor-pointer px-3 '
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <FiChevronsLeft className='size-5' />
-              </button>
-              <button
-                className='border rounded py-1 cursor-pointer px-3'
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <IoChevronBackOutline className='size-5' />
-              </button>
-              <button
-                className='border rounded py-1 cursor-pointer px-3'
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <IoChevronForwardOutline className='size-5' />
-              </button>
-              <button
-                className='border rounded py-1 cursor-pointer px-3'
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <FiChevronsRight className='size-5' />
-              </button>
-            </td>
-            <td className='flex items-center gap-1'>
-              <div>Page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{' '}
-                {table.getPageCount()}
-              </strong>
-            </td>
-            <td className='flex items-center gap-1'>
-              | Go to page:
-              <input
-                type='number'
-                min='1'
-                max={table.getPageCount()}
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0
-                  table.setPageIndex(page)
-                }}
-                className='border p-1 rounded w-16'
-              />
-            </td>
-            <td>
-              <select
-                value={table.getState().pagination.pageSize}
-                onChange={(e) => {
-                  table.setPageSize(Number(e.target.value))
-                }}
-              >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                ))}
-              </select>
+        <tfoot>
+          <tr>
+            {/* Un solo td que ocupe todas las columnas */}
+            <td colSpan={columns.length}>
+              <div className='flex flex-wrap items-center gap-4 px-4 py-3 bg-gray-50 border-t border-gray-300 rounded-b-lg'>
+                {/* Botones de navegación */}
+                <div className='flex items-center space-x-2'>
+                  <button
+                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <FiChevronsLeft size={16} />
+                  </button>
+                  <button
+                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <IoChevronBackOutline size={16} />
+                  </button>
+                  <button
+                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <IoChevronForwardOutline size={16} />
+                  </button>
+                  <button
+                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <FiChevronsRight size={16} />
+                  </button>
+                </div>
+
+                {/* Información de página */}
+                <div className='text-sm'>
+                  Página{' '}
+                  <strong>
+                    {table.getState().pagination.pageIndex + 1} de{' '}
+                    {table.getPageCount()}
+                  </strong>
+                </div>
+
+                {/* Ir a página */}
+                <div className='flex items-center space-x-2 text-sm'>
+                  <label htmlFor='goto-page' className='whitespace-nowrap'>
+                    Ir a:
+                  </label>
+                  <input
+                    id='goto-page'
+                    type='number'
+                    min={1}
+                    max={table.getPageCount()}
+                    defaultValue={table.getState().pagination.pageIndex + 1}
+                    onChange={(e) => {
+                      const page = e.target.value
+                        ? Number(e.target.value) - 1
+                        : 0
+                      table.setPageIndex(page)
+                    }}
+                    className='w-16 p-1 border rounded text-center border-gray-400 placeholder:text-gray-400'
+                  />
+                </div>
+
+                {/* Selección de tamaño de página */}
+                <div>
+                  <select
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => table.setPageSize(Number(e.target.value))}
+                    className='p-1 border rounded border-gray-400'
+                  >
+                    {[10, 20, 30, 40, 50].map((size) => (
+                      <option key={size} value={size}>
+                        Mostrar {size}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </td>
           </tr>
         </tfoot>
@@ -215,7 +242,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     </select>
   ) : (
     <DebouncedInput
-      className='w-36 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400'
+      className='w-36 border shadow rounded  p-2 border-gray-400 placeholder:text-gray-400 placeholder:font-normal'
       onChange={(value) => column.setFilterValue(value)}
       placeholder={`Buscar...`}
       type='text'
