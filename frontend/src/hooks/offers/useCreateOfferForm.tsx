@@ -26,13 +26,12 @@ export const useCreateOfferForm = ({ catalogId }: { catalogId: string }) => {
       publisher: '',
       sovereign: '',
       paymentModality: ''
-    },
-    mode: 'onBlur'
+    }
   })
 
   const onSubmit: SubmitHandler<OfferBody> = async (data, event) => {
     event?.stopPropagation()
-    console.log(data)
+    console.log({ data }, { event })
     // Call the API to create the offer here
     const createOfferResponse = await createOfferMutation.mutateAsync({
       ...data,

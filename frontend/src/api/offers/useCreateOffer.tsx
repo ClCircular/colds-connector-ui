@@ -65,6 +65,7 @@ const createOffer = async (offer: OfferBody) => {
 
   console.log({ url, requestOptions })
   const response = await fetch(url, requestOptions)
+  console.log({ response })
   const data = (await response.json()) || {}
   console.log({ data })
   return data as OfferResponse
@@ -84,8 +85,8 @@ export const useCreateOffer = (cleanUpOnSuccess: () => void) => {
         return {
           ...old,
           _embedded: {
-            offers: [
-              ...old._embedded.offers,
+            resoruces: [
+              ...old._embedded.resources,
               {
                 ...newOffer,
                 creationDate: new Date().toISOString(),

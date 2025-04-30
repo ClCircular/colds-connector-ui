@@ -30,10 +30,15 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
         return
       }
       console.log({ actualValues })
-      createOfferForm.setValue('keywords', [
-        ...actualValues,
-        ...(newKeyWordTrimmed ? [newKeyWordTrimmed] : [])
-      ])
+      createOfferForm.setValue(
+        'keywords',
+        [...actualValues, ...(newKeyWordTrimmed ? [newKeyWordTrimmed] : [])],
+        {
+          shouldDirty: true,
+          shouldValidate: true,
+          shouldTouch: true
+        }
+      )
       setKeywordsText('')
     }
   }, [keywordsText, createOfferForm])
@@ -84,7 +89,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   id='title'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
                   placeholder='Introduce el titulo de la oferta de datos'
-                  {...(createOfferForm.register('title'), { required: true })}
+                  {...createOfferForm.register('title', { required: true })}
                 />
               </div>
 
@@ -98,8 +103,9 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 <textarea
                   id='description'
                   rows={4}
-                  {...(createOfferForm.register('description'),
-                  { required: true })}
+                  {...createOfferForm.register('description', {
+                    required: true
+                  })}
                   className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder='Introduce la descripcion de la oferta de datos'
                 ></textarea>
@@ -115,8 +121,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 <input
                   type='text'
                   id='publisher'
-                  {...(createOfferForm.register('publisher'),
-                  {
+                  {...createOfferForm.register('publisher', {
                     required: true
                   })}
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
@@ -133,8 +138,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 <input
                   type='text'
                   id='sovereign'
-                  {...(createOfferForm.register('sovereign'),
-                  {
+                  {...createOfferForm.register('sovereign', {
                     required: true
                   })}
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
@@ -151,8 +155,9 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 <select
                   id='paymentModality'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  {...(createOfferForm.register('paymentModality'),
-                  { required: true })}
+                  {...createOfferForm.register('paymentModality', {
+                    required: true
+                  })}
                 >
                   <option selected>Selecciona una modalidad de pago</option>
                   <option value='free'>Gratis</option>
@@ -219,8 +224,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                 createOfferForm.formState.isValidating ||
                 createOfferForm.formState.isLoading ||
                 !createOfferForm.formState.isDirty ||
-                !createOfferForm.formState.isValid ||
-                createOfferForm.getValues('keywords').length === 0
+                !createOfferForm.formState.isValid
               }
             >
               <IoAddCircleOutline className='font-white size-5' />
