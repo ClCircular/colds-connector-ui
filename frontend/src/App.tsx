@@ -1,36 +1,16 @@
-import './App.css'
+import { Toaster } from 'sonner'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { MainLayout } from './layout/MainLayout'
 
-function App() {
-  
-  const  jimenaFunciton =  async () => {
-    console.log('Jimena function')
-    const requestOptions = {
-      method: "POST",
-      body: JSON.stringify({
-        type: "GET",
-        "url": "/api/contracts"
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    let url = `http://localhost:8083`;
-    console.log(url);
-    console.log(requestOptions);
-    const response = await fetch(url, requestOptions);
-    const data = await response.json();
-    console.log(data);
-  }
+const queryClient = new QueryClient()
 
+export const App = () => {
   return (
-    <>
-      <button
-        onClick={jimenaFunciton}
-      >
-        Jimena Button
-      </button>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <Toaster richColors position='top-right' closeButton />
+      <ReactQueryDevtools initialIsOpen={false} />
+      <MainLayout />
+    </QueryClientProvider>
   )
 }
-
-export default App
