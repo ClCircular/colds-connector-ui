@@ -1,5 +1,7 @@
 import { Dispatch, FC, SetStateAction } from 'react'
+import { IoMenuOutline } from 'react-icons/io5'
 import { Link } from 'wouter'
+import { LangSwitch } from './LangSwitch'
 
 export const Header: FC<{
   setOpen: Dispatch<SetStateAction<boolean>>
@@ -9,25 +11,15 @@ export const Header: FC<{
       <Link href='/' className='flex items-center cursor-pointer'>
         <img src='/assets/Logo-clcircular.svg' className='h-15' />
       </Link>
-      <button
-        className='rounded-md bg-gray-200 p-2 hover:scale-105 transition-transform cursor-pointer'
-        onClick={() => setOpen(true)}
-      >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          strokeWidth={1.5}
-          stroke='currentColor'
-          className='size-6'
+      <div className='flex items-center gap-4'>
+        <LangSwitch />
+        <button
+          className='rounded-md bg-gray-200 p-2 hover:scale-105 transition-transform cursor-pointer'
+          onClick={() => setOpen(true)}
         >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
-          />
-        </svg>
-      </button>
+          <IoMenuOutline className='size-6' />
+        </button>
+      </div>
     </header>
   )
 }
