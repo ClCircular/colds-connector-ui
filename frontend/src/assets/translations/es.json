@@ -1,3 +1,14 @@
 {
-  "catalogs": "Catálogos"
+  "catalogs": "Catálogos",
+  "catalog": "Catálogo",
+  "create_new_catalog": "Crear nuevo catálogo",
+  "no_catalogs_available": "No hay catálogos disponibles",
+  "policies": "Políticas",
+  "contracts": "Contratos",
+  "home": "Inicio",
+  "offer": "Oferta",
+  "data_offers": "Ofertas de datos",
+  "exchanges": "Intercambios",
+  "exchanges_card_description": "Consulta los intercambios de datos abiertos",
+  "navigate": "Navegar"
 }

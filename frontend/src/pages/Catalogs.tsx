@@ -26,13 +26,13 @@ export const Catalogs = () => {
           className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
           onClick={() => setOpen(true)}
         >
-          Crear nuevo catálogo
+          {t('create_new_catalog')}
           <IoCreateOutline className='ms-2 size-5 font-white' />
         </button>
       </div>
       {catalogsData.data?._embedded?.catalogs.length === 0 ? (
         <p className='text-center text-gray-500'>
-          No hay catalogos disponibles
+          {t('no_catalogs_available')}
         </p>
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center md:justify-items-stretch'>
