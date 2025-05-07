@@ -171,3 +171,58 @@ export async function getAllCatalogs(fullURL, auth, httpsAgent) {
   }
   return { data: catalogs };
 }
+
+export async function getAllContracts(fullURL, auth, httpsAgent) {
+  var response = await axios.get(fullURL, {
+    headers: { "content-type": "application/json" },
+    auth,
+    httpsAgent,
+  });
+  let contracts = [];
+  for (let connectorResource of response.data._embedded.contracts) {
+    // console.log(connectorResource);
+    let contract = {
+      contractId: connectorResource._links.self.href.match(
+        /contracts\/([a-f0-9\-]+)$/i
+      )[1],
+      creationDate: connectorResource.creationDate,
+      modificationDate: connectorResource.modificationDate,
+      title: connectorResource.title,
+      description: connectorResource.description,
+      start: connectorResource.start,
+      end: connectorResource.end,
+    };
+
+    // Getting subscriptions of offer
+    const [rules, offers] = await Promise.all([
+      await axios.get(
+        connectorResource._links.rules.href.replace(/\{.*\}$/, ""),
+        {
+          headers: { "content-type": "application/json" },
+          auth,
+          httpsAgent,
+        }
+      ),
+      await axios.get(
+        connectorResource._links.offers.href.replace(/\{.*\}$/, ""),
+        {
+          headers: { "content-type": "application/json" },
+          auth,
+          httpsAgent,
+        }
+      ),
+    ]);
+    contract.rules = rules.data._embedded.rules.map((item) => ({
+      title: item.title,
+      type: JSON.parse(item.value)["@type"],
+      ruleId: item._links.self.href.match(/rules\/([a-f0-9\-]+)$/i)[1],
+    }));
+    contract.offers = offers.data._embedded.resources.map((item) => ({
+      title: item.title,
+      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1],
+    }));
+
+    contracts.push(contract);
+  }
+  return { data: contracts };
+}
