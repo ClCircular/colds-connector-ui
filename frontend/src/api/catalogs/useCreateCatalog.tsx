@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 interface CatalogBody {
@@ -55,6 +56,8 @@ const createCatalog = async (catalog: CatalogBody) => {
 export const useCreateCatalog = (cleanUpOnSuccess: () => void) => {
   const queryClient = useQueryClient()
 
+  const { t } = useTranslation()
+
   const mutation = useMutation({
     mutationFn: createCatalog,
     mutationKey: ['createCatalog'],
@@ -88,16 +91,20 @@ export const useCreateCatalog = (cleanUpOnSuccess: () => void) => {
     },
     onSuccess: (data) => {
       console.log('Catalog created successfully', data)
-      toast.success('Catalogo creado con éxito', {
-        description: `El catalogo ${data.title} ha sido creado con éxito.`,
+      toast.success(t('catalog_created_successfully'), {
+        description: t('catalog_created_successfully_description', {
+          title: data.title
+        }),
         duration: 3000
       })
       cleanUpOnSuccess()
     },
     onError: (err, newTodo, context) => {
       console.log('Error creating catalog', err)
-      toast.error('Error al crear el catalogo', {
-        description: `El catalogo ${newTodo.title} no ha podido ser creado.`,
+      toast.error(t('catalog_creation_failed'), {
+        description: t('catalog_creation_failed_description', {
+          title: newTodo.title
+        }),
         duration: 3000
       })
       queryClient.setQueryData(['catalogs'], context?.previousCatalogs)

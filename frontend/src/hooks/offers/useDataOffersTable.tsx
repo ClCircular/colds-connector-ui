@@ -2,6 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
 // import { IoAddCircleOutline } from 'react-icons/io5'
 import { useGetOffers } from '../../api/offers/useGetOffers'
+import { useTranslation } from 'react-i18next'
 
 interface DataOfferRow {
   creationDate: string
@@ -23,41 +24,43 @@ interface DataOfferRow {
 export const useDataOffersTable = () => {
   const dataOffersData = useGetOffers()
 
+  const { t } = useTranslation()
+
   const columnHelper = createColumnHelper<DataOfferRow>()
 
   const columns = useMemo(
     () => [
       columnHelper.accessor('title', {
-        header: 'Titulo',
+        header: t('title'),
         cell: (info) => info.getValue()
       }),
       columnHelper.accessor('description', {
-        header: 'Descripcion',
+        header: t('description'),
         cell: (info) => info.getValue()
       }),
       //keywords
       columnHelper.accessor('keywords', {
-        header: 'Palabras clave',
+        header: t('keywords'),
         cell: (info) => info.getValue().join(', ')
       }),
       //publisher
       columnHelper.accessor('publisher', {
-        header: 'Publicador',
+        header: t('publisher'),
         cell: (info) => info.getValue()
       }),
       //language
       columnHelper.accessor('language', {
-        header: 'Idioma',
+        header: t('language'),
         cell: (info) => info.getValue()
       }),
       //sovereign
       columnHelper.accessor('sovereign', {
-        header: 'Soberano',
+        header: t('sovereign'),
         cell: (info) => info.getValue()
       }),
       //paymentModality
       columnHelper.accessor('paymentModality', {
-        header: 'Modalidad de pago',
+        header: t('payment_modality'),
         cell: (info) => info.getValue()
       })
       //   columnHelper.display({
@@ -71,7 +74,7 @@ export const useDataOffersTable = () => {
       //     )
       //   })
     ],
-    [columnHelper]
+    [columnHelper, t]
   )
 
   const rows = useMemo(() => {

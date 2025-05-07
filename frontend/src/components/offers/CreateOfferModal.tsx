@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
 import { useCreateOfferForm } from '../../hooks/offers/useCreateOfferForm'
 import { useGetCatalogs } from '../../api/catalogs/useGetCatalogs'
+import { useTranslation } from 'react-i18next'
 
 interface CreateOfferModalProps {
   isOpen: boolean
@@ -47,6 +48,8 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
     }
   }, [keywordsText, createOfferForm])
 
+  const { t } = useTranslation()
+
   return (
     <div
       id='authentication-modal'
@@ -64,7 +67,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
         <div className='relative bg-white rounded-lg shadow-sm z-[60] dark:bg-gray-700'>
           <div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200'>
             <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
-              Crear Oferta de Datos
+              {t('create_data_offer')}
             </h3>
             <button
               type='button'
@@ -86,13 +89,13 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='title'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Titulo
+                  {t('title')}
                 </label>
                 <input
                   type='text'
                   id='title'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  placeholder='Introduce el titulo de la oferta de datos'
+                  placeholder={t('title_placeholder')}
                   {...createOfferForm.register('title', { required: true })}
                 />
               </div>
@@ -102,7 +105,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='description'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Descripcion
+                  {t('description')}
                 </label>
                 <textarea
                   id='description'
@@ -111,7 +114,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                     required: true
                   })}
                   className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  placeholder='Introduce la descripcion de la oferta de datos'
+                  placeholder={t('description_placeholder')}
                 ></textarea>
               </div>
               {/* publisher */}
@@ -120,7 +123,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='publisher'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Publicador
+                  {t('publisher')}
                 </label>
                 <input
                   type='text'
@@ -129,7 +132,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                     required: true
                   })}
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  placeholder='Introduce el publicador de la oferta de datos'
+                  placeholder={t('publisher_placeholder')}
                 />
               </div>
               <div className='col-span-2'>
@@ -137,7 +140,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='sovereign'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Soberano
+                  {t('sovereign')}
                 </label>
                 <input
                   type='text'
@@ -146,7 +149,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                     required: true
                   })}
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  placeholder='Introduce el soberano de la oferta de datos'
+                  placeholder={t('sovereign_placeholder')}
                 />
               </div>
               <div className='col-span-2'>
@@ -154,7 +157,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='paymentModality'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Selecciona una modalidad de pago
+                  {t('select_a_payment_method')}
                 </label>
                 <select
                   id='paymentModality'
@@ -163,8 +166,8 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                     required: true
                   })}
                 >
-                  <option selected>Selecciona una modalidad de pago</option>
-                  <option value='free'>Gratis</option>
+                  <option selected>{t('select_a_payment_method')}</option>
+                  <option value='free'>{t('free')}</option>
                 </select>
               </div>
               {/* Catalog if catalogIdProp is undefined */}
@@ -174,7 +177,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                     htmlFor='catalog'
                     className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                   >
-                    Selecciona un catálogo
+                    {t('select_a_catalog')}
                   </label>
                   <input
                     list={`filter-options-catalog`}
@@ -202,13 +205,13 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   htmlFor='keywords'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  Palabras Clave
+                  {t('keywords')}
                 </label>
                 <input
                   type='text'
                   value={keywordsText}
                   id='keywords'
-                  placeholder='Introduce las palabras clave separadas por comas'
+                  placeholder={t('enter_keywords_separated_by_commas')}
                   name='keywords'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 mb-2'
                   onChange={(e) => {
@@ -252,7 +255,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
             </div>
             <button
               type='submit'
-              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
+              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400 capitalize'
               disabled={
                 createOfferForm.formState.isSubmitting ||
                 createOfferForm.formState.isValidating ||
@@ -262,7 +265,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
               }
             >
               <IoAddCircleOutline className='font-white size-5' />
-              Crear Oferta de Datos
+              {t('create_data_offer')}
             </button>
           </form>
         </div>
