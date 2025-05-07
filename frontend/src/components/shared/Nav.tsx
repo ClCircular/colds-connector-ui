@@ -1,53 +1,55 @@
 import { Link, useLocation } from 'wouter'
 import {
   IoHome,
-  IoDocuments,
+  // IoDocuments,
   IoFileTrayFull,
-  IoLink,
+  // IoLink,
   IoCloudUpload,
   IoSwapHorizontal,
   IoAlbums
 } from 'react-icons/io5'
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const Nav: FC<{
   setOpen: (open: boolean) => void
 }> = ({ setOpen }) => {
   const [location] = useLocation()
+  const { t } = useTranslation()
   const links = [
     {
       href: '/',
-      label: 'Inicio',
+      label: t('home'),
       icon: <IoHome className='size-6 text-inherit' />
     },
-    {
-      href: '/politics',
-      label: 'Políticas',
-      icon: <IoDocuments className='size-6' />
-    },
+    // {
+    //   href: '/policies',
+    //   label: 'Políticas',
+    //   icon: <IoDocuments className='size-6' />
+    // },
     {
       href: '/contracts',
-      label: 'Contratos',
+      label: t('contracts'),
       icon: <IoFileTrayFull className='size-6' />
     },
-    {
-      href: '/data-connections',
-      label: 'Conexiones De Datos',
-      icon: <IoLink className='size-6' />
-    },
+    // {
+    //   href: '/data-connections',
+    //   label: 'Conexiones De Datos',
+    //   icon: <IoLink className='size-6' />
+    // },
     {
       href: '/data-offers',
-      label: 'Datos Ofrecidos',
+      label: t('data_offers'),
       icon: <IoCloudUpload className='size-6' />
     },
     {
       href: '/exchanges',
-      label: 'Intercambios',
+      label: t('exchanges'),
       icon: <IoSwapHorizontal className='size-6' />
     },
     {
       href: '/catalogs',
-      label: 'Catálogos',
+      label: t('catalogs'),
       icon: <IoAlbums className='size-6' />
     }
   ]

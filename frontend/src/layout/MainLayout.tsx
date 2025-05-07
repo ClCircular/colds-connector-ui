@@ -1,16 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Drawer, Header, Loader } from '../components'
 import { Router } from '../router/Router'
 import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
 import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
+import i18next from 'i18next'
 export const MainLayout = () => {
   const [open, setOpen] = useState(false)
   const offersData = useGetOffers()
   const contractsData = useGetContracts()
   const datasourcesData = useGetDataSources()
   const catalogsData = useGetCatalogs()
+
+  useEffect(() => {
+    const langSelected = localStorage.getItem('i18nextLng')
+    if (langSelected) {
+      i18next.changeLanguage(langSelected, () => {
+        console.log('Language changed to:', langSelected)
+      })
+    } else {
+      console.log('No language selected, defaulting to English')
+    }
+  }, [])
 
   if (
     offersData.isLoading ||

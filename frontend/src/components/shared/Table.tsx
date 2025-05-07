@@ -16,6 +16,7 @@ import {
   IoChevronUpOutline
 } from 'react-icons/io5'
 import { FiChevronsLeft, FiChevronsRight } from 'react-icons/fi'
+import { useTranslation } from 'react-i18next'
 
 interface TableProps {
   rows: any[]
@@ -40,6 +41,8 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
     debugHeaders: true,
     debugColumns: false
   })
+
+  const { t } = useTranslation()
 
   return (
     <div className='flex-1 overflow-x-auto px-0.5 w-full border border-gray-300 rounded-lg! shadow-md!'>
@@ -148,7 +151,7 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
 
                 {/* Información de página */}
                 <div className='text-sm'>
-                  Página{' '}
+                  {t('page')}{' '}
                   <strong>
                     {table.getState().pagination.pageIndex + 1} de{' '}
                     {table.getPageCount()}
@@ -158,7 +161,7 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
                 {/* Ir a página */}
                 <div className='flex items-center space-x-2 text-sm'>
                   <label htmlFor='goto-page' className='whitespace-nowrap'>
-                    Ir a:
+                    {t('go_to')}:
                   </label>
                   <input
                     id='goto-page'
@@ -185,7 +188,7 @@ export const Table: FC<TableProps> = ({ columns, rows }) => {
                   >
                     {[10, 20, 30, 40, 50].map((size) => (
                       <option key={size} value={size}>
-                        Mostrar {size}
+                        {t('show')} {size}
                       </option>
                     ))}
                   </select>

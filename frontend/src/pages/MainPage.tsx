@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
 // import { useGetDataSources } from '../api/datasources/useGetDataSources'
@@ -9,35 +10,32 @@ export const MainPage = () => {
   const contractsData = useGetContracts()
   // const datasourcesData = useGetDataSources()
   const catalogsData = useGetCatalogs()
+  const { t } = useTranslation()
   const cardsInfo = [
     {
-      title: 'Políticas',
-      description: `Consulta las políticas de datos abiertos `,
-      link: '/politics'
-    },
-    {
-      title: 'Contratos',
-      description: `${contractsData.data?._embedded?.contracts.length} Contrato(s)`,
+      title: t('contracts'),
+      description: `${contractsData.data?._embedded?.contracts.length} ${t(
+        'contracts'
+      )}(s)`,
       link: '/contracts'
     },
     {
-      title: 'Conexiones de Datos',
-      description: 'Consulta las conexiones de datos abiertos',
-      link: '/data-connections'
-    },
-    {
-      title: 'Datos Ofrecidos',
-      description: `${offersData.data?._embedded?.resources.length} Oferta(s)`,
+      title: t('data_offers'),
+      description: `${offersData.data?._embedded?.resources.length} ${t(
+        'offer'
+      )}(s)`,
       link: '/data-offers'
     },
     {
-      title: 'Intercambios',
-      description: 'Consulta los intercambios de datos abiertos',
+      title: t('exchanges'),
+      description: t('exchanges_card_description'),
       link: '/exchanges'
     },
     {
-      title: 'Catalogos',
-      description: `${catalogsData.data?._embedded?.catalogs.length} Catalogo(s)`,
+      title: t('catalogs'),
+      description: `${catalogsData.data?._embedded?.catalogs.length} ${t(
+        'catalog'
+      )}(s)`,
       link: '/catalogs'
     }
   ]
