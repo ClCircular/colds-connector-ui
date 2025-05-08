@@ -16,6 +16,7 @@ interface DataOfferRow {
   license: string
   version: string
   sovereign: any
+  catalog: string
   endpointDocumentation: any
   paymentModality: string
   samples: any[]
@@ -62,7 +63,13 @@ export const useDataOffersTable = () => {
       columnHelper.accessor('paymentModality', {
         header: t('payment_modality'),
         cell: (info) => info.getValue()
+      }),
+      // catalog
+      columnHelper.accessor('catalog', {
+        header: t('catalog'),
+        cell: (info) => info.getValue() || '-'
       })
+
       //   columnHelper.display({
       //     id: 'actions',
       //     header: 'Acciones',
