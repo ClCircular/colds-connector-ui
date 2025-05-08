@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
+//! Unused by the moment
+
 interface Offer {
   creationDate: string
   modificationDate: string

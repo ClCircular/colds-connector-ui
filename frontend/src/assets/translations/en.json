@@ -39,5 +39,8 @@
   "language": "Language",
   "page": "Page",
   "show": "Show",
-  "go_to": "Go to"
+  "go_to": "Go to",
+  "add_contract": "Add contract",
+  "see_contracts": "See contract(s)",
+  "actions": "Actions"
 }

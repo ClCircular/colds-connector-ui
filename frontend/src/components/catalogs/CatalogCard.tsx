@@ -31,7 +31,9 @@ export const CatalogCard: FC<CatalogCardProps> = ({
       </p>
       <Link
         className='font-normal text-gray-700 dark:text-gray-400 flex items-center gap-2 underline'
-        href={`/catalogs/${catalogId}/offers`}
+        // href={`/catalogs/${catalogId}/offers`} //! Unused for now, but we can use it later
+        href={`/data-offers`}
+        state={{ catalogId }}
       >
         {t('number_of_resources')}: {numberOfResources}
         <FiExternalLink className='inline-block' />

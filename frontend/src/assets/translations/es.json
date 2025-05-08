@@ -39,5 +39,8 @@
   "payment_modality": "Modalidad de pago",
   "page": "Página",
   "show": "Mostrar",
-  "go_to": "Ir a"
+  "go_to": "Ir a",
+  "add_contract": "Añadir contrato",
+  "see_contracts": "Ver contrato(s)",
+  "actions": "Acciones"
 }
