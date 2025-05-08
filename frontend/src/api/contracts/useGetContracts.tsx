@@ -1,27 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-
-export interface Contract {
-  contractId: string
-  creationDate: string
-  modificationDate: string
-  title: string
-  description: string
-  start: string
-  end: string
-  rules: Rule[]
-  offers: Offer[]
-}
-
-export interface Offer {
-  title: string
-  offerId: string
-}
-
-export interface Rule {
-  title: string
-  type: string
-  ruleId: string
-}
+import { Contract } from '../../interfaces/contracts/contracts.interface'
 
 export const getContracts = async () => {
   const requestOptions = {
