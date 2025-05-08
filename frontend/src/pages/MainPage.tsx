@@ -33,9 +33,7 @@ export const MainPage = () => {
     },
     {
       title: t('catalogs'),
-      description: `${catalogsData.data?._embedded?.catalogs.length} ${t(
-        'catalog'
-      )}(s)`,
+      description: `${catalogsData.data?.length} ${t('catalog')}(s)`,
       link: '/catalogs'
     }
   ]

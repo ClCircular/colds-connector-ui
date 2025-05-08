@@ -30,19 +30,19 @@ export const Catalogs = () => {
           <IoCreateOutline className='ms-2 size-5 font-white' />
         </button>
       </div>
-      {catalogsData.data?._embedded?.catalogs.length === 0 ? (
+      {catalogsData.data?.length === 0 ? (
         <p className='text-center text-gray-500'>
           {t('no_catalogs_available')}
         </p>
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center md:justify-items-stretch'>
-          {catalogsData.data?._embedded?.catalogs.map((catalog) => (
+          {catalogsData.data?.map((catalog) => (
             <CatalogCard
               key={catalog.title}
               title={catalog.title}
               description={catalog.description}
-              numberOfResources={catalog.numberOfResources ?? 0}
-              catalogId={catalog._links.self.href.split('/').pop() ?? ''}
+              numberOfResources={catalog.offers.length ?? 0}
+              catalogId={catalog.catalogId ?? ''}
             />
           ))}
         </div>
