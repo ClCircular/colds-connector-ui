@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import https from "https";
 import axios from "axios";
 import cors from "cors";
+import * as proxy from "./proxy.js";
 
 const app = express();
 const port = 8083;
@@ -59,11 +60,18 @@ app.post("/", async (req, res) => {
   console.log(`Sending ${petition.type} request to ${fullURL}`);
   switch (petition.type) {
     case "GET":
-      var response = await axios.get(fullURL, {
-        headers: { "content-type": "application/json" },
-        auth,
-        httpsAgent,
-      });
+      if (petition.url === "/api/offers")
+        var response = await proxy.getAllOffers(fullURL, auth, httpsAgent);
+      else if (petition.url === "/api/catalogs")
+        var response = await proxy.getAllCatalogs(fullURL, auth, httpsAgent);
+      else if (petition.url === "/api/contracts")
+        var response = await proxy.getAllContracts(fullURL, auth, httpsAgent);
+      else
+        var response = await axios.get(fullURL, {
+          headers: { "content-type": "application/json" },
+          auth,
+          httpsAgent,
+        });
       break;
     case "POST":
       var response = await axios.post(fullURL, body, {
