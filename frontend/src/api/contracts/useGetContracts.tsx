@@ -1,26 +1,26 @@
 import { useQuery } from '@tanstack/react-query'
 
-interface Contract {
+export interface Contract {
+  contractId: string
   creationDate: string
   modificationDate: string
   title: string
   description: string
   start: string
   end: string
-  consumer: any
-  additional: any
+  rules: Rule[]
+  offers: Offer[]
 }
 
-interface IResponse {
-  _embedded: {
-    contracts: Contract[]
-  }
-  page: {
-    size: number
-    totalElements: number
-    totalPages: number
-    number: number
-  }
+export interface Offer {
+  title: string
+  offerId: string
+}
+
+export interface Rule {
+  title: string
+  type: string
+  ruleId: string
 }
 
 export const getContracts = async () => {
@@ -40,7 +40,7 @@ export const getContracts = async () => {
     const response = await fetch(url, requestOptions)
     const data = await response.json()
     console.log({ data })
-    return data as IResponse
+    return data as Contract[]
   } catch (error) {
     console.log({ error })
     throw new Error('Error al llamar a la API')
