@@ -16,7 +16,8 @@ interface DataOfferRow {
   license: string
   version: string
   sovereign: any
-  catalog: string
+  catalogs: string[]
+  contracts: string[]
   endpointDocumentation: any
   paymentModality: string
   samples: any[]
@@ -65,11 +66,21 @@ export const useDataOffersTable = () => {
         cell: (info) => info.getValue()
       }),
       // catalog
-      columnHelper.accessor('catalog', {
-        header: t('catalog'),
-        cell: (info) => info.getValue() || '-'
+      columnHelper.accessor('catalogs', {
+        header: t('catalogs'),
+        cell: (info) => {
+          const catalogs = info.getValue()
+          return catalogs.length > 0 ? catalogs.join(' | ') : '-'
+        }
+      }),
+      // contracts
+      columnHelper.accessor('contracts', {
+        header: t('contracts'),
+        cell: (info) => {
+          const contracts = info.getValue()
+          return contracts.length > 0 ? contracts.join(' | ') : '-'
+        }
       })
-
       //   columnHelper.display({
       //     id: 'actions',
       //     header: 'Acciones',
@@ -89,24 +100,26 @@ export const useDataOffersTable = () => {
     if (dataOffersData.isError) return []
 
     return (
-      dataOffersData.data?._embedded?.resources.map(
+      dataOffersData.data?.map(
         ({
           title,
           description,
-          additional,
           keywords,
           publisher,
           paymentModality,
           sovereign,
-          language
+          language,
+          contracts,
+          catalogs
         }) => ({
           title,
           description,
-          additional,
           keywords,
           publisher,
           paymentModality,
           sovereign,
+          catalogs: catalogs.map((catalog) => catalog.title),
+          contracts: contracts.map((contract) => contract.title),
           language: language || '-'
         })
       ) ?? []

@@ -21,9 +21,7 @@ export const MainPage = () => {
     },
     {
       title: t('data_offers'),
-      description: `${offersData.data?._embedded?.resources.length} ${t(
-        'offer'
-      )}(s)`,
+      description: `${offersData.data?.length} ${t('offer')}(s)`,
       link: '/data-offers'
     },
     {
