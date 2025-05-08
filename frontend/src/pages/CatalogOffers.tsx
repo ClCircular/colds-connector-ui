@@ -27,10 +27,8 @@ export const CatalogOffers: FC<CatalogOffersProps> = ({ catalogId }) => {
   })
 
   const catalog = useMemo(() => {
-    return catalogsData.data?._embedded?.catalogs.find(
-      (catalog) => catalog._links.self.href.split('/').pop() === catalogId
-    )
-  }, [catalogId, catalogsData.data?._embedded?.catalogs])
+    return catalogsData.data?.find((catalog) => catalog.catalogId === catalogId)
+  }, [catalogId, catalogsData.data])
 
   const { t } = useTranslation()
 

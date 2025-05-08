@@ -51,10 +51,10 @@ export const useCatalogsTable = () => {
     if (catalogsData.isError) return []
 
     return (
-      catalogsData.data?._embedded?.catalogs.map((catalog) => ({
+      catalogsData.data?.map((catalog) => ({
         title: catalog.title,
         description: catalog.description,
-        numberOfResources: catalog.numberOfResources ?? 0
+        numberOfResources: catalog.offers.length ?? 0
       })) ?? []
     )
   }, [catalogsData.data, catalogsData.isError, catalogsData.isLoading])

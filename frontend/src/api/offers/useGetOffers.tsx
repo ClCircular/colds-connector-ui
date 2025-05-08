@@ -1,32 +1,33 @@
 import { useQuery } from '@tanstack/react-query'
 
-interface Offer {
+export interface Offer {
+  offerId: string
   creationDate: string
   modificationDate: string
   title: string
   description: string
-  additional: any
   keywords: string[]
   publisher: string
   language: string
   license: string
-  version: string
-  sovereign: any
-  endpointDocumentation: any
+  version: number
+  sovereign: string
   paymentModality: string
-  samples: any[]
+  catalogs: Catalog[]
+  contracts: Contract[]
+  representations: any[]
+  subscriptions: any[]
+  brokers: any[]
 }
 
-interface IResponse {
-  _embedded: {
-    resources: Offer[]
-  }
-  page: {
-    size: number
-    totalElements: number
-    totalPages: number
-    number: number
-  }
+export interface Catalog {
+  title: string
+  catalogId: string
+}
+
+export interface Contract {
+  title: string
+  contractId: string
 }
 
 export const getOffers = async () => {
@@ -46,7 +47,7 @@ export const getOffers = async () => {
     const response = await fetch(url, requestOptions)
     const data = await response.json()
     console.log({ data })
-    return data as IResponse
+    return data as Offer[]
   } catch (error) {
     console.log({ error })
     throw new Error('Error al llamar a la API')

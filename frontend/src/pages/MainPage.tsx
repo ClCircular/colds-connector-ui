@@ -14,16 +14,12 @@ export const MainPage = () => {
   const cardsInfo = [
     {
       title: t('contracts'),
-      description: `${contractsData.data?._embedded?.contracts.length} ${t(
-        'contracts'
-      )}(s)`,
+      description: `${contractsData.data?.length || 0} ${t('contracts')}(s)`,
       link: '/contracts'
     },
     {
       title: t('data_offers'),
-      description: `${offersData.data?._embedded?.resources.length} ${t(
-        'offer'
-      )}(s)`,
+      description: `${offersData.data?.length || 0} ${t('offer')}(s)`,
       link: '/data-offers'
     },
     {
@@ -33,9 +29,7 @@ export const MainPage = () => {
     },
     {
       title: t('catalogs'),
-      description: `${catalogsData.data?._embedded?.catalogs.length} ${t(
-        'catalog'
-      )}(s)`,
+      description: `${catalogsData.data?.length || 0} ${t('catalog')}(s)`,
       link: '/catalogs'
     }
   ]

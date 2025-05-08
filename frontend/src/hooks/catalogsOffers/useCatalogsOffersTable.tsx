@@ -4,6 +4,8 @@ import { useMemo } from 'react'
 import { useGetCatalogOffers } from '../../api/catalogs/useGetCatalogOffers'
 import { useTranslation } from 'react-i18next'
 
+//! Unused by the moment
+
 interface CatalogOfferRow {
   creationDate: string
   modificationDate: string

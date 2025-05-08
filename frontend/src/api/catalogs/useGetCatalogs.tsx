@@ -1,32 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 
-interface Catalog {
+export interface Catalog {
+  catalogId: string
   creationDate: string
   modificationDate: string
   title: string
   description: string
-  additional: any
-  numberOfResources: number
-  _links: {
-    self: {
-      href: string
-    }
-    offers: {
-      href: string
-    }
-  }
+  offers: Offer[]
 }
 
-interface IResponse {
-  _embedded: {
-    catalogs: Catalog[]
-  }
-  page: {
-    size: number
-    totalElements: number
-    totalPages: number
-    number: number
-  }
+export interface Offer {
+  title: string
+  offerId: string
 }
 
 export const getCatalogs = async () => {
@@ -45,7 +30,7 @@ export const getCatalogs = async () => {
   const response = await fetch(url, requestOptions)
   const data = (await response.json()) || {}
   console.log({ data })
-  return data as IResponse
+  return data as Catalog[]
 }
 
 export const useGetCatalogs = () => {

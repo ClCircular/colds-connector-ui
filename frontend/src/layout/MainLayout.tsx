@@ -3,14 +3,14 @@ import { Drawer, Header, Loader } from '../components'
 import { Router } from '../router/Router'
 import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
-import { useGetDataSources } from '../api/datasources/useGetDataSources'
+// import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
 import i18next from 'i18next'
 export const MainLayout = () => {
   const [open, setOpen] = useState(false)
   const offersData = useGetOffers()
   const contractsData = useGetContracts()
-  const datasourcesData = useGetDataSources()
+  // const datasourcesData = useGetDataSources()
   const catalogsData = useGetCatalogs()
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const MainLayout = () => {
   if (
     offersData.isLoading ||
     contractsData.isLoading ||
-    datasourcesData.isLoading ||
+    // datasourcesData.isLoading ||
     catalogsData.isLoading
   ) {
     return (

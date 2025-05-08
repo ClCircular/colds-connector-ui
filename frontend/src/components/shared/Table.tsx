@@ -21,10 +21,13 @@ import { useTranslation } from 'react-i18next'
 interface TableProps {
   rows: any[]
   columns: any[]
+  initialFilters?: ColumnFiltersState
 }
 
-export const Table: FC<TableProps> = ({ columns, rows }) => {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    initialFilters || []
+  )
   const table = useReactTable({
     data: rows,
     columns,
@@ -218,7 +221,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [value, old?.[1]])
           }
           placeholder={`Min`}
-          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400'
+          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
         />
         <DebouncedInput
           type='number'
@@ -227,7 +230,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             column.setFilterValue((old: [number, number]) => [old?.[0], value])
           }
           placeholder={`Max`}
-          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400'
+          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
         />
       </div>
       <div className='h-1' />
@@ -245,7 +248,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     </select>
   ) : (
     <DebouncedInput
-      className='w-36 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal'
+      className='w-36 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal font-normal'
       onChange={(value) => column.setFilterValue(value)}
       placeholder={`Buscar...`}
       type='text'
