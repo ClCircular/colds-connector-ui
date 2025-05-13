@@ -8,8 +8,9 @@ interface OfferBody {
   publisher: string
   sovereign: string
   paymentModality: string
+  catalogId: string
 }
-export const useCreateOfferForm = ({ catalogId }: { catalogId: string }) => {
+export const useCreateOfferForm = (catalogId: string | undefined) => {
   const createOfferMutation = useCreateOffer(() => {
     console.log('Offer created successfully')
   })
@@ -25,7 +26,8 @@ export const useCreateOfferForm = ({ catalogId }: { catalogId: string }) => {
       keywords: [],
       publisher: '',
       sovereign: '',
-      paymentModality: ''
+      paymentModality: '',
+      catalogId: catalogId || ''
     }
   })
 
@@ -39,7 +41,7 @@ export const useCreateOfferForm = ({ catalogId }: { catalogId: string }) => {
     })
     console.log(createOfferResponse)
     const assignOfferResponse = await assignOfferMutation.mutateAsync({
-      catalogId,
+      catalogId: data.catalogId,
       offers: [createOfferResponse._links.self.href]
     })
     console.log(assignOfferResponse)

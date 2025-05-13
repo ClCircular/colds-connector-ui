@@ -82,6 +82,63 @@ export const CreateContractModal: FC<ICreateContractModalProps> = ({
                   placeholder={t('description_placeholder')}
                 ></textarea>
               </div>
+              <div className='col-span-2 flex flex-col gap-1'>
+                <p>{t('validity_date_of_the_contract')}</p>
+                <div className='flex gap-4'>
+                  <div className='w-1/2 flex flex-col gap-1'>
+                    <label
+                      htmlFor='startDate'
+                      className='block text-sm font-medium text-gray-900 dark:text-white'
+                    >
+                      {t('start_date')}
+                    </label>
+                    <input
+                      type='date'
+                      id='start-date'
+                      {...createContractForm.register('startDate', {
+                        required: true
+                      })}
+                      placeholder='Ingrese la fecha'
+                      className='border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50'
+                    />
+                  </div>
+                  <div className='w-1/2 flex flex-col gap-1'>
+                    <label
+                      htmlFor='end-date'
+                      className='block text-sm font-medium text-gray-900 dark:text-white'
+                    >
+                      {t('end_date')}
+                    </label>
+                    <input
+                      type='date'
+                      id='endDate'
+                      {...createContractForm.register('endDate', {
+                        required: true
+                      })}
+                      placeholder='Ingrese la fecha'
+                      className='border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50'
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='col-span-2'>
+                <label
+                  htmlFor='accessPolicy'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  {t('select_access_policy')}
+                </label>
+                <select
+                  id='accessPolicy'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  {...createContractForm.register('accessPolicy', {
+                    required: true
+                  })}
+                >
+                  <option selected>{t('select_access_policy')}</option>
+                  <option value='PROVIDE_ACCESS'>{t('allow_access')}</option>
+                </select>
+              </div>
             </div>
             <button
               type='submit'
