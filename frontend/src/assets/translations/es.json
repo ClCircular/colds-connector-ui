@@ -48,5 +48,8 @@
   "start_date": "Fecha de inicio",
   "end_date": "Fecha de finalización",
   "rules": "Reglas",
-  "offers": "Ofertas"
+  "offers": "Ofertas",
+  "validity_date_of_the_contract": "Fecha de validez del contrato",
+  "allow_access": "Permitir acceso",
+  "select_access_policy": "Seleccione la política de acceso"
 }

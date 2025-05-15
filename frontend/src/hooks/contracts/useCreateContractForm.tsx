@@ -1,14 +1,23 @@
 import { useForm } from 'react-hook-form'
+import { useCreateContractWithRule } from '../../api/contracts/useCreateContractWithRule'
 
 interface ContractBody {
   title: string
   description: string
+  startDate: string
+  endDate: string
+  accessPolicy: string
 }
 export const useCreateContractForm = () => {
+  const { mutate } = useCreateContractWithRule()
+
   const createContractForm = useForm<ContractBody>({
     defaultValues: {
       title: '',
-      description: ''
+      description: '',
+      startDate: '',
+      endDate: '',
+      accessPolicy: ''
     }
   })
 
@@ -18,7 +27,7 @@ export const useCreateContractForm = () => {
   ) => {
     event?.stopPropagation()
     console.log({ data }, { event })
-    // Call the API to create the contract here
+    mutate(data)
   }
 
   return { createContractForm, onSubmit }
