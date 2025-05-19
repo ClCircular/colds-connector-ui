@@ -18,17 +18,20 @@ app.use(
 );
 app.use(cors({ credentials: true, origin: true }));
 
-let connectorUrl = "https://3.223.70.98:8080";
-let auth = {
-  username: "admin",
-  password: "password",
-};
+let connectorHost = "http://localhost";
+let customAPIPort = ":19191";
+let managementAPIPort = ":19193";
 
-let httpsAgent = new https.Agent({
-  maxVersion: "TLSv1.2",
-  minVersion: "TLSv1.2",
-  rejectUnauthorized: false,
-});
+// let auth = {
+//   username: "admin",
+//   password: "password",
+// };
+
+// let httpsAgent = new https.Agent({
+//   maxVersion: "TLSv1.2",
+//   minVersion: "TLSv1.2",
+//   rejectUnauthorized: false,
+// });
 
 // initialize health before basicAuth to allow access without authentication
 app.use("/health", function (req, res) {
@@ -56,16 +59,15 @@ app.post("/", async (req, res) => {
     }
   }
   let dataFromConnector;
-  let fullURL = `${connectorUrl}${petition.url}${requestParams}`;
-  console.log(`Sending ${petition.type} request to ${fullURL}`);
+  let fullURL = `${connectorHost}:${customAPIPort}${petition.url}${requestParams}`;
+  // console.log(`Sending ${petition.type} request to ${fullURL}`);
   switch (petition.type) {
     case "GET":
-      if (petition.url === "/api/offers")
-        var response = await proxy.getAllOffers(fullURL, auth, httpsAgent);
-      else if (petition.url === "/api/catalogs")
-        var response = await proxy.getAllCatalogs(fullURL, auth, httpsAgent);
-      else if (petition.url === "/api/contracts")
-        var response = await proxy.getAllContracts(fullURL, auth, httpsAgent);
+      if (petition.url === "/assets") var response = await proxy.getAllAssets();
+      else if (petition.url === "/policies")
+        var response = await proxy.getAllPolicies();
+      else if (petition.url === "/contracts")
+        var response = await proxy.getAllContracts();
       else
         var response = await axios.get(fullURL, {
           headers: { "content-type": "application/json" },
@@ -74,11 +76,12 @@ app.post("/", async (req, res) => {
         });
       break;
     case "POST":
-      var response = await axios.post(fullURL, body, {
-        headers: { "content-type": "application/json" },
-        auth,
-        httpsAgent,
-      });
+      if (petition.url === "/assets")
+        var response = await proxy.createNewAsset(petition.body);
+      if (petition.url === "/policies")
+        var response = await proxy.createNewPolicy(petition.body);
+      if (petition.url === "/contracts")
+        var response = await proxy.createNewContract(petition.body);
       break;
     case "PUT":
       var response = await axios.put(fullURL, body, {
@@ -96,9 +99,10 @@ app.post("/", async (req, res) => {
       });
       break;
   }
-  console.log(response.data);
-  dataFromConnector = response.data;
-  res.send(dataFromConnector);
+  // console.log(response);
+  dataFromConnector = response;
+  res.send(response);
+  // res.send("ok");
 });
 
 app.listen(port, () => {

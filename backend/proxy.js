@@ -21,118 +21,131 @@
 //                                                              //
 //**************************************************************//
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
-export async function getAllOffers(fullURL, auth, httpsAgent) {
-  var response = await axios.get(fullURL, {
+let connectorHost = "http://localhost";
+let customAPI = "19191/api";
+let managementAPI = "19193/management";
+let version = "v3";
+
+export async function getAllAssets() {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/assets/request`;
+  console.log("Getting all assets");
+  var response = await fetch(fullURL, {
+    method: "POST",
     headers: { "content-type": "application/json" },
-    auth,
-    httpsAgent,
+    body: JSON.stringify({
+      "@type": "QuerySpec",
+    }),
   });
-  let offers = [];
-  for (let connectorResource of response.data._embedded.resources) {
+  let data = await response.json();
+  let assets = [];
+  console.log(data);
+
+  for (let connectorAsset of data) {
     // console.log(connectorResource);
-    let offer = {
-      offerId: connectorResource._links.self.href.match(
-        /offers\/([a-f0-9\-]+)$/i
-      )[1],
-      creationDate: connectorResource.creationDate,
-      modificationDate: connectorResource.modificationDate,
-      title: connectorResource.title,
-      description: connectorResource.description,
-      keywords: connectorResource.keywords,
-      publisher: connectorResource.publisher,
-      language: connectorResource.language,
-      license: connectorResource.license,
-      version: connectorResource.version,
-      sovereign: connectorResource.sovereign,
-      paymentModality: connectorResource.paymentModality,
+    let asset = {
+      offerId: connectorAsset["@id"],
+      // creationDate: connectorResource.creationDate,
+      // modificationDate: connectorResource.modificationDate,
+      title: connectorAsset.properties.name,
+      dataType: connectorAsset.dataAddress.type,
+      url: connectorAsset.dataAddress.baseUrl,
+      // keywords: connectorResource.keywords,
+      // publisher: connectorResource.publisher,
+      // language: connectorResource.language,
+      // license: connectorResource.license,
+      // version: connectorResource.version,
+      // sovereign: connectorResource.sovereign,
+      // paymentModality: connectorResource.paymentModality,
     };
 
-    const [catalog, contracts, representations, subscriptions, brokers] =
-      await Promise.all([
-        await axios.get(
-          connectorResource._links.catalogs.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-        await axios.get(
-          connectorResource._links.contracts.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-        await axios.get(
-          connectorResource._links.representations.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-        await axios.get(
-          connectorResource._links.subscriptions.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-        await axios.get(
-          connectorResource._links.brokers.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-      ]);
-
-    // Getting catalog of offer
-    offer.catalogs = catalog.data._embedded.catalogs.map((item) => ({
-      title: item.title,
-      catalogId: item._links.self.href.match(/catalogs\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    // Getting contracts of offer
-    offer.contracts = contracts.data._embedded.contracts.map((item) => ({
-      title: item.title,
-      contractId: item._links.self.href.match(/contracts\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    // Getting representations of offer
-    offer.representations = representations.data._embedded.representations.map(
-      (item) => ({
-        title: item.title,
-        representationId: item._links.self.href.match(
-          /representations\/([a-f0-9\-]+)$/i
-        )[1],
-      })
-    );
-
-    // Getting subscriptions of offer
-    offer.subscriptions = subscriptions.data._embedded.subscriptions.map(
-      (item) => ({
-        title: item.title,
-        subscriptionId: item._links.self.href.match(
-          /subscriptions\/([a-f0-9\-]+)$/i
-        )[1],
-      })
-    );
-
-    // Getting brokers of offer: NOTE: esto no se va a usar en principio
-    offer.brokers = brokers.data._embedded.brokers.map((item) => ({
-      title: item.title,
-      brokerId: item._links.self.href.match(/brokers\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    offers.push(offer);
+    assets.push(asset);
   }
-  return { data: offers };
+  return { data: assets };
+}
+
+export async function createNewAsset(assetParams) {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/assets`;
+  console.log(`Sending new asset to ${fullURL}`);
+  let body = {
+    "@context": {
+      "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+    },
+    "@id": uuidv4(),
+    properties: {
+      name: assetParams.name,
+      contenttype: assetParams.contenttype,
+    },
+    dataAddress: {
+      type: assetParams.assetType,
+      baseUrl: assetParams.baseUrl,
+    },
+  };
+  var response = await fetch(fullURL, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  let data = await response.json();
+  console.log(data);
+  return data;
+}
+
+export async function createNewPolicy(policyParams) {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/policydefinitions`;
+  console.log(`Sending new policy to ${fullURL}`);
+  let body = {
+    "@context": {
+      "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+      odrl: "http://www.w3.org/ns/odrl/2/",
+    },
+    "@id": uuidv4(),
+    policy: {
+      "@context": "http://www.w3.org/ns/odrl.jsonld",
+      "@type": "Set",
+      permission: policyParams.permission,
+      prohibition: policyParams.prohibition,
+      obligation: policyParams.obligation,
+    },
+  };
+  var response = await fetch(fullURL, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  let data = await response.json();
+  console.log(data);
+  return data;
+}
+
+export async function createNewContract(contractParams) {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/contractdefinitions`;
+  console.log(`Sending new contract to ${fullURL}`);
+  let body = {
+    "@context": {
+      "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+    },
+    "@id": uuidv4(),
+    accessPolicyId: contractParams.accessPolicyId,
+    contractPolicyId: contractParams.contractPolicyId,
+    assetsSelector: [
+      {
+        operandLeft: "https://w3id.org/edc/v0.0.1/ns/id",
+        operator: "in",
+        operandRight: [contractParams.assets],
+      },
+    ],
+  };
+
+  var response = await fetch(fullURL, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  let data = await response.json();
+  console.log(data);
+  return data;
 }
 
 export async function getAllCatalogs(fullURL, auth, httpsAgent) {
@@ -172,57 +185,100 @@ export async function getAllCatalogs(fullURL, auth, httpsAgent) {
   return { data: catalogs };
 }
 
-export async function getAllContracts(fullURL, auth, httpsAgent) {
-  var response = await axios.get(fullURL, {
+export async function getAllContracts() {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/contractdefinitions/request`;
+
+  var response = await fetch(fullURL, {
+    method: "POST",
     headers: { "content-type": "application/json" },
-    auth,
-    httpsAgent,
+    body: JSON.stringify({
+      "@type": "QuerySpec",
+    }),
   });
+  let data = await response.json();
   let contracts = [];
-  for (let connectorResource of response.data._embedded.contracts) {
+  console.log(data);
+  for (let connectorResource of data) {
     // console.log(connectorResource);
-    let contract = {
-      contractId: connectorResource._links.self.href.match(
-        /contracts\/([a-f0-9\-]+)$/i
-      )[1],
-      creationDate: connectorResource.creationDate,
-      modificationDate: connectorResource.modificationDate,
-      title: connectorResource.title,
-      description: connectorResource.description,
-      start: connectorResource.start,
-      end: connectorResource.end,
+    let policy = {
+      contractId: connectorResource["@id"],
+      accessPolicyId: connectorResource.accessPolicyId,
+      contractPolicyId: connectorResource.contractPolicyId,
+      assets: [connectorResource.assetsSelector.operandRight],
     };
 
-    // Getting subscriptions of offer
-    const [rules, offers] = await Promise.all([
-      await axios.get(
-        connectorResource._links.rules.href.replace(/\{.*\}$/, ""),
-        {
-          headers: { "content-type": "application/json" },
-          auth,
-          httpsAgent,
-        }
-      ),
-      await axios.get(
-        connectorResource._links.offers.href.replace(/\{.*\}$/, ""),
-        {
-          headers: { "content-type": "application/json" },
-          auth,
-          httpsAgent,
-        }
-      ),
-    ]);
-    contract.rules = rules.data._embedded.rules.map((item) => ({
-      title: item.title,
-      type: JSON.parse(item.value)["@type"],
-      ruleId: item._links.self.href.match(/rules\/([a-f0-9\-]+)$/i)[1],
-    }));
-    contract.offers = offers.data._embedded.resources.map((item) => ({
-      title: item.title,
-      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    contracts.push(contract);
+    contracts.push(policy);
   }
+
   return { data: contracts };
+}
+
+export async function getAllPolicies() {
+  let fullURL = `${connectorHost}:${managementAPI}/${version}/policydefinitions/request`;
+
+  var response = await fetch(fullURL, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      "@type": "QuerySpec",
+    }),
+  });
+  let data = await response.json();
+  let policies = [];
+  for (let connectorResource of data) {
+    // console.log(connectorResource);
+    let policy = {
+      policyId: connectorResource["@id"],
+      creationDate: new Date(connectorResource.createdAt).toISOString(),
+      permission: [],
+
+      prohibition: connectorResource.policy["odrl:prohibition"],
+      obligation: connectorResource.policy["odrl:obligation"],
+    };
+
+    policy.permission = getPolicyParameters(connectorResource, "permission");
+    policy.prohibition = getPolicyParameters(connectorResource, "prohibition");
+    policy.obligation = getPolicyParameters(connectorResource, "obligation");
+
+    policies.push(policy);
+  }
+
+  return { data: policies };
+}
+
+function getPolicyParameters(connectorResource, parameterName) {
+  let array = [];
+  if (
+    connectorResource.policy[`odrl:${parameterName}`]?.["odrl:constraint"]
+      ?.length != undefined
+  ) {
+    for (let permission of connectorResource.policy[`odrl:${parameterName}`]?.[
+      "odrl:constraint"
+    ]) {
+      array.push({
+        action: connectorResource.policy[`odrl:${parameterName}`]?.[
+          "odrl:action"
+        ]?.["@id"].replace(/^.*?:/, ""),
+        constraintType: permission?.["odrl:leftOperand"]?.["@id"].replace(
+          /^.*?:/,
+          ""
+        ),
+        constraintValue: permission?.["odrl:rightOperand"],
+      });
+    }
+  } else {
+    array.push({
+      action: connectorResource.policy[`odrl:${parameterName}`]?.[
+        "odrl:action"
+      ]?.["@id"].replace(/^.*?:/, ""),
+      constraintType: connectorResource.policy[`odrl:${parameterName}`]?.[
+        "odrl:constraint"
+      ]?.["odrl:leftOperand"]?.["@id"].replace(/^.*?:/, ""),
+      constraintValue:
+        connectorResource.policy[`odrl:${parameterName}`]?.[
+          "odrl:constraint"
+        ]?.["odrl:rightOperand"],
+    });
+  }
+  return array;
 }
