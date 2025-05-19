@@ -26,10 +26,14 @@ import { v4 as uuidv4 } from "uuid";
 let connectorHost = "http://localhost";
 let customAPI = "19191/api";
 let managementAPI = "19193/management";
-let version = "v3";
+let connectorVersion = "v3";
+
+let metadataBrokerHost = "http://localhost";
+let catalogAPI = "39195/api/catalog";
+let metadataBrokerVersion = "v1alpha";
 
 export async function getAllAssets() {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/assets/request`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/assets/request`;
   console.log("Getting all assets");
   var response = await fetch(fullURL, {
     method: "POST",
@@ -66,7 +70,7 @@ export async function getAllAssets() {
 }
 
 export async function createNewAsset(assetParams) {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/assets`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/assets`;
   console.log(`Sending new asset to ${fullURL}`);
   let body = {
     "@context": {
@@ -93,7 +97,7 @@ export async function createNewAsset(assetParams) {
 }
 
 export async function createNewPolicy(policyParams) {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/policydefinitions`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/policydefinitions`;
   console.log(`Sending new policy to ${fullURL}`);
   let body = {
     "@context": {
@@ -120,7 +124,7 @@ export async function createNewPolicy(policyParams) {
 }
 
 export async function createNewContract(contractParams) {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/contractdefinitions`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/contractdefinitions`;
   console.log(`Sending new contract to ${fullURL}`);
   let body = {
     "@context": {
@@ -148,45 +152,9 @@ export async function createNewContract(contractParams) {
   return data;
 }
 
-export async function getAllCatalogs(fullURL, auth, httpsAgent) {
-  var response = await axios.get(fullURL, {
-    headers: { "content-type": "application/json" },
-    auth,
-    httpsAgent,
-  });
-  let catalogs = [];
-  for (let connectorResource of response.data._embedded.catalogs) {
-    let catalog = {
-      catalogId: connectorResource._links.self.href.match(
-        /catalogs\/([a-f0-9\-]+)$/i
-      )[1],
-      creationDate: connectorResource.creationDate,
-      modificationDate: connectorResource.modificationDate,
-      title: connectorResource.title,
-      description: connectorResource.description,
-    };
-
-    // Getting subscriptions of offer
-    let offers = await axios.get(
-      connectorResource._links.offers.href.replace(/\{.*\}$/, ""),
-      {
-        headers: { "content-type": "application/json" },
-        auth,
-        httpsAgent,
-      }
-    );
-    catalog.offers = offers.data._embedded.resources.map((item) => ({
-      title: item.title,
-      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    catalogs.push(catalog);
-  }
-  return { data: catalogs };
-}
-
 export async function getAllContracts() {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/contractdefinitions/request`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/contractdefinitions/request`;
+  console.log(`Sending get contracts to ${fullURL}`);
 
   var response = await fetch(fullURL, {
     method: "POST",
@@ -214,7 +182,7 @@ export async function getAllContracts() {
 }
 
 export async function getAllPolicies() {
-  let fullURL = `${connectorHost}:${managementAPI}/${version}/policydefinitions/request`;
+  let fullURL = `${connectorHost}:${managementAPI}/${connectorVersion}/policydefinitions/request`;
 
   var response = await fetch(fullURL, {
     method: "POST",
@@ -236,9 +204,18 @@ export async function getAllPolicies() {
       obligation: connectorResource.policy["odrl:obligation"],
     };
 
-    policy.permission = getPolicyParameters(connectorResource, "permission");
-    policy.prohibition = getPolicyParameters(connectorResource, "prohibition");
-    policy.obligation = getPolicyParameters(connectorResource, "obligation");
+    policy.permission = getPolicyParameters(
+      connectorResource.policy,
+      "permission"
+    );
+    policy.prohibition = getPolicyParameters(
+      connectorResource.policy,
+      "prohibition"
+    );
+    policy.obligation = getPolicyParameters(
+      connectorResource.policy,
+      "obligation"
+    );
 
     policies.push(policy);
   }
@@ -249,16 +226,16 @@ export async function getAllPolicies() {
 function getPolicyParameters(connectorResource, parameterName) {
   let array = [];
   if (
-    connectorResource.policy[`odrl:${parameterName}`]?.["odrl:constraint"]
-      ?.length != undefined
+    connectorResource[`odrl:${parameterName}`]?.["odrl:constraint"]?.length !=
+    undefined
   ) {
-    for (let permission of connectorResource.policy[`odrl:${parameterName}`]?.[
+    for (let permission of connectorResource[`odrl:${parameterName}`]?.[
       "odrl:constraint"
     ]) {
       array.push({
-        action: connectorResource.policy[`odrl:${parameterName}`]?.[
-          "odrl:action"
-        ]?.["@id"].replace(/^.*?:/, ""),
+        action: connectorResource[`odrl:${parameterName}`]?.["odrl:action"]?.[
+          "@id"
+        ].replace(/^.*?:/, ""),
         constraintType: permission?.["odrl:leftOperand"]?.["@id"].replace(
           /^.*?:/,
           ""
@@ -268,17 +245,71 @@ function getPolicyParameters(connectorResource, parameterName) {
     }
   } else {
     array.push({
-      action: connectorResource.policy[`odrl:${parameterName}`]?.[
-        "odrl:action"
-      ]?.["@id"].replace(/^.*?:/, ""),
-      constraintType: connectorResource.policy[`odrl:${parameterName}`]?.[
+      action: connectorResource[`odrl:${parameterName}`]?.["odrl:action"]?.[
+        "@id"
+      ].replace(/^.*?:/, ""),
+      constraintType: connectorResource[`odrl:${parameterName}`]?.[
         "odrl:constraint"
       ]?.["odrl:leftOperand"]?.["@id"].replace(/^.*?:/, ""),
       constraintValue:
-        connectorResource.policy[`odrl:${parameterName}`]?.[
-          "odrl:constraint"
-        ]?.["odrl:rightOperand"],
+        connectorResource[`odrl:${parameterName}`]?.["odrl:constraint"]?.[
+          "odrl:rightOperand"
+        ],
     });
   }
   return array;
+}
+
+export async function getAllCatalogsFromMetadataBroker() {
+  let fullURL = `${metadataBrokerHost}:${catalogAPI}/${metadataBrokerVersion}/catalog/query`;
+  console.log(`Sending get catalogs to ${fullURL}`);
+  var response = await fetch(
+    "http://localhost:39195/api/catalog/v1alpha/catalog/query",
+    {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  console.log(response);
+  let data = await response.json();
+  let catalogs = [];
+  console.log(data);
+  for (let connectorResource of data) {
+    // console.log(connectorResource);
+    let catalog = {
+      participantId: connectorResource["dspace:participantId"],
+      dataset: [],
+    };
+    if (connectorResource["dcat:dataset"]?.length != undefined) {
+      for (let asset of connectorResource["dcat:dataset"]) {
+        catalog.dataset.push({
+          assetId: asset["@id"],
+          assetName: asset.name,
+          contentType: asset.contenttype,
+          distributionType: asset["dcat:distribution"]["dct:format"]["@id"],
+          policy: getPolicyParameters(asset["odrl:hasPolicy"], "permission"),
+        });
+      }
+    } else {
+      catalog.dataset.push({
+        assetId: connectorResource["dcat:dataset"]["@id"],
+        assetName: connectorResource["dcat:dataset"].name,
+        contentType: connectorResource["dcat:dataset"].contenttype,
+        distributionType:
+          connectorResource["dcat:dataset"]["dcat:distribution"]["dct:format"][
+            "@id"
+          ],
+        policy: getPolicyParameters(
+          connectorResource["dcat:dataset"]["odrl:hasPolicy"],
+          "permission"
+        ),
+      });
+    }
+    catalogs.push(catalog);
+  }
+
+  return { data: catalogs };
 }

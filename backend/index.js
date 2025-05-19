@@ -68,12 +68,9 @@ app.post("/", async (req, res) => {
         var response = await proxy.getAllPolicies();
       else if (petition.url === "/contracts")
         var response = await proxy.getAllContracts();
-      else
-        var response = await axios.get(fullURL, {
-          headers: { "content-type": "application/json" },
-          auth,
-          httpsAgent,
-        });
+      else if (petition.url === "/catalogs")
+        var response = await proxy.getAllCatalogsFromMetadataBroker();
+      else var response = {};
       break;
     case "POST":
       if (petition.url === "/assets")
