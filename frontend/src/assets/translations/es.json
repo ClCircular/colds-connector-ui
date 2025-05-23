@@ -51,5 +51,17 @@
   "offers": "Ofertas",
   "validity_date_of_the_contract": "Fecha de validez del contrato",
   "allow_access": "Permitir acceso",
-  "select_access_policy": "Seleccione la política de acceso"
+  "select_access_policy": "Seleccione la política de acceso",
+  "login": {
+    "title": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "button": "Entrar",
+    "emailPlaceholder": "Introduce tu correo electrónico",
+    "passwordPlaceholder": "Introduce tu contraseña"
+  },
+  "lang": {
+    "en": "EN",
+    "es": "ES"
+  }
 }

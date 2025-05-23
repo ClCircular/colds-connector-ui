@@ -51,5 +51,17 @@
   "offers": "Offers",
   "validity_date_of_the_contract": "Validity date of the contract",
   "allow_access": "Allow access",
-  "select_access_policy": "Select access policy"
+  "select_access_policy": "Select access policy",
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "button": "Login",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password"
+  },
+  "lang": {
+    "en": "EN",
+    "es": "ES"
+  }
 }
