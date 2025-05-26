@@ -1,12 +1,13 @@
-import React from 'react'
-import { useLogin } from '../../hooks/login/useLogin'
+interface LoginCardProps {
+  login: ReturnType<typeof import('../../hooks/login/useLogin').useLogin>
+}
 
-export const LoginCard: React.FC = () => {
-  const { t, email, setEmail, password, setPassword, handleSubmit } = useLogin()
+export const LoginCard = ({ login }: LoginCardProps) => {
+  const { t, email, setEmail, password, setPassword, handleSignIn } = login
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => handleSignIn(e)}
       className='bg-white p-8 rounded-lg shadow-md flex flex-col gap-4 w-full max-w-md'
     >
       <h2 className='text-2xl font-bold mb-4 text-center'>

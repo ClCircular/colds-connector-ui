@@ -2,6 +2,7 @@
 import { ComponentType } from 'react'
 import { MainLayout } from '../../layout/MainLayout'
 import { useLocation } from 'wouter'
+import { useAuthUser } from '../../contexts/UserContext'
 
 interface ProtectedRouteProps {
   Component: ComponentType<any>
@@ -9,9 +10,9 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ Component, props }: ProtectedRouteProps) => {
-  const isAuthenticated = false /* tu lógica */
+  const { user } = useAuthUser()
 
-  if (!isAuthenticated) {
+  if (!user) {
     const [, navigate] = useLocation()
     navigate('/login')
     return null
