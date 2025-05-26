@@ -62,7 +62,10 @@
     "button": "Login",
     "emailPlaceholder": "Enter your email",
     "passwordPlaceholder": "Enter your password",
-    "forgot_your_password": "Forgot your password?"
+    "forgot_your_password": "Forgot your password?",
+    "forgot_password_sent": "Recovery email sent",
+    "send_reset_link": "Send reset link",
+    "back_to_login": "Back to login"
   },
   "lang": {
     "en": "EN",

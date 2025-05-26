@@ -7,10 +7,7 @@ export const LoginCard = ({ login }: LoginCardProps) => {
     login
 
   return (
-    <form
-      onSubmit={(e) => handleSignIn(e)}
-      className='bg-white p-8 rounded-lg shadow-md flex flex-col gap-4 w-full max-w-md'
-    >
+    <form onSubmit={(e) => handleSignIn(e)} className='flex flex-col gap-4'>
       <h2 className='text-2xl font-bold mb-4 text-center'>
         {t('login.title')}
       </h2>
@@ -48,20 +45,6 @@ export const LoginCard = ({ login }: LoginCardProps) => {
         disabled={!email || !password || loading}
       >
         {t('login.button')}
-      </button>
-      {/* Divider */}
-      <div className='flex items-center my-2'>
-        <div className='flex-grow h-px bg-gray-200' />
-        <span className='mx-2 text-gray-400 text-xs'>{t('or')}</span>
-        <div className='flex-grow h-px bg-gray-200' />
-      </div>
-      {/* Forgot Password Button */}
-      <button
-        type='button'
-        className='text-sm text-[#94bf43] hover:underline focus:outline-none cursor-pointer'
-        onClick={() => alert('Forgot password functionality coming soon!')}
-      >
-        {t('login.forgot_your_password', 'Forgot your password?')}
       </button>
     </form>
   )

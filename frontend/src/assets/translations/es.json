@@ -62,7 +62,10 @@
     "button": "Entrar",
     "emailPlaceholder": "Introduce tu correo electrónico",
     "passwordPlaceholder": "Introduce tu contraseña",
-    "forgot_your_password": "¿Olvidaste tu contraseña?"
+    "forgot_your_password": "¿Olvidaste tu contraseña?",
+    "forgot_password_sent": "Correo electrónico de recuperación enviado",
+    "send_reset_link": "Enviar enlace de restablecimiento",
+    "back_to_login": "Volver al inicio de sesión"
   },
   "lang": {
     "en": "EN",

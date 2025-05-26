@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { signIn, confirmSignIn } from 'aws-amplify/auth'
+import { signIn, confirmSignIn, resetPassword } from 'aws-amplify/auth'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'wouter'
 import { useAuthUser } from '../../contexts/UserContext'
@@ -12,6 +12,13 @@ export function useLogin() {
   const [isError, setIsError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [nextStep, setNextStep] = useState<any>(null)
+  const [isInComponentSendCode, setIsInComponentSendCode] = useState(false)
+  const [isInComponentConfirmNewPassword, setIsInComponentConfirmNewPassword] =
+    useState(false)
+  const [forgotPasswordError, setForgotPasswordError] = useState<string | null>(
+    null
+  )
+  const [forgotPasswordSent, setForgotPasswordSent] = useState(false)
 
   const [, setLocation] = useLocation()
   const { refreshUser } = useAuthUser() // Ensure the user context is initialized
@@ -86,6 +93,27 @@ export function useLogin() {
     }
   }
 
+  const handleForgotPassword = async () => {
+    setLoading(true)
+    setForgotPasswordSent(false)
+    setForgotPasswordError(null)
+    try {
+      // You would use Amplify's resetPassword here, e.g.:
+      // await resetPassword({ username: emailToReset })
+      // For now, simulate success:
+      const codeSended = await resetPassword({
+        username: email
+      })
+      if (codeSended.isPasswordReset) {
+        setForgotPasswordSent(true)
+        setLoading(false)
+      }
+    } catch (error) {
+      setForgotPasswordError((error as { message: string }).message)
+      setLoading(false)
+    }
+  }
+
   return {
     t,
     email,
@@ -98,6 +126,13 @@ export function useLogin() {
     isSignedIn,
     isError,
     nextStep,
-    setNextStep
+    setNextStep,
+    handleForgotPassword,
+    forgotPasswordError,
+    forgotPasswordSent,
+    isInComponentSendCode,
+    setIsInComponentSendCode,
+    isInComponentConfirmNewPassword,
+    setIsInComponentConfirmNewPassword
   }
 }
