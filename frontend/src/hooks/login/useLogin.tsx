@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { signIn, confirmSignIn } from 'aws-amplify/auth'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'wouter'
+import { useAuthUser } from '../../contexts/UserContext'
 
 export function useLogin() {
   const { t } = useTranslation()
@@ -10,6 +12,9 @@ export function useLogin() {
   const [isError, setIsError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [nextStep, setNextStep] = useState<any>(null)
+
+  const [, setLocation] = useLocation()
+  const { refreshUser } = useAuthUser() // Ensure the user context is initialized
 
   const handleSignIn = async (
     e:
@@ -30,9 +35,13 @@ export function useLogin() {
         username: email,
         password
       })
-      console.log('signInNextStep', signInNextStep)
+      console.log({ isSignedIn, signInNextStep })
       if (isSignedIn) {
+        await refreshUser() // Refresh user context after sign-in
+        console.log('User signed in successfully')
         setIsSignedIn(true)
+        setLocation('/')
+        console.log('Aqui deberia navegar a /')
         setLoading(false)
         setNextStep(null)
       } else if (

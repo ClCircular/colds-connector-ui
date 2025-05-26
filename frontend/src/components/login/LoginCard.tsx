@@ -3,7 +3,8 @@ interface LoginCardProps {
 }
 
 export const LoginCard = ({ login }: LoginCardProps) => {
-  const { t, email, setEmail, password, setPassword, handleSignIn } = login
+  const { t, email, setEmail, password, setPassword, handleSignIn, loading } =
+    login
 
   return (
     <form
@@ -44,7 +45,7 @@ export const LoginCard = ({ login }: LoginCardProps) => {
       <button
         type='submit'
         className='mt-2 bg-[#94bf43] text-white font-semibold py-2 rounded hover:bg-[#829e4d] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed hover:cursor-pointer'
-        disabled={!email || !password}
+        disabled={!email || !password || loading}
       >
         {t('login.button')}
       </button>

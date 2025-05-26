@@ -13,6 +13,7 @@ interface UserContextType {
   loading: boolean
   error: any
   refreshUser: () => Promise<void>
+  resetContext: () => void
 }
 
 const UserContext = createContext<UserContextType>({
@@ -20,7 +21,8 @@ const UserContext = createContext<UserContextType>({
   loading: true,
   error: null,
   userInfo: undefined,
-  refreshUser: async () => {}
+  refreshUser: async () => {},
+  resetContext: () => {}
 })
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -28,27 +30,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [userInfo, setUserInfo] = useState<FetchUserAttributesOutput>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<any>(null)
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const [currentUser, userAttributes] = await Promise.all([
-  //         getCurrentUser(),
-  //         fetchUserAttributes()
-  //       ])
-  //       setUser(currentUser)
-  //       setUserInfo(userAttributes)
-  //     } catch (err) {
-  //       setUser(null)
-  //       setUserInfo(undefined)
-  //       setError(err)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }
-
-  //   fetchUser()
-  // }, [])
 
   const fetchUser = async () => {
     setLoading(true)
@@ -69,13 +50,27 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+  const resetContext = () => {
+    setUser(null)
+    setUserInfo(undefined)
+    setLoading(true)
+    setError(null)
+  }
+
   useEffect(() => {
     void fetchUser()
   }, [])
 
   return (
     <UserContext.Provider
-      value={{ user, loading, error, userInfo, refreshUser: fetchUser }}
+      value={{
+        user,
+        loading,
+        error,
+        userInfo,
+        refreshUser: fetchUser,
+        resetContext
+      }}
     >
       {children}
     </UserContext.Provider>

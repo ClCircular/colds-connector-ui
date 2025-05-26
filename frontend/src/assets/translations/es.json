@@ -52,6 +52,8 @@
   "validity_date_of_the_contract": "Fecha de validez del contrato",
   "allow_access": "Permitir acceso",
   "select_access_policy": "Seleccione la política de acceso",
+  "sign_out": "Cerrar sesión",
+  "signing_out": "Cerrando sesión...",
   "or": "o",
   "login": {
     "title": "Iniciar sesión",
