@@ -98,20 +98,31 @@ export function useLogin() {
     setForgotPasswordSent(false)
     setForgotPasswordError(null)
     try {
-      // You would use Amplify's resetPassword here, e.g.:
-      // await resetPassword({ username: emailToReset })
-      // For now, simulate success:
-      const codeSended = await resetPassword({
+      await resetPassword({
         username: email
       })
-      if (codeSended.isPasswordReset) {
-        setForgotPasswordSent(true)
-        setLoading(false)
-      }
+      // if (codeSended.isPasswordReset) {
+      setForgotPasswordSent(true)
+      setLoading(false)
+      setIsInComponentSendCode(false)
+      // }
     } catch (error) {
       setForgotPasswordError((error as { message: string }).message)
       setLoading(false)
     }
+  }
+
+  const resetStates = () => {
+    setEmail('')
+    setPassword('')
+    setIsSignedIn(false)
+    setIsError(null)
+    setLoading(false)
+    setNextStep(null)
+    setIsInComponentSendCode(false)
+    setIsInComponentConfirmNewPassword(false)
+    setForgotPasswordError(null)
+    setForgotPasswordSent(false)
   }
 
   return {
@@ -123,6 +134,7 @@ export function useLogin() {
     handleSignIn,
     handleForceResetPassword,
     loading,
+    setLoading,
     isSignedIn,
     isError,
     nextStep,
@@ -133,6 +145,8 @@ export function useLogin() {
     isInComponentSendCode,
     setIsInComponentSendCode,
     isInComponentConfirmNewPassword,
-    setIsInComponentConfirmNewPassword
+    setIsInComponentConfirmNewPassword,
+    setIsError,
+    resetStates
   }
 }

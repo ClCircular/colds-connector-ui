@@ -6,6 +6,7 @@ import { useAuthUser } from '../contexts/UserContext'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
 import { ForgotPassword } from '../components/login/ForgotPassword'
+import { ResetPasswordCode } from '../components/login/ResetPasswordCode'
 
 export const LoginPage: React.FC = () => {
   const { t } = useTranslation()
@@ -33,6 +34,8 @@ export const LoginPage: React.FC = () => {
           <ConfirmNewPassword setNextStep={login.setNextStep} />
         ) : login.isInComponentSendCode ? (
           <ForgotPassword login={login} />
+        ) : login.forgotPasswordSent ? (
+          <ResetPasswordCode login={login} />
         ) : (
           <LoginCard login={login} />
         )}{' '}
