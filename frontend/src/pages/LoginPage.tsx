@@ -40,7 +40,11 @@ export const LoginPage: React.FC = () => {
           <LoginCard login={login} />
         )}{' '}
         {/* Divider */}
-        <div className='flex items-center my-2'>
+        <div
+          className={`flex items-center my-2 ${
+            login.forgotPasswordSent ? 'hidden' : ''
+          }`}
+        >
           <div className='flex-grow h-px bg-gray-200' />
           <span className='mx-2 text-gray-400 text-xs'>{t('or')}</span>
           <div className='flex-grow h-px bg-gray-200' />
@@ -48,7 +52,9 @@ export const LoginPage: React.FC = () => {
         {/* Forgot Password Button */}
         <button
           type='button'
-          className='text-sm text-[#94bf43] hover:underline focus:outline-none cursor-pointer'
+          className={`text-sm text-[#94bf43] hover:underline focus:outline-none cursor-pointer ${
+            login.forgotPasswordSent ? 'hidden' : ''
+          }`}
           onClick={() =>
             login.setIsInComponentSendCode(!login.isInComponentSendCode)
           }

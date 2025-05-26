@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { signIn, confirmSignIn, resetPassword } from 'aws-amplify/auth'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'wouter'
@@ -48,7 +49,7 @@ export function useLogin() {
         console.log('User signed in successfully')
         setIsSignedIn(true)
         setLocation('/')
-        console.log('Aqui deberia navegar a /')
+        toast.success(t('login.toast_signin_success', 'Signed in successfully'))
         setLoading(false)
         setNextStep(null)
       } else if (
@@ -58,13 +59,19 @@ export function useLogin() {
       ) {
         setNextStep(signInNextStep)
         setLoading(false)
+        toast.info(t('login.toast_force_reset', 'You must set a new password'))
       } else {
         setIsError('Unknown sign-in step')
         setLoading(false)
+        toast.error(t('login.toast_unknown_step', 'Unknown sign-in step'))
       }
     } catch (error) {
       setIsError((error as { message: string }).message)
       setLoading(false)
+      toast.error(
+        (error as { message: string }).message ||
+          t('login.toast_signin_error', 'Error signing in')
+      )
     }
   }
 
@@ -83,11 +90,19 @@ export function useLogin() {
       if (isSignedIn) {
         setIsSignedIn(true)
         setNextStepCb(null)
+        toast.success(
+          t('login.toast_password_changed', 'Password changed successfully')
+        )
       } else if (signInNextStep) {
         setNextStepCb(signInNextStep)
+        toast.info(t('login.toast_next_step', 'Continue with the next step'))
       }
     } catch (error) {
       setIsError((error as { message: string }).message)
+      toast.error(
+        (error as { message: string }).message ||
+          t('login.toast_password_change_error', 'Error changing password')
+      )
     } finally {
       setLoading(false)
     }
@@ -101,14 +116,25 @@ export function useLogin() {
       await resetPassword({
         username: email
       })
-      // if (codeSended.isPasswordReset) {
       setForgotPasswordSent(true)
       setLoading(false)
       setIsInComponentSendCode(false)
-      // }
+      toast.success(
+        t(
+          'login.toast_forgot_password_sent',
+          'Password reset code sent to your email'
+        )
+      )
     } catch (error) {
       setForgotPasswordError((error as { message: string }).message)
       setLoading(false)
+      toast.error(
+        (error as { message: string }).message ||
+          t(
+            'login.toast_forgot_password_error',
+            'Error sending password reset code'
+          )
+      )
     }
   }
 

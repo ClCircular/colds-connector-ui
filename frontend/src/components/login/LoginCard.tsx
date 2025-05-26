@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 interface LoginCardProps {
   login: ReturnType<typeof import('../../hooks/login/useLogin').useLogin>
 }
@@ -5,6 +7,7 @@ interface LoginCardProps {
 export const LoginCard = ({ login }: LoginCardProps) => {
   const { t, email, setEmail, password, setPassword, handleSignIn, loading } =
     login
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <form onSubmit={(e) => handleSignIn(e)} className='flex flex-col gap-4'>
@@ -29,15 +32,30 @@ export const LoginCard = ({ login }: LoginCardProps) => {
         <label htmlFor='password' className='text-sm font-medium text-gray-700'>
           {t('login.password')}
         </label>
-        <input
-          id='password'
-          type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          placeholder={t('login.passwordPlaceholder')}
-          className='border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-        />
+        <div className='relative'>
+          <input
+            id='password'
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder={t('login.passwordPlaceholder')}
+            className='border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full pr-10'
+          />
+          <button
+            type='button'
+            tabIndex={-1}
+            className='absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer p-2 hover:bg-slate-50 rounded-full transition-colors'
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={
+              showPassword
+                ? t('login.hide_password', 'Hide password')
+                : t('login.show_password', 'Show password')
+            }
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </button>
+        </div>
       </div>
       <button
         type='submit'
