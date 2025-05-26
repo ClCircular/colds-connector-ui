@@ -67,6 +67,20 @@ export const LoginPage: React.FC = () => {
         >
           {t('login.button')}
         </button>
+        {/* Divider */}
+        <div className='flex items-center my-2'>
+          <div className='flex-grow h-px bg-gray-200' />
+          <span className='mx-2 text-gray-400 text-xs'>{t('or')}</span>
+          <div className='flex-grow h-px bg-gray-200' />
+        </div>
+        {/* Forgot Password Button */}
+        <button
+          type='button'
+          className='text-sm text-[#94bf43] hover:underline focus:outline-none cursor-pointer'
+          onClick={() => alert('Forgot password functionality coming soon!')}
+        >
+          {t('login.forgot_your_password', 'Forgot your password?')}
+        </button>
       </form>
     </div>
   )

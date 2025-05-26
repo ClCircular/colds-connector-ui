@@ -52,13 +52,15 @@
   "validity_date_of_the_contract": "Fecha de validez del contrato",
   "allow_access": "Permitir acceso",
   "select_access_policy": "Seleccione la política de acceso",
+  "or": "o",
   "login": {
     "title": "Iniciar sesión",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "button": "Entrar",
     "emailPlaceholder": "Introduce tu correo electrónico",
-    "passwordPlaceholder": "Introduce tu contraseña"
+    "passwordPlaceholder": "Introduce tu contraseña",
+    "forgot_your_password": "¿Olvidaste tu contraseña?"
   },
   "lang": {
     "en": "EN",
