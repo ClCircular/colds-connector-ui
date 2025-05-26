@@ -1,16 +1,8 @@
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import React from 'react'
+import { useLogin } from '../../hooks/login/useLogin'
 
 export const LoginCard: React.FC = () => {
-  const { t } = useTranslation()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    alert(`${t('login.email')}: ${email}\n${t('login.password')}: ${password}`)
-  }
+  const { t, email, setEmail, password, setPassword, handleSubmit } = useLogin()
 
   return (
     <form
