@@ -11,7 +11,7 @@ const assignOfferToCatalog = async (offer: OfferBody) => {
     method: 'POST',
     body: JSON.stringify({
       type: 'POST',
-      url: `/api/catalogs/${offer.catalogId}/offers`,
+      url: `/v1/catalogs/${offer.catalogId}/offers`,
       body: JSON.stringify(offer.offers)
     }),
     headers: {

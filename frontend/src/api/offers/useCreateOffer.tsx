@@ -54,7 +54,7 @@ const createOffer = async (offer: OfferBody) => {
     method: 'POST',
     body: JSON.stringify({
       type: 'POST',
-      url: '/api/offers',
+      url: '/v1/offers',
       body: JSON.stringify(offer)
     }),
     headers: {

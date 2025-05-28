@@ -35,7 +35,7 @@ export const getOffers = async () => {
     method: 'POST',
     body: JSON.stringify({
       type: 'GET',
-      url: '/api/offers'
+      url: '/v1/offers'
     }),
     headers: {
       'Content-Type': 'application/json'

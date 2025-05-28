@@ -37,7 +37,7 @@ const createCatalog = async (catalog: CatalogBody) => {
     method: 'POST',
     body: JSON.stringify({
       type: 'POST',
-      url: '/api/catalogs',
+      url: '/v1/catalogs',
       body: JSON.stringify(catalog)
     }),
     headers: {
