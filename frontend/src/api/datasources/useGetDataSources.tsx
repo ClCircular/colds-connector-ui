@@ -24,7 +24,7 @@ export const getDataSources = async () => {
     method: 'POST',
     body: JSON.stringify({
       type: 'GET',
-      url: '/api/datasources'
+      url: '/v1/datasources'
     }),
     headers: {
       'Content-Type': 'application/json'

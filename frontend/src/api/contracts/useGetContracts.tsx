@@ -6,7 +6,7 @@ export const getContracts = async () => {
     method: 'POST',
     body: JSON.stringify({
       type: 'GET',
-      url: '/api/contracts'
+      url: '/v1/contracts'
     }),
     headers: {
       'Content-Type': 'application/json'

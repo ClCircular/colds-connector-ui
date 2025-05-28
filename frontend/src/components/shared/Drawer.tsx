@@ -1,10 +1,31 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Nav } from './Nav'
+import { useTranslation } from 'react-i18next'
+import { signOut } from 'aws-amplify/auth'
+import { useLocation } from 'wouter'
+import { useAuthUser } from '../../contexts/UserContext'
 
 export const Drawer: FC<{
   open: boolean
   setOpen: (open: boolean) => void
 }> = ({ open, setOpen }) => {
+  const { t } = useTranslation()
+  const [, setLocation] = useLocation()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  const { resetContext } = useAuthUser()
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    try {
+      await signOut()
+      resetContext()
+      setLocation('/login')
+    } catch (err) {
+      alert('Error signing out')
+      setIsSigningOut(false)
+    }
+  }
   return (
     <>
       {open && (
@@ -51,6 +72,15 @@ export const Drawer: FC<{
         </button>
         <div className='py-4 overflow-y-auto'>
           <Nav setOpen={setOpen} />
+          <div className='w-full h-px bg-slate-200 my-2' />
+          <button
+            type='button'
+            className='text-white bg-[#94bf43] hover:bg-[#829e4d] focus:ring-4 focus:outline-none focus:ring-[#94bf43]/50 font-semibold rounded-lg text-sm px-5 py-2.5 text-center mb-2 w-full cursor-pointer transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed'
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+          >
+            {isSigningOut ? t('signing_out', 'Signing out...') : t('sign_out')}
+          </button>
         </div>
       </div>
     </>

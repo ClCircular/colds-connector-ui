@@ -25,22 +25,22 @@ export const createContractWithRule = async (data: {
     const url = `http://localhost:8083`
 
     // 1. Obtener política base
-    //   const policy = await post('/api/examples/policy', { type: 'PROVIDE_ACCESS' })
+    //   const policy = await post('/v1/examples/policy', { type: 'PROVIDE_ACCESS' })
     const policyJson = await fetch(
       url,
       requestOptions(
         JSON.stringify({ type: 'PROVIDE_ACCESS' }),
-        '/api/examples/policy'
+        '/v1/examples/policy'
       )
     )
     const policy = await policyJson.json()
     console.log({ policy, policyJson: JSON.stringify(policy) })
 
     // 2. Crear regla
-    //   const ruleRes = await post('/api/rules', policy)
+    //   const ruleRes = await post('/v1/rules', policy)
     const ruleJson = await fetch(
       url,
-      requestOptions(JSON.stringify(policy), '/api/rules')
+      requestOptions(JSON.stringify(policy), '/v1/rules')
     )
     const rawText = await ruleJson.text()
     console.log('⬇️ RESPUESTA COMPLETA DEL BACKEND')
@@ -50,7 +50,7 @@ export const createContractWithRule = async (data: {
     const ruleId = ruleRes._links.self.href
 
     // 3. Crear contrato
-    //   const contractRes = await post('/api/contracts', {
+    //   const contractRes = await post('/v1/contracts', {
     //     title: 'Contrato de acceso a datos',
     //     description: 'Permite el uso de los datos',
     //     start: now,
@@ -66,7 +66,7 @@ export const createContractWithRule = async (data: {
           end: dayjs(data.endDate).format('YYYY-MM-DDTHH:mm:ssZ'),
           accessPolicy: data.accessPolicy
         }),
-        '/api/contracts'
+        '/v1/contracts'
       )
     )
     const contractRes = await contractJson.json()
@@ -75,17 +75,17 @@ export const createContractWithRule = async (data: {
     console.log({ contractRes, contractId, ruleId })
 
     // 4. Asociar regla al contrato
-    //   await post(`/api/contracts/${getId(contractId)}/rules`, [ruleId])
+    //   await post(`/v1/contracts/${getId(contractId)}/rules`, [ruleId])
     await fetch(
       url,
       requestOptions(
         JSON.stringify([ruleId]),
-        `/api/contracts/${contractId}/rules`
+        `/v1/contracts/${contractId}/rules`
       )
     )
 
     // 5. Enlazar contrato con oferta
-    //   await post(`/api/offers/${offerId}/contracts`, [contractId])
+    //   await post(`/v1/offers/${offerId}/contracts`, [contractId])
 
     return { contractId, ruleId }
   }

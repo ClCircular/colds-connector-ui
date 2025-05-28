@@ -40,7 +40,7 @@ export const getCatalogOffers = async ({
     method: 'POST',
     body: JSON.stringify({
       type: 'GET',
-      url: `/api/catalogs/${catalogId}/offers`
+      url: `/v1/catalogs/${catalogId}/offers`
     }),
     headers: {
       'Content-Type': 'application/json'
