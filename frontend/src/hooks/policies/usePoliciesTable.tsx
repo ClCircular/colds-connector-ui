@@ -19,8 +19,11 @@ export const usePoliciesTable = () => {
   const { mutate } = useDeletePolicy()
 
   const handleDeletePolicy = (policyId: string) => {
+    const policyName = policiesData.data?.find(
+      (policy) => policy.policy_id === policyId
+    )?.name
     const response = confirm(
-      `Are you sure you want to delete the policy with ID: ${policyId}?`
+      `Are you sure you want to delete the policy with name: ${policyName}?`
     )
     if (response) {
       mutate({ policyId })
