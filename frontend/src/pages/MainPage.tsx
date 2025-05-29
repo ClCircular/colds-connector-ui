@@ -24,6 +24,11 @@ export const MainPage = () => {
       title: t('exchanges'),
       description: t('exchanges_card_description'),
       link: '/exchanges'
+    },
+    {
+      title: t('policies'),
+      description: t('policies_card_description'),
+      link: '/policies'
     }
   ]
 

@@ -1,12 +1,14 @@
 import { Switch, Route } from 'wouter'
-// import { Policies } from '../pages/Policies'
-import { Contracts } from '../pages/Contracts'
-// import { DataConections } from '../pages/DataConections'
-import { DataOffers } from '../pages/DataOffers'
-import { Exchanges } from '../pages/Exchanges'
-import { MainPage } from '../pages/MainPage'
-import { LoginPage } from '../pages/LoginPage'
+
 import { ProtectedRoute } from '../components/shared/ProtectedRoute'
+import {
+  Contracts,
+  DataOffers,
+  Exchanges,
+  LoginPage,
+  MainPage,
+  Policies
+} from '../pages'
 
 export const Router = () => {
   return (
@@ -29,6 +31,10 @@ export const Router = () => {
       <Route
         path='/exchanges'
         component={() => <ProtectedRoute Component={Exchanges} />}
+      />
+      <Route
+        path='/policies'
+        component={() => <ProtectedRoute Component={Policies} />}
       />
       <Route>404 - Not Found</Route>
     </Switch>

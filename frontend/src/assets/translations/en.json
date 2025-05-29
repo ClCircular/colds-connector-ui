@@ -50,6 +50,7 @@
   "or": "or",
   "validity_date_of_the_contract": "Validity date of the contract",
   "allow_access": "Allow access",
+  "policies_card_description": "Check the access policies",
   "sign_out": "Sign out",
   "signing_out": "Signing out...",
   "select_access_policy": "Select access policy",

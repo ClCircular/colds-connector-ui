@@ -5,7 +5,8 @@ import {
   IoFileTrayFull,
   // IoLink,
   IoCloudUpload,
-  IoSwapHorizontal
+  IoSwapHorizontal,
+  IoDocuments
 } from 'react-icons/io5'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -21,11 +22,11 @@ export const Nav: FC<{
       label: t('home'),
       icon: <IoHome className='size-6 text-inherit' />
     },
-    // {
-    //   href: '/policies',
-    //   label: 'Políticas',
-    //   icon: <IoDocuments className='size-6' />
-    // },
+    {
+      href: '/policies',
+      label: t('policies'),
+      icon: <IoDocuments className='size-6' />
+    },
     {
       href: '/contracts',
       label: t('contracts'),
