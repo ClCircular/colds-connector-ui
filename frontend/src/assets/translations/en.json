@@ -60,6 +60,8 @@
   "private": "Private",
   "sensitive": "Sensitive",
   "use": "Use",
+  "policy_created_successfully": "Policy created successfully",
+  "policy_creation_error": "Error creating policy",
   "value": "Value",
   "name_placeholder": "Enter a name",
   "requirements": "Requirements",

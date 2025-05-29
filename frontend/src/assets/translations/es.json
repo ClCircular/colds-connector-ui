@@ -55,6 +55,8 @@
   "name": "Nombre",
   "created_at": "Creado el",
   "name_placeholder": "Ingrese un nombre",
+  "policy_created_successfully": "Política creada con éxito",
+  "policy_creation_error": "Error al crear la política",
   "requirements": "Requisitos",
   "data_access": "Acceso a datos",
   "eq": "Igual",

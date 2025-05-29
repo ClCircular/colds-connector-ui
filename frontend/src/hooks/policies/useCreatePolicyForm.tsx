@@ -2,9 +2,10 @@ import { useForm } from 'react-hook-form'
 import { CreatePolicyBody } from '../../interfaces/policies/policies.interface'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { useCreatePolicy } from '../../api/policies/useCreatePolicy'
 
 export const useCreatePolicyForm = () => {
-  //   const { mutate } = useCreateContractWithRule()
+  const { mutate } = useCreatePolicy()
 
   const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
@@ -35,7 +36,7 @@ export const useCreatePolicyForm = () => {
   ) => {
     event?.stopPropagation()
     console.log({ data }, { event })
-    // mutate(data)
+    mutate({ policyData: data })
   }
 
   return { createPolicyForm, onSubmit }
