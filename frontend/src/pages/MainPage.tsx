@@ -3,10 +3,12 @@ import { useGetContracts } from '../api/contracts/useGetContracts'
 // import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
 import { NavigationCard } from '../components/NavigationCard'
+import { useGetPolicies } from '../api/policies/useGetPolicies'
 
 export const MainPage = () => {
   const offersData = useGetOffers()
   const contractsData = useGetContracts()
+  const policiesData = useGetPolicies()
   // const datasourcesData = useGetDataSources()
   const { t } = useTranslation()
   const cardsInfo = [
@@ -27,7 +29,7 @@ export const MainPage = () => {
     },
     {
       title: t('policies'),
-      description: t('policies_card_description'),
+      description: `${policiesData.data?.length} ${t('policies')}`,
       link: '/policies'
     }
   ]
