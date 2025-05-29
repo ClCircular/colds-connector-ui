@@ -33,7 +33,6 @@ export interface Links {
   self: Self
   contracts: Brokers
   representations: Brokers
-  catalogs: Brokers
   subscriptions: Brokers
   brokers: Brokers
 }

@@ -12,7 +12,7 @@ export const DataOffers = () => {
     setOpen(false)
   }
 
-  const { columns, rows, initialFilters } = useDataOffersTable()
+  const { columns, rows } = useDataOffersTable()
 
   const { t } = useTranslation()
   return (
@@ -33,7 +33,7 @@ export const DataOffers = () => {
           <p className='text-gray-500'>{t('no_data_offers_available')}</p>
         </div>
       ) : (
-        <Table columns={columns} rows={rows} initialFilters={initialFilters} />
+        <Table columns={columns} rows={rows} />
       )}
     </section>
   )

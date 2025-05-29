@@ -1,24 +1,18 @@
 import { FC, useEffect, useState } from 'react'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
 import { useCreateOfferForm } from '../../hooks/offers/useCreateOfferForm'
-import { useGetCatalogs } from '../../api/catalogs/useGetCatalogs'
 import { useTranslation } from 'react-i18next'
 
 interface CreateOfferModalProps {
   isOpen: boolean
   onClose: () => void
-  catalogIdProp?: string
 }
 export const CreateOfferModal: FC<CreateOfferModalProps> = ({
   isOpen,
-  onClose,
-  catalogIdProp
+  onClose
 }) => {
-  // const [catalogId, setCatalogId] = useState(catalogIdProp || '')
   const [keywordsText, setKeywordsText] = useState<string>('')
-  const { createOfferForm, onSubmit } = useCreateOfferForm(catalogIdProp)
-
-  const catalogsData = useGetCatalogs()
+  const { createOfferForm, onSubmit } = useCreateOfferForm()
 
   useEffect(() => {
     if (keywordsText.includes(',')) {
@@ -168,36 +162,7 @@ export const CreateOfferModal: FC<CreateOfferModalProps> = ({
                   <option value='free'>{t('free')}</option>
                 </select>
               </div>
-              {/* Catalog if catalogIdProp is undefined */}
-              {!catalogIdProp && (
-                <div className='col-span-2'>
-                  <label
-                    htmlFor='catalog'
-                    className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                  >
-                    {t('select_a_catalog')}
-                  </label>
-                  <input
-                    list={`filter-options-catalog`}
-                    id='catalog'
-                    placeholder={t('select_a_catalog')}
-                    {...createOfferForm.register('catalogId', {
-                      required: true
-                    })}
-                    // value={catalogId}
-                    // name='catalog'
-                    // onChange={(e) => setCatalogId(e.target.value)}
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  />
-                  <datalist id={`filter-options-catalog`}>
-                    {catalogsData.data?.map((catalog) => (
-                      <option key={catalog.title} value={catalog.catalogId}>
-                        {catalog.title}
-                      </option>
-                    ))}
-                  </datalist>
-                </div>
-              )}
+
               {/* Keywords */}
               <div className='col-span-2 flex flex-col'>
                 <label

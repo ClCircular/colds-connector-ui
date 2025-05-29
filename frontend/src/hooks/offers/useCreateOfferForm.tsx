@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useCreateOffer } from '../../api/offers/useCreateOffer'
-import { useAssignOfferToCatalog } from '../../api/offers/useAssignOfferToCatalog'
 interface OfferBody {
   title: string
   description: string
@@ -8,15 +7,10 @@ interface OfferBody {
   publisher: string
   sovereign: string
   paymentModality: string
-  catalogId: string
 }
-export const useCreateOfferForm = (catalogId: string | undefined) => {
+export const useCreateOfferForm = () => {
   const createOfferMutation = useCreateOffer(() => {
     console.log('Offer created successfully')
-  })
-
-  const assignOfferMutation = useAssignOfferToCatalog(() => {
-    console.log('Offer assigned to catalog successfully')
   })
 
   const createOfferForm = useForm<OfferBody>({
@@ -26,8 +20,7 @@ export const useCreateOfferForm = (catalogId: string | undefined) => {
       keywords: [],
       publisher: '',
       sovereign: '',
-      paymentModality: '',
-      catalogId: catalogId || ''
+      paymentModality: ''
     }
   })
 
@@ -40,11 +33,6 @@ export const useCreateOfferForm = (catalogId: string | undefined) => {
       license: 'https://creativecommons.org/licenses/by/4.0/'
     })
     console.log(createOfferResponse)
-    const assignOfferResponse = await assignOfferMutation.mutateAsync({
-      catalogId: data.catalogId,
-      offers: [createOfferResponse._links.self.href]
-    })
-    console.log(assignOfferResponse)
   }
   return { onSubmit, createOfferForm }
 }

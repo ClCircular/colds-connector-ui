@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
 // import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
@@ -9,7 +8,6 @@ export const MainPage = () => {
   const offersData = useGetOffers()
   const contractsData = useGetContracts()
   // const datasourcesData = useGetDataSources()
-  const catalogsData = useGetCatalogs()
   const { t } = useTranslation()
   const cardsInfo = [
     {
@@ -26,11 +24,6 @@ export const MainPage = () => {
       title: t('exchanges'),
       description: t('exchanges_card_description'),
       link: '/exchanges'
-    },
-    {
-      title: t('catalogs'),
-      description: `${catalogsData.data?.length || 0} ${t('catalog')}(s)`,
-      link: '/catalogs'
     }
   ]
 

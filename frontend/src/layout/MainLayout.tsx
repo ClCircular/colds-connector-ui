@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { Drawer, Header, Loader } from '../components'
 import { Router } from '../router/Router'
-import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
 // import { useGetDataSources } from '../api/datasources/useGetDataSources'
 import { useGetOffers } from '../api/offers/useGetOffers'
@@ -16,7 +15,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   // const offersData = useGetOffers()
   // const contractsData = useGetContracts()
   // // const datasourcesData = useGetDataSources()
-  // const catalogsData = useGetCatalogs()
 
   // useEffect(() => {
   //   const langSelected = localStorage.getItem('i18nextLng')
@@ -33,7 +31,6 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   //   offersData.isLoading ||
   //   contractsData.isLoading ||
   //   // datasourcesData.isLoading ||
-  //   catalogsData.isLoading
   // ) {
   //   return (
   //     <div className='flex justify-center items-center h-screen w-full bg-black opacity-50 fixed top-0 left-0 z-[100]'>

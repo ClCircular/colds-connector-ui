@@ -6,8 +6,6 @@ import { DataOffers } from '../pages/DataOffers'
 import { Exchanges } from '../pages/Exchanges'
 import { MainPage } from '../pages/MainPage'
 import { LoginPage } from '../pages/LoginPage'
-import { Catalogs } from '../pages/Catalogs'
-import { CatalogOffers } from '../pages/CatalogOffers'
 import { ProtectedRoute } from '../components/shared/ProtectedRoute'
 
 export const Router = () => {
@@ -32,18 +30,6 @@ export const Router = () => {
         path='/exchanges'
         component={() => <ProtectedRoute Component={Exchanges} />}
       />
-      <Route
-        path='/catalogs'
-        component={() => <ProtectedRoute Component={Catalogs} />}
-      />
-      {/* ruta para /catalogs/${catalogId}/offers */}
-      <Route path='/catalogs/:catalogId/offers'>
-        {({ catalogId }) => (
-          <ProtectedRoute
-            Component={() => <CatalogOffers catalogId={catalogId} />}
-          />
-        )}
-      </Route>
       <Route>404 - Not Found</Route>
     </Switch>
   )

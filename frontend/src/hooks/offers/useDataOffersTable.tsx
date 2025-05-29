@@ -1,9 +1,8 @@
-import { ColumnFiltersState, createColumnHelper } from '@tanstack/react-table'
+import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
 // import { IoAddCircleOutline } from 'react-icons/io5'
 import { useGetOffers } from '../../api/offers/useGetOffers'
 import { useTranslation } from 'react-i18next'
-import { useGetCatalogs } from '../../api/catalogs/useGetCatalogs'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import { FiExternalLink } from 'react-icons/fi'
 
@@ -19,7 +18,6 @@ interface DataOfferRow {
   license: string
   version: string
   sovereign: any
-  catalogs: string[]
   contracts: string[]
   endpointDocumentation: any
   paymentModality: string
@@ -28,16 +26,8 @@ interface DataOfferRow {
 
 export const useDataOffersTable = () => {
   const dataOffersData = useGetOffers()
-  const catalogsData = useGetCatalogs()
 
   const { t } = useTranslation()
-
-  // get the catalogId sended from state
-  // const catalogId = history?.state?.catalogId
-  const catalogId = useMemo(
-    () => history?.state?.catalogId as string | undefined,
-    [history?.state?.catalogId]
-  )
 
   const columnHelper = createColumnHelper<DataOfferRow>()
 
@@ -75,18 +65,6 @@ export const useDataOffersTable = () => {
       columnHelper.accessor('paymentModality', {
         header: t('payment_modality'),
         cell: (info) => info.getValue()
-      }),
-      // catalog
-      columnHelper.accessor('catalogs', {
-        header: t('catalogs'),
-        cell: (info) => {
-          const catalogs = info.getValue()
-          return catalogs.length > 0 ? catalogs.join(' | ') : '-'
-        },
-        filterFn: (row, columnId, value) => {
-          const catalogs = row.getValue(columnId) as string[]
-          return catalogs.some((catalog: string) => catalog === value)
-        }
       }),
       // contracts
       columnHelper.accessor('contracts', {
@@ -140,8 +118,7 @@ export const useDataOffersTable = () => {
           paymentModality,
           sovereign,
           language,
-          contracts,
-          catalogs
+          contracts
         }) => ({
           title,
           description,
@@ -149,7 +126,6 @@ export const useDataOffersTable = () => {
           publisher,
           paymentModality,
           sovereign,
-          catalogs: catalogs.map((catalog) => catalog.title),
           contracts: contracts.map((contract) => contract.title),
           language: language || '-'
         })
@@ -157,18 +133,5 @@ export const useDataOffersTable = () => {
     )
   }, [dataOffersData.data, dataOffersData.isError, dataOffersData.isLoading])
 
-  const initialFilters: ColumnFiltersState = useMemo(() => {
-    const filters: ColumnFiltersState = []
-    if (catalogId) {
-      filters.push({
-        id: 'catalogs',
-        value:
-          catalogsData.data?.find((catalog) => catalog.catalogId === catalogId)
-            ?.title || ''
-      })
-    }
-    return filters
-  }, [catalogId, catalogsData.data])
-
-  return { columns, rows, initialFilters }
+  return { columns, rows }
 }

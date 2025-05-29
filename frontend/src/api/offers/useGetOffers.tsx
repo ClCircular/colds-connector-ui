@@ -13,16 +13,10 @@ export interface Offer {
   version: number
   sovereign: string
   paymentModality: string
-  catalogs: Catalog[]
   contracts: Contract[]
   representations: any[]
   subscriptions: any[]
   brokers: any[]
-}
-
-export interface Catalog {
-  title: string
-  catalogId: string
 }
 
 export interface Contract {

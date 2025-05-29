@@ -63,8 +63,6 @@ app.post('/', async (req, res) => {
     case 'GET':
       if (petition.url === '/v1/offers')
         var response = await proxy.getAllOffers(fullURL, auth, httpsAgent)
-      else if (petition.url === '/v1/catalogs')
-        var response = await proxy.getAllCatalogs(fullURL, auth, httpsAgent)
       else if (petition.url === '/v1/contracts')
         var response = await proxy.getAllContracts(fullURL, auth, httpsAgent)
       else
