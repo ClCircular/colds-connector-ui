@@ -1,18 +1,21 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
-import { useCreatePolicyForm } from '../../hooks/policies/useCreatePolicyForm'
+import { usePolicyForm } from '../../hooks/policies/usePolicyForm'
+import { MdEdit } from 'react-icons/md'
 
-interface ICreatePolicyModalProps {
+interface IPolicyModalProps {
   isOpen: boolean
   onClose: () => void
+  policyId?: string // Optional, if you want to edit an existing policy
 }
-export const CreatePolicyModal: FC<ICreatePolicyModalProps> = ({
+export const PolicyModal: FC<IPolicyModalProps> = ({
   isOpen,
-  onClose
+  onClose,
+  policyId
 }) => {
   const { t } = useTranslation()
-  const { createPolicyForm, onSubmit } = useCreatePolicyForm()
+  const { createPolicyForm, onSubmit } = usePolicyForm({ policyId, onClose })
 
   return (
     <div
@@ -161,11 +164,17 @@ export const CreatePolicyModal: FC<ICreatePolicyModalProps> = ({
               className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
               disabled={
                 !createPolicyForm.formState.isValid ||
-                createPolicyForm.formState.isSubmitting
+                createPolicyForm.formState.isSubmitting ||
+                (policyId && !createPolicyForm.formState.isDirty ? true : false)
               }
             >
-              <IoAddCircleOutline className='font-white size-5' />
-              {t('create_policy')}
+              {policyId ? (
+                <MdEdit className='font-white size-5' />
+              ) : (
+                <IoAddCircleOutline className='font-white size-5' />
+              )}
+              {/* {t('create_policy')} */}
+              {policyId ? t('update_policy') : t('create_policy')}
             </button>
           </form>
         </div>

@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
 import { PolicyRow } from '../../interfaces/policies/policies.interface'
-import { useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { filterFnDate } from '../../utils/FilterFnDate'
 import dayjs from 'dayjs'
 import { useGetPolicies } from '../../api/policies/useGetPolicies'
@@ -9,7 +9,10 @@ import { IoTrash } from 'react-icons/io5'
 import { MdEdit } from 'react-icons/md'
 import { useDeletePolicy } from '../../api/policies/useDeletePolicy'
 
-export const usePoliciesTable = () => {
+export const usePoliciesTable = (
+  setOpen: Dispatch<SetStateAction<boolean>>
+) => {
+  const [policyId, setPolicyId] = useState('')
   const { t } = useTranslation()
 
   const policiesData = useGetPolicies()
@@ -74,7 +77,13 @@ export const usePoliciesTable = () => {
           return (
             <div className='flex space-x-2 items-center justify-center'>
               {/* Add action buttons here, e.g., Edit, Delete */}
-              <button className='text-blue-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'>
+              <button
+                className='text-blue-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
+                onClick={() => {
+                  setOpen(true)
+                  setPolicyId(id)
+                }}
+              >
                 <MdEdit className='size-6' />
               </button>
               <button
@@ -110,5 +119,5 @@ export const usePoliciesTable = () => {
     }))
   }, [policiesData.data, policiesData.isLoading, policiesData.isError])
 
-  return { columns, rows }
+  return { columns, rows, policyId, setPolicyId }
 }

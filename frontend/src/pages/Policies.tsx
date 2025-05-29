@@ -3,21 +3,22 @@ import { usePoliciesTable } from '../hooks/policies/usePoliciesTable'
 import { Table } from '../components/shared/Table'
 import { useState } from 'react'
 import { IoCreateOutline } from 'react-icons/io5'
-import { CreatePolicyModal } from '../components/policies/CreatePolicyModal'
+import { PolicyModal } from '../components/policies/PolicyModal'
 
 export const Policies = () => {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
 
-  const { columns, rows } = usePoliciesTable()
+  const { columns, rows, policyId, setPolicyId } = usePoliciesTable(setOpen)
 
   const onClose = () => {
     setOpen(false)
+    setPolicyId('')
   }
 
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>
-      <CreatePolicyModal isOpen={open} onClose={onClose} />
+      <PolicyModal isOpen={open} onClose={onClose} policyId={policyId} />
       <div className='flex justify-between items-center mb-4'>
         <h1 className='text-lg font-semibold uppercase'>{t('policies')}</h1>
         <button

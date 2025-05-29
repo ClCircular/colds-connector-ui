@@ -95,8 +95,8 @@ app.post('/', async (req, res) => {
       })
       break
   }
-  console.log(response.data)
-  dataFromConnector = response.data
+  // console.log(response.data)
+  dataFromConnector = response?.data
   res.send(dataFromConnector)
 })
 
