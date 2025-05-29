@@ -60,6 +60,10 @@
   "requirements": "Requisitos",
   "data_access": "Acceso a datos",
   "eq": "Igual",
+  "lt": "Menor que",
+  "gt": "Mayor que",
+  "neq": "No igual",
+  "isAnyOf": "Es cualquiera de",
   "public": "Público",
   "private": "Privado",
   "sensitive": "Sensible",
@@ -71,11 +75,14 @@
   "type": "Tipo",
   "action": "Acción",
   "or": "o",
+
   "login": {
     "title": "Iniciar sesión",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "button": "Entrar",
+    "policy_deletion_error": "Error al eliminar la política",
+    "policy_deleted_successfully": "Política eliminada con éxito",
     "emailPlaceholder": "Introduce tu correo electrónico",
     "passwordPlaceholder": "Introduce tu contraseña",
     "forgot_your_password": "¿Olvidaste tu contraseña?",
@@ -95,6 +102,10 @@
     "password_reset_success": "Contraseña restablecida con éxito",
     "save_new_password": "Guardar nueva contraseña",
     "saving": "Guardando..."
+  },
+  "restriction": "Restricción",
+  "policy_action": {
+    "use": "Usar"
   },
   "lang": {
     "en": "EN",

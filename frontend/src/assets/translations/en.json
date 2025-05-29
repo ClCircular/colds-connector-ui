@@ -26,6 +26,7 @@
   "go_to": "Go to",
   "home": "Home",
   "keywords": "Keywords",
+  "restriction": "Restriction",
   "language": "Language",
   "navigate": "Navigate",
   "no_data_offers_available": "No data offers available",
@@ -53,6 +54,12 @@
   "sign_out": "Sign out",
   "name": "Name",
   "eq": "Equal",
+  "lt": "Less than",
+  "policy_deletion_error": "Error deleting policy",
+  "policy_deleted_successfully": "Policy deleted successfully",
+  "gt": "Greater than",
+  "neq": "Not equal",
+  "isAnyOf": "Is any of",
   "created_at": "Created at",
   "create_policy": "Create policy",
   "create_new_policy": "Create new policy",
@@ -62,6 +69,7 @@
   "use": "Use",
   "policy_created_successfully": "Policy created successfully",
   "policy_creation_error": "Error creating policy",
+
   "value": "Value",
   "name_placeholder": "Enter a name",
   "requirements": "Requirements",
@@ -95,6 +103,9 @@
     "password_reset_success": "Password reset successfully",
     "save_new_password": "Save new password",
     "saving": "Saving..."
+  },
+  "policy_action": {
+    "use": "Usar"
   },
   "lang": {
     "en": "EN",

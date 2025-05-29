@@ -1,0 +1,61 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAuthUser } from '../../contexts/UserContext'
+import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
+import { Policy } from '../../interfaces/policies/policies.interface'
+
+const handleDeletePolicy = async ({ policyId }: { policyId: string }) => {
+  const requestOptions = {
+    method: 'POST',
+    body: JSON.stringify({
+      type: 'DELETE',
+      url: `/v1/policies/${policyId}`
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  const url = `http://localhost:8083`
+  await fetch(url, requestOptions)
+  return { policyId }
+}
+
+export const useDeletePolicy = () => {
+  const queryClient = useQueryClient()
+  const { t } = useTranslation()
+  const { user } = useAuthUser()
+
+  return useMutation({
+    mutationFn: handleDeletePolicy,
+    mutationKey: ['deletePolicy'],
+    onMutate: async ({ policyId }) => {
+      await queryClient.cancelQueries({ queryKey: ['policies', user?.userId] })
+      const previousPolicies = queryClient.getQueryData<Policy[]>([
+        'policies',
+        user?.userId
+      ])
+      queryClient.setQueryData<Policy[]>(['policies', user?.userId], (old) =>
+        (old ?? []).filter((p) => p.policy_id !== policyId)
+      )
+      return { previousPolicies }
+    },
+    onError: (err, _, context) => {
+      console.error('Error deleting policy:', err)
+      if (context?.previousPolicies) {
+        queryClient.setQueryData(
+          ['policies', user?.userId],
+          context.previousPolicies
+        )
+      }
+      toast.error(t('policy_deletion_error', 'Policy deletion failed'))
+    },
+    onSuccess: () => {
+      toast.success(
+        t('policy_deleted_successfully', 'Policy deleted successfully')
+      )
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['policies', user?.userId] })
+    }
+  })
+}

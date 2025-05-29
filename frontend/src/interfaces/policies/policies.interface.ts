@@ -1,6 +1,10 @@
 export interface PolicyRow {
   name: string
+  action: string
+  restriction: string
   createdAt: Date
+  actions: string
+  id: string
 }
 
 export interface PolicyCreateResponse {
