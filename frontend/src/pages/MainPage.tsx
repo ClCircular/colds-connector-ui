@@ -7,6 +7,8 @@
 
 import {
   IoAdd,
+  IoChevronDown,
+  IoChevronUp,
   IoDocuments,
   IoFileTrayFull,
   IoPieChart,
@@ -15,6 +17,16 @@ import {
 import { useGetContracts } from '../api/contracts/useGetContracts'
 import { useGetPolicies } from '../api/policies/useGetPolicies'
 import { useGetAssets } from '../api/assets/useGetAssets'
+import dayjs from 'dayjs'
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts'
+import { Link } from 'wouter'
 
 // export const MainPage = () => {
 //   // const offersData = useGetOffers()
@@ -71,28 +83,95 @@ export const MainPage = () => {
   const policiesData = useGetPolicies()
   const assetsData = useGetAssets()
 
+  // Pie chart data
+  const pieData = [
+    {
+      name: 'Contratos',
+      value: contractsData.data?.length || 0,
+      color: '#6366f1' // indigo-500
+    },
+    {
+      name: 'Políticas',
+      value: policiesData.data?.length || 0,
+      color: '#22c55e' // green-500
+    },
+    {
+      name: 'Recursos',
+      value: assetsData.data?.length || 0,
+      color: '#eab308' // yellow-500
+    }
+  ]
+
+  const totalContracts = contractsData.data?.length || 0
+  const totalPolicies = policiesData.data?.length || 0
+  const totalAssets = assetsData.data?.length || 0
+
   return (
     <div className='grid grid-cols-12 grid-rows-12 gap-6 h-full p-4 '>
       {/* Resumen General */}
-      <div className='col-span-6 row-span-6 bg-white shadow-lg rounded-2xl p-5 flex flex-col items-center gap-4'>
-        <div className='bg-blue-100 p-4 rounded-full'>
-          <IoPieChart className='text-blue-600 text-4xl' />
+      <div className='col-span-6 row-span-6 bg-white shadow-lg rounded-2xl p-6 flex flex-col justify-between gap-4'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='bg-blue-100 p-4 rounded-full'>
+            <IoPieChart className='text-blue-600 text-4xl' />
+          </div>
+          <h2 className='text-2xl font-bold text-gray-800'>Resumen General</h2>
+          <div className='grid grid-cols-3 gap-4 text-lg text-center'>
+            <Link href='/contracts' className='flex flex-col items-center'>
+              <p className='font-bold text-indigo-600'>{totalContracts}</p>
+              <p>Contratos</p>
+            </Link>
+            <Link href='/policies' className='flex flex-col items-center'>
+              <p className='font-bold text-green-600'>{totalPolicies}</p>
+              <p>Políticas</p>
+            </Link>
+            <Link href='/assets' className='flex flex-col items-center'>
+              <p className='font-bold text-yellow-500'>{totalAssets}</p>
+              <p>Recursos</p>
+            </Link>
+          </div>
         </div>
-        <h2 className='text-3xl font-extrabold text-gray-800'>
-          Resumen General
-        </h2>
-        <div className='flex flex-col gap-1 text-lg'>
-          <span>
-            <strong>{contractsData.data?.length || 0}</strong> Contratos
-          </span>
-          <span>
-            <strong>{policiesData.data?.length || 0}</strong> Políticas
-          </span>
-          <span>
-            <strong>{assetsData.data?.length || 0}</strong> Recursos
-          </span>
-        </div>
+        <p>
+          🔄 Última actualización:{' '}
+          {dayjs(contractsData.dataUpdatedAt).format('HH:mm:ss')}
+        </p>
       </div>
+      {/* <div className='col-span-6 row-span-6 bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='bg-blue-100 p-4 rounded-full'>
+            <IoPieChart className='text-blue-600 text-4xl' />
+          </div>
+          <h2 className='text-3xl font-extrabold text-gray-800'>
+            Resumen General
+          </h2>
+          <div className='flex justify-between w-xs max-w-md text-lg text-center'>
+            <p className='flex items-center gap-2'>
+              <strong>{totalContracts}</strong>Contratos
+            </p>
+            <div className='flex items-center gap-1'>
+              <IoChevronUp className='text-green-500' />
+              <p className='text-green-500'>2%</p>
+            </div>
+          </div>
+          <div className='flex justify-between w-xs max-w-md text-lg text-center'>
+            <p className='flex items-center gap-2'>
+              <strong>{totalContracts}</strong>Politicas
+            </p>
+            <div className='flex items-center gap-1'>
+              <IoChevronUp className='text-green-500' />
+              <p className='text-green-500'>1%</p>
+            </div>
+          </div>
+          <div className='flex justify-between w-xs max-w-md text-lg text-center'>
+            <p className='flex items-center gap-2'>
+              <strong>{totalContracts}</strong>Recursos
+            </p>
+            <div className='flex items-center gap-1'>
+              <IoChevronDown className='text-red-500' />
+              <p className='text-red-500'>1%</p>
+            </div>
+          </div>
+        </div>
+      </div> */}
 
       {/* Últimos Contratos */}
       <div className='col-span-4 row-span-6 col-start-1 row-start-7 bg-white shadow-lg rounded-2xl p-5 flex flex-col items-center gap-4'>
@@ -102,8 +181,8 @@ export const MainPage = () => {
         <h2 className='text-2xl font-bold text-gray-800'>Últimos Contratos</h2>
         <ul className='w-full'>
           {contractsData.data?.slice(0, 5).map((contract) => (
-            <li key={contract.contractId} className='text-gray-700 mb-2'>
-              {contract.title}
+            <li key={contract.contract_id} className='text-gray-700 mb-2'>
+              {contract.name}
             </li>
           )) || (
             <li className='text-gray-500 text-center'>
@@ -114,9 +193,30 @@ export const MainPage = () => {
       </div>
 
       {/* Gráfico */}
-      <div className='col-span-5 row-span-6 col-start-5 row-start-7 bg-white shadow-lg rounded-2xl p-5 flex items-center justify-center'>
-        {/* Aquí va el chart con Recharts */}
-        <p className='text-gray-500'>Aquí va el chart</p>
+      <div className='col-span-5 row-span-6 col-start-5 row-start-7 bg-white shadow-lg rounded-2xl p-5 flex flex-col items-center justify-center gap-4'>
+        <h2 className='text-2xl font-bold text-gray-800'>Estado General</h2>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={pieData}
+              dataKey='value'
+              nameKey='name'
+              cx='50%'
+              cy='50%'
+              outerRadius={90}
+              innerRadius={40}
+              paddingAngle={5}
+              label={({ name, value }) => `${name}: ${value}`}
+              labelLine={false}
+            >
+              {pieData.map((entry, idx) => (
+                <Cell key={`cell-${idx}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(value) => `${value} elementos`} />
+            <Legend layout='horizontal' align='center' iconSize={14} />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Acciones Rápidas */}

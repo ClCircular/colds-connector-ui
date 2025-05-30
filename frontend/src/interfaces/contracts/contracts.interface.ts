@@ -1,22 +1,22 @@
 export interface Contract {
-  contractId: string
-  creationDate: string
-  modificationDate: string
-  title: string
-  description: string
-  start: string
-  end: string
-  rules: Rule[]
-  offers: Offer[]
+  contract_id: string
+  name: string
+  created_at: Date
+  access_policy_id: string
+  contract_policy_id: string
+  asset_id: string
 }
 
-export interface Offer {
-  title: string
-  offerId: string
+export interface CreateContractResponse {
+  message: string
+  data: Data
 }
 
-export interface Rule {
-  title: string
-  type: string
-  ruleId: string
+export interface Data {
+  contract_id: string
+  name: string
+  created_at: Date
+  access_policy_id: string
+  contract_policy_id: string
+  asset_id: string
 }
