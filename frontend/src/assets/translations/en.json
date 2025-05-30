@@ -46,6 +46,7 @@
   "update_policy": "Update policy",
   "policy_update_error": "Error updating policy",
   "policy_updated_successfully": "Policy updated successfully",
+  "assets": "Resources",
   "title": "Title",
   "start_date": "Start date",
   "end_date": "End date",

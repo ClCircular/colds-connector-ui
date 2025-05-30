@@ -2,6 +2,7 @@ import { Switch, Route } from 'wouter'
 
 import { ProtectedRoute } from '../components/shared/ProtectedRoute'
 import {
+  Assets,
   Contracts,
   DataOffers,
   Exchanges,
@@ -35,6 +36,10 @@ export const Router = () => {
       <Route
         path='/policies'
         component={() => <ProtectedRoute Component={Policies} />}
+      />
+      <Route
+        path='/assets'
+        component={() => <ProtectedRoute Component={Assets} />}
       />
       <Route>404 - Not Found</Route>
     </Switch>

@@ -4,9 +4,10 @@ import {
   // IoDocuments,
   IoFileTrayFull,
   // IoLink,
-  IoCloudUpload,
-  IoSwapHorizontal,
-  IoDocuments
+  // IoCloudUpload,
+  // IoSwapHorizontal,
+  IoDocuments,
+  IoShieldCheckmark
 } from 'react-icons/io5'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +26,7 @@ export const Nav: FC<{
     {
       href: '/policies',
       label: t('policies'),
-      icon: <IoDocuments className='size-6' />
+      icon: <IoShieldCheckmark className='size-6' />
     },
     {
       href: '/contracts',
@@ -33,19 +34,19 @@ export const Nav: FC<{
       icon: <IoFileTrayFull className='size-6' />
     },
     // {
-    //   href: '/data-connections',
-    //   label: 'Conexiones De Datos',
-    //   icon: <IoLink className='size-6' />
+    //   href: '/data-offers',
+    //   label: t('data_offers'),
+    //   icon: <IoCloudUpload className='size-6' />
+    // },
+    // {
+    //   href: '/exchanges',
+    //   label: t('exchanges'),
+    //   icon: <IoSwapHorizontal className='size-6' />
     // },
     {
-      href: '/data-offers',
-      label: t('data_offers'),
-      icon: <IoCloudUpload className='size-6' />
-    },
-    {
-      href: '/exchanges',
-      label: t('exchanges'),
-      icon: <IoSwapHorizontal className='size-6' />
+      href: '/assets',
+      label: t('assets'),
+      icon: <IoDocuments className='size-6' />
     }
   ]
 

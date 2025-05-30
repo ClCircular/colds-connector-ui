@@ -78,7 +78,7 @@
   "type": "Tipo",
   "action": "Acción",
   "or": "o",
-
+  "assets": "Recursos",
   "login": {
     "title": "Iniciar sesión",
     "email": "Correo electrónico",
