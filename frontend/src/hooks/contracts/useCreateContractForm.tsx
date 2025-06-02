@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { useCreateContractWithRule } from '../../api/contracts/useCreateContractWithRule'
 
 interface ContractBody {
   title: string
@@ -9,8 +8,6 @@ interface ContractBody {
   accessPolicy: string
 }
 export const useCreateContractForm = () => {
-  const { mutate } = useCreateContractWithRule()
-
   const createContractForm = useForm<ContractBody>({
     defaultValues: {
       title: '',
@@ -27,7 +24,6 @@ export const useCreateContractForm = () => {
   ) => {
     event?.stopPropagation()
     console.log({ data }, { event })
-    mutate(data)
   }
 
   return { createContractForm, onSubmit }

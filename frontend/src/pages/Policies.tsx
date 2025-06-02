@@ -31,7 +31,7 @@ export const Policies = () => {
       </div>
       {rows.length === 0 ? (
         <div className='flex justify-center items-center h-full'>
-          <p className='text-gray-500'>{t('no_data_offers_available')}</p>
+          <p className='text-gray-500'>{t('no_policies_available')}</p>
         </div>
       ) : (
         <Table columns={columns} rows={rows} />

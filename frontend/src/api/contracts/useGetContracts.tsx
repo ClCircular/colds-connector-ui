@@ -28,7 +28,7 @@ export const getContracts = async () => {
 
 export const useGetContracts = () => {
   const { user } = useAuthUser()
-  const offersData = useQuery({
+  const contractsData = useQuery({
     queryKey: ['contracts', user?.userId],
     queryFn: getContracts,
     enabled: !!user?.userId, // Only run if user is authenticated
@@ -38,5 +38,5 @@ export const useGetContracts = () => {
     gcTime: 1000 * 60 * 60 // 1 hour
   })
 
-  return offersData
+  return contractsData
 }

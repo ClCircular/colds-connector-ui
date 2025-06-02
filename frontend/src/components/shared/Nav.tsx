@@ -1,11 +1,7 @@
 import { Link, useLocation } from 'wouter'
 import {
   IoHome,
-  // IoDocuments,
   IoFileTrayFull,
-  // IoLink,
-  // IoCloudUpload,
-  // IoSwapHorizontal,
   IoDocuments,
   IoShieldCheckmark
 } from 'react-icons/io5'
@@ -33,16 +29,6 @@ export const Nav: FC<{
       label: t('contracts'),
       icon: <IoFileTrayFull className='size-6' />
     },
-    // {
-    //   href: '/data-offers',
-    //   label: t('data_offers'),
-    //   icon: <IoCloudUpload className='size-6' />
-    // },
-    // {
-    //   href: '/exchanges',
-    //   label: t('exchanges'),
-    //   icon: <IoSwapHorizontal className='size-6' />
-    // },
     {
       href: '/assets',
       label: t('assets'),

@@ -1,10 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { Drawer, Header, Loader } from '../components'
-import { Router } from '../router/Router'
-import { useGetContracts } from '../api/contracts/useGetContracts'
-// import { useGetDataSources } from '../api/datasources/useGetDataSources'
-import { useGetOffers } from '../api/offers/useGetOffers'
-import i18next from 'i18next'
 import { useGetPolicies } from '../api/policies/useGetPolicies'
 
 interface MainLayoutProps {
@@ -14,8 +9,6 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const [open, setOpen] = useState(false)
   const policiesData = useGetPolicies()
-  // const offersData = useGetOffers()
-  // const contractsData = useGetContracts()
   // // const datasourcesData = useGetDataSources()
 
   // useEffect(() => {
@@ -30,9 +23,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   // }, [])
 
   if (
-    // offersData.isLoading ||
     // contractsData.isLoading ||
-    // datasourcesData.isLoading ||
     policiesData.isLoading ||
     policiesData.isFetching
   ) {
