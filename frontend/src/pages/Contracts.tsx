@@ -1,23 +1,25 @@
-import { IoCreateOutline } from 'react-icons/io5'
 import { useState } from 'react'
-import { Table } from '../components/shared/Table'
 import { useTranslation } from 'react-i18next'
-import { CreateContractModal } from '../components/contracts/CreateContractModal'
+import { IoCreateOutline } from 'react-icons/io5'
+import { Table } from '../components/shared/Table'
 import { useContractsTable } from '../hooks/contracts/useContractsTable'
+import { ContractModal } from '../components/contracts/ContractModal'
 
 export const Contracts = () => {
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation()
+
+  const { columns, rows, contractId, setContractId } =
+    useContractsTable(setOpen)
 
   const onClose = () => {
     setOpen(false)
+    setContractId('')
   }
 
-  const { columns, rows } = useContractsTable()
-
-  const { t } = useTranslation()
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>
-      <CreateContractModal isOpen={open} onClose={onClose} />
+      <ContractModal isOpen={open} onClose={onClose} contractId={contractId} />
       <div className='flex justify-between items-center mb-4'>
         <h1 className='text-lg font-semibold uppercase'>{t('contracts')}</h1>
         <button
@@ -30,7 +32,7 @@ export const Contracts = () => {
       </div>
       {rows.length === 0 ? (
         <div className='flex justify-center items-center h-full'>
-          <p className='text-gray-500'>{t('no_data_offers_available')}</p>
+          <p className='text-gray-500'>{t('no_contracts_available')}</p>
         </div>
       ) : (
         <Table columns={columns} rows={rows} />

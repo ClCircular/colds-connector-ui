@@ -1,104 +1,120 @@
-import { createColumnHelper } from '@tanstack/react-table'
-import { useMemo } from 'react'
-// import { IoAddCircleOutline } from 'react-icons/io5'
-import { useTranslation } from 'react-i18next'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { useGetContracts } from '../../api/contracts/useGetContracts'
-import dayjs from 'dayjs'
-import { filterFnDate } from '../../utils/FilterFnDate'
+import { useGetAssets } from '../../api/assets/useGetAssets'
+import { useGetPolicies } from '../../api/policies/useGetPolicies'
+import { useTranslation } from 'react-i18next'
+import { createColumnHelper } from '@tanstack/react-table'
+import { ContractRow } from '../../interfaces/contracts/contracts.interface'
+import { MdEdit } from 'react-icons/md'
+import { IoTrash } from 'react-icons/io5'
+import { useDeleteContract } from '../../api/contracts/useDeleteContract'
 
-interface ContractRow {
-  title: string
-  description: string
-  start: Date
-  end: Date
-  rules: string[]
-  offers: string[]
-}
-
-export const useContractsTable = () => {
+export const useContractsTable = (
+  setOpen: Dispatch<SetStateAction<boolean>>
+) => {
+  const [contractId, setContractId] = useState('')
   const contractsData = useGetContracts()
+  const assetsData = useGetAssets()
+  const policiesData = useGetPolicies()
+
+  const { mutate } = useDeleteContract()
 
   const { t } = useTranslation()
+
+  const handleDeleteContract = (contractId: string) => {
+    const contractName = contractsData.data?.find(
+      (contract) => contract.contract_id === contractId
+    )?.name
+
+    const response = confirm(
+      `Are you sure you want to delete the contract with name: ${contractName}?`
+    )
+    if (response) {
+      // Call the delete contract mutation here
+      mutate({ contractId })
+      console.log(`Contract with ID ${contractId} deleted.`)
+    }
+  }
 
   const columnHelper = createColumnHelper<ContractRow>()
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('title', {
-        header: t('title'),
+      columnHelper.accessor('name', {
+        header: t('name'),
         cell: (info) => info.getValue()
       }),
-      columnHelper.accessor('description', {
-        header: t('description'),
+      columnHelper.accessor('accessPolicyName', {
+        header: t('access_policy'),
         cell: (info) => info.getValue()
       }),
-      columnHelper.accessor('start', {
-        header: t('start_date'),
-        cell: (info) => {
-          const dateValue = info.getValue()
-          if (dayjs(dateValue).year() < 2000) return '—'
-          return dayjs(dateValue).format('YYYY/MM/DD')
-        },
-        filterFn: filterFnDate
+      columnHelper.accessor('contractPolicyName', {
+        header: t('contract_policy'),
+        cell: (info) => info.getValue()
       }),
-      columnHelper.accessor('end', {
-        header: t('end_date'),
-        cell: (info) => {
-          const dateValue = info.getValue()
-          if (dayjs(dateValue).year() < 2000) return '—'
-          return dayjs(dateValue).format('YYYY/MM/DD')
-        },
-        filterFn: filterFnDate
+
+      columnHelper.accessor('assetName', {
+        header: t('asset'),
+        cell: (info) => info.getValue()
       }),
-      columnHelper.accessor('rules', {
-        header: t('rules'),
+      columnHelper.display({
+        id: 'actions',
+        header: t('actions'),
         cell: (info) => {
-          const rules = info.getValue()
-          return rules.length > 0 ? (
-            rules.join(' | ')
-          ) : (
-            <span className='text-gray-500'>{t('no_rules')}</span>
-          )
-        }
-      }),
-      columnHelper.accessor('offers', {
-        header: t('offers'),
-        cell: (info) => {
-          const offers = info.getValue()
-          return offers.length > 0 ? (
-            offers.join(' | ')
-          ) : (
-            <span className='text-gray-500'>{t('no_offers')}</span>
+          const id = info.row.original.id
+          console.log({ id })
+          return (
+            <div className='flex space-x-2 items-center justify-center'>
+              {/* Add action buttons here, e.g., Edit, Delete */}
+              <button
+                className='text-blue-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
+                onClick={() => {
+                  setOpen(true)
+                  setContractId(id)
+                }}
+              >
+                <MdEdit className='size-6' />
+              </button>
+              <button
+                className='text-red-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
+                onClick={() => handleDeleteContract(id)}
+              >
+                <IoTrash className='size-6' />
+              </button>
+            </div>
           )
         }
       })
     ],
-    [columnHelper, t]
+    [t]
   )
 
   const rows = useMemo(() => {
-    if (contractsData.isLoading) return []
-    if (contractsData.isError) return []
-
     return (
-      contractsData.data?.map(
-        ({ title, description, end, offers, rules, start }) => ({
-          title,
-          description,
-          end:
-            !end || !dayjs(end).isValid()
-              ? dayjs('0001-01-01T00:00:00.000Z').toDate()
-              : dayjs(end).toDate(),
-          start:
-            !start || !dayjs(start).isValid()
-              ? dayjs('0001-01-01T00:00:00.000Z').toDate()
-              : dayjs(start).toDate(),
-          rules: rules.map((rule) => rule.title),
-          offers: offers.map((offer) => offer.title)
-        })
-      ) ?? []
+      contractsData.data?.map((contract) => {
+        const policyName = policiesData.data?.find(
+          (policy) => policy.policy_id === contract.access_policy_id
+        )?.name
+        const assetName = assetsData.data?.find(
+          (asset) => asset.asset_id === contract.asset_id
+        )?.name
+        return {
+          id: contract.contract_id,
+          name: contract.name,
+          accessPolicyName: policyName || 'N/A',
+          contractPolicyName: policyName || 'N/A',
+          assetName: assetName || 'N/A'
+        }
+      }) || []
     )
-  }, [contractsData.data, contractsData.isError, contractsData.isLoading])
+  }, [contractsData.data, assetsData.data, policiesData.data])
 
-  return { columns, rows }
+  return {
+    columns,
+    rows,
+    contractId,
+    setContractId,
+    isLoading:
+      contractsData.isLoading || assetsData.isLoading || policiesData.isLoading
+  }
 }

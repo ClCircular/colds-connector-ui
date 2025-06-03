@@ -1,0 +1,5 @@
+export * from './Contracts'
+export * from './MainPage'
+export * from './LoginPage'
+export * from './Policies'
+export * from './Assets'

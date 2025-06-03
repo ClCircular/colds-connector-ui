@@ -20,15 +20,15 @@
 // Artic Sea, S.L.                                              //
 //                                                              //
 //**************************************************************//
-import axios from "axios";
+import axios from 'axios'
 
 export async function getAllOffers(fullURL, auth, httpsAgent) {
   var response = await axios.get(fullURL, {
-    headers: { "content-type": "application/json" },
+    headers: { 'content-type': 'application/json' },
     auth,
-    httpsAgent,
-  });
-  let offers = [];
+    httpsAgent
+  })
+  let offers = []
   for (let connectorResource of response.data._embedded.resources) {
     // console.log(connectorResource);
     let offer = {
@@ -45,64 +45,50 @@ export async function getAllOffers(fullURL, auth, httpsAgent) {
       license: connectorResource.license,
       version: connectorResource.version,
       sovereign: connectorResource.sovereign,
-      paymentModality: connectorResource.paymentModality,
-    };
+      paymentModality: connectorResource.paymentModality
+    }
 
-    const [catalog, contracts, representations, subscriptions, brokers] =
+    const [contracts, representations, subscriptions, brokers] =
       await Promise.all([
         await axios.get(
-          connectorResource._links.catalogs.href.replace(/\{.*\}$/, ""),
+          connectorResource._links.contracts.href.replace(/\{.*\}$/, ''),
           {
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             auth,
-            httpsAgent,
+            httpsAgent
           }
         ),
         await axios.get(
-          connectorResource._links.contracts.href.replace(/\{.*\}$/, ""),
+          connectorResource._links.representations.href.replace(/\{.*\}$/, ''),
           {
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             auth,
-            httpsAgent,
+            httpsAgent
           }
         ),
         await axios.get(
-          connectorResource._links.representations.href.replace(/\{.*\}$/, ""),
+          connectorResource._links.subscriptions.href.replace(/\{.*\}$/, ''),
           {
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             auth,
-            httpsAgent,
+            httpsAgent
           }
         ),
         await axios.get(
-          connectorResource._links.subscriptions.href.replace(/\{.*\}$/, ""),
+          connectorResource._links.brokers.href.replace(/\{.*\}$/, ''),
           {
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             auth,
-            httpsAgent,
+            httpsAgent
           }
-        ),
-        await axios.get(
-          connectorResource._links.brokers.href.replace(/\{.*\}$/, ""),
-          {
-            headers: { "content-type": "application/json" },
-            auth,
-            httpsAgent,
-          }
-        ),
-      ]);
-
-    // Getting catalog of offer
-    offer.catalogs = catalog.data._embedded.catalogs.map((item) => ({
-      title: item.title,
-      catalogId: item._links.self.href.match(/catalogs\/([a-f0-9\-]+)$/i)[1],
-    }));
+        )
+      ])
 
     // Getting contracts of offer
     offer.contracts = contracts.data._embedded.contracts.map((item) => ({
       title: item.title,
-      contractId: item._links.self.href.match(/contracts\/([a-f0-9\-]+)$/i)[1],
-    }));
+      contractId: item._links.self.href.match(/contracts\/([a-f0-9\-]+)$/i)[1]
+    }))
 
     // Getting representations of offer
     offer.representations = representations.data._embedded.representations.map(
@@ -110,9 +96,9 @@ export async function getAllOffers(fullURL, auth, httpsAgent) {
         title: item.title,
         representationId: item._links.self.href.match(
           /representations\/([a-f0-9\-]+)$/i
-        )[1],
+        )[1]
       })
-    );
+    )
 
     // Getting subscriptions of offer
     offer.subscriptions = subscriptions.data._embedded.subscriptions.map(
@@ -120,65 +106,28 @@ export async function getAllOffers(fullURL, auth, httpsAgent) {
         title: item.title,
         subscriptionId: item._links.self.href.match(
           /subscriptions\/([a-f0-9\-]+)$/i
-        )[1],
+        )[1]
       })
-    );
+    )
 
     // Getting brokers of offer: NOTE: esto no se va a usar en principio
     offer.brokers = brokers.data._embedded.brokers.map((item) => ({
       title: item.title,
-      brokerId: item._links.self.href.match(/brokers\/([a-f0-9\-]+)$/i)[1],
-    }));
+      brokerId: item._links.self.href.match(/brokers\/([a-f0-9\-]+)$/i)[1]
+    }))
 
-    offers.push(offer);
+    offers.push(offer)
   }
-  return { data: offers };
-}
-
-export async function getAllCatalogs(fullURL, auth, httpsAgent) {
-  var response = await axios.get(fullURL, {
-    headers: { "content-type": "application/json" },
-    auth,
-    httpsAgent,
-  });
-  let catalogs = [];
-  for (let connectorResource of response.data._embedded.catalogs) {
-    let catalog = {
-      catalogId: connectorResource._links.self.href.match(
-        /catalogs\/([a-f0-9\-]+)$/i
-      )[1],
-      creationDate: connectorResource.creationDate,
-      modificationDate: connectorResource.modificationDate,
-      title: connectorResource.title,
-      description: connectorResource.description,
-    };
-
-    // Getting subscriptions of offer
-    let offers = await axios.get(
-      connectorResource._links.offers.href.replace(/\{.*\}$/, ""),
-      {
-        headers: { "content-type": "application/json" },
-        auth,
-        httpsAgent,
-      }
-    );
-    catalog.offers = offers.data._embedded.resources.map((item) => ({
-      title: item.title,
-      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1],
-    }));
-
-    catalogs.push(catalog);
-  }
-  return { data: catalogs };
+  return { data: offers }
 }
 
 export async function getAllContracts(fullURL, auth, httpsAgent) {
   var response = await axios.get(fullURL, {
-    headers: { "content-type": "application/json" },
+    headers: { 'content-type': 'application/json' },
     auth,
-    httpsAgent,
-  });
-  let contracts = [];
+    httpsAgent
+  })
+  let contracts = []
   for (let connectorResource of response.data._embedded.contracts) {
     // console.log(connectorResource);
     let contract = {
@@ -190,39 +139,39 @@ export async function getAllContracts(fullURL, auth, httpsAgent) {
       title: connectorResource.title,
       description: connectorResource.description,
       start: connectorResource.start,
-      end: connectorResource.end,
-    };
+      end: connectorResource.end
+    }
 
     // Getting subscriptions of offer
     const [rules, offers] = await Promise.all([
       await axios.get(
-        connectorResource._links.rules.href.replace(/\{.*\}$/, ""),
+        connectorResource._links.rules.href.replace(/\{.*\}$/, ''),
         {
-          headers: { "content-type": "application/json" },
+          headers: { 'content-type': 'application/json' },
           auth,
-          httpsAgent,
+          httpsAgent
         }
       ),
       await axios.get(
-        connectorResource._links.offers.href.replace(/\{.*\}$/, ""),
+        connectorResource._links.offers.href.replace(/\{.*\}$/, ''),
         {
-          headers: { "content-type": "application/json" },
+          headers: { 'content-type': 'application/json' },
           auth,
-          httpsAgent,
+          httpsAgent
         }
-      ),
-    ]);
+      )
+    ])
     contract.rules = rules.data._embedded.rules.map((item) => ({
       title: item.title,
-      type: JSON.parse(item.value)["@type"],
-      ruleId: item._links.self.href.match(/rules\/([a-f0-9\-]+)$/i)[1],
-    }));
+      type: JSON.parse(item.value)['@type'],
+      ruleId: item._links.self.href.match(/rules\/([a-f0-9\-]+)$/i)[1]
+    }))
     contract.offers = offers.data._embedded.resources.map((item) => ({
       title: item.title,
-      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1],
-    }));
+      offerId: item._links.self.href.match(/offers\/([a-f0-9\-]+)$/i)[1]
+    }))
 
-    contracts.push(contract);
+    contracts.push(contract)
   }
-  return { data: contracts };
+  return { data: contracts }
 }

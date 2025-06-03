@@ -1,15 +1,13 @@
-import { useTranslation } from 'react-i18next'
-import { useGetCatalogs } from '../api/catalogs/useGetCatalogs'
 import { useGetContracts } from '../api/contracts/useGetContracts'
-// import { useGetDataSources } from '../api/datasources/useGetDataSources'
-import { useGetOffers } from '../api/offers/useGetOffers'
-import { NavigationCard } from '../components/NavigationCard'
+import { useGetPolicies } from '../api/policies/useGetPolicies'
+import { useGetAssets } from '../api/assets/useGetAssets'
+import { useTranslation } from 'react-i18next'
+import { NavigationCard } from '../components'
 
 export const MainPage = () => {
-  const offersData = useGetOffers()
   const contractsData = useGetContracts()
-  // const datasourcesData = useGetDataSources()
-  const catalogsData = useGetCatalogs()
+  const policiesData = useGetPolicies()
+  const assets = useGetAssets()
   const { t } = useTranslation()
   const cardsInfo = [
     {
@@ -18,19 +16,14 @@ export const MainPage = () => {
       link: '/contracts'
     },
     {
-      title: t('data_offers'),
-      description: `${offersData.data?.length || 0} ${t('offer')}(s)`,
-      link: '/data-offers'
+      title: t('policies'),
+      description: `${policiesData.data?.length} ${t('policies')}`,
+      link: '/policies'
     },
     {
-      title: t('exchanges'),
-      description: t('exchanges_card_description'),
-      link: '/exchanges'
-    },
-    {
-      title: t('catalogs'),
-      description: `${catalogsData.data?.length || 0} ${t('catalog')}(s)`,
-      link: '/catalogs'
+      title: t('assets'),
+      description: `${assets.data?.length || 0} ${t('assets')}`,
+      link: '/assets'
     }
   ]
 

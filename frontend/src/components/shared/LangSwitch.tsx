@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 
 export const LangSwitch = () => {
   // 🔹 Usa `i18next.language` directamente en lugar de `localStorage`
+
+  console.log('i18next.language', i18next.language)
   const [selected, setSelected] = useState<string>(
     i18next.language.includes('es') ? 'es-ES' : 'en'
   )

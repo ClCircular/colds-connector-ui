@@ -1,12 +1,9 @@
 import { Link, useLocation } from 'wouter'
 import {
   IoHome,
-  // IoDocuments,
   IoFileTrayFull,
-  // IoLink,
-  IoCloudUpload,
-  IoSwapHorizontal,
-  IoAlbums
+  IoDocuments,
+  IoShieldCheckmark
 } from 'react-icons/io5'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,35 +19,20 @@ export const Nav: FC<{
       label: t('home'),
       icon: <IoHome className='size-6 text-inherit' />
     },
-    // {
-    //   href: '/policies',
-    //   label: 'Políticas',
-    //   icon: <IoDocuments className='size-6' />
-    // },
+    {
+      href: '/policies',
+      label: t('policies'),
+      icon: <IoShieldCheckmark className='size-6' />
+    },
     {
       href: '/contracts',
       label: t('contracts'),
       icon: <IoFileTrayFull className='size-6' />
     },
-    // {
-    //   href: '/data-connections',
-    //   label: 'Conexiones De Datos',
-    //   icon: <IoLink className='size-6' />
-    // },
     {
-      href: '/data-offers',
-      label: t('data_offers'),
-      icon: <IoCloudUpload className='size-6' />
-    },
-    {
-      href: '/exchanges',
-      label: t('exchanges'),
-      icon: <IoSwapHorizontal className='size-6' />
-    },
-    {
-      href: '/catalogs',
-      label: t('catalogs'),
-      icon: <IoAlbums className='size-6' />
+      href: '/assets',
+      label: t('assets'),
+      icon: <IoDocuments className='size-6' />
     }
   ]
 

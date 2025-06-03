@@ -12,13 +12,14 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ Component, props }: ProtectedRouteProps) => {
   const { user, loading } = useAuthUser()
-  const [, setLocation] = useLocation()
-  // Solo intentamos redirigir una vez que sepamos que ya cargó el user
+  const [location, setLocation] = useLocation()
+
+  // Only redirect from /login to / if authenticated and not loading
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && location === '/login') {
       setLocation('/')
     }
-  }, [loading, user, setLocation])
+  }, [loading, user, location, setLocation])
 
   if (loading) {
     // Evita el "flash" de login
@@ -29,10 +30,17 @@ export const ProtectedRoute = ({ Component, props }: ProtectedRouteProps) => {
     )
   }
 
-  if (!user) {
+  // If not authenticated and not loading, redirect to /login (unless already there)
+  if (!user && location !== '/login') {
     setLocation('/login')
     return null
   }
+
+  // If on /login and not authenticated, don't render the protected content
+  if (!user && location === '/login') {
+    return null
+  }
+
   return (
     <MainLayout>
       <Component {...props} />
