@@ -9,6 +9,11 @@ export interface Contract {
 
 export interface CreateContractResponse {
   message: string
+  data: Contract
+}
+
+export interface CreateContractResponse {
+  message: string
   data: Data
 }
 
@@ -19,4 +24,19 @@ export interface Data {
   access_policy_id: string
   contract_policy_id: string
   asset_id: string
+}
+
+export interface CreateContractBody {
+  name: string
+  access_policy_id: string
+  contract_policy_id: string
+  asset_id: string
+}
+
+export interface ContractRow {
+  name: string
+  accessPolicyName: string
+  contractPolicyName: string
+  assetName: string
+  id: string
 }

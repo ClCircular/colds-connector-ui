@@ -1,18 +1,25 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
-import { useCreateContractForm } from '../../hooks/contracts/useCreateContractForm'
+import { useContractForm } from '../../hooks/contracts/useContractForm'
 
 interface ICreateContractModalProps {
   isOpen: boolean
   onClose: () => void
+  contractId?: string // Optional, if you want to edit an existing contract
 }
-export const CreateContractModal: FC<ICreateContractModalProps> = ({
+export const ContractModal: FC<ICreateContractModalProps> = ({
   isOpen,
-  onClose
+  onClose,
+  contractId
 }) => {
   const { t } = useTranslation()
-  const { createContractForm, onSubmit } = useCreateContractForm()
+  const {
+    createContractForm,
+    onSubmit,
+    assetsOptionsForSelect,
+    policiesOptionsForSelect
+  } = useContractForm({ onClose, contractId })
 
   return (
     <div
@@ -31,7 +38,7 @@ export const CreateContractModal: FC<ICreateContractModalProps> = ({
         <div className='relative bg-white rounded-lg shadow-sm z-[60] dark:bg-gray-700'>
           <div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200'>
             <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
-              {t('create_contract')}
+              {contractId ? t('edit_contract') : t('create_contract')}
             </h3>
             <button
               type='button'
@@ -50,93 +57,84 @@ export const CreateContractModal: FC<ICreateContractModalProps> = ({
             <div className='grid gap-4 mb-4 grid-cols-2'>
               <div className='col-span-2'>
                 <label
-                  htmlFor='title'
+                  htmlFor='name'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  {t('title')}
+                  {t('name')}
                 </label>
                 <input
                   type='text'
-                  id='title'
+                  id='name'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  placeholder={t('title_placeholder')}
+                  placeholder={t('name_placeholder')}
                   required
-                  {...createContractForm.register('title', { required: true })}
+                  {...createContractForm.register('name', { required: true })}
                 />
               </div>
-
-              <div className='col-span-2'>
+              <div>
                 <label
-                  htmlFor='description'
+                  htmlFor='accessPolicySelect'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  {t('description')}
-                </label>
-                <textarea
-                  id='description'
-                  {...createContractForm.register('description', {
-                    required: true
-                  })}
-                  rows={4}
-                  className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  placeholder={t('description_placeholder')}
-                ></textarea>
-              </div>
-              <div className='col-span-2 flex flex-col gap-1'>
-                <p>{t('validity_date_of_the_contract')}</p>
-                <div className='flex gap-4'>
-                  <div className='w-1/2 flex flex-col gap-1'>
-                    <label
-                      htmlFor='startDate'
-                      className='block text-sm font-medium text-gray-900 dark:text-white'
-                    >
-                      {t('start_date')}
-                    </label>
-                    <input
-                      type='date'
-                      id='start-date'
-                      {...createContractForm.register('startDate', {
-                        required: true
-                      })}
-                      placeholder='Ingrese la fecha'
-                      className='border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50'
-                    />
-                  </div>
-                  <div className='w-1/2 flex flex-col gap-1'>
-                    <label
-                      htmlFor='end-date'
-                      className='block text-sm font-medium text-gray-900 dark:text-white'
-                    >
-                      {t('end_date')}
-                    </label>
-                    <input
-                      type='date'
-                      id='endDate'
-                      {...createContractForm.register('endDate', {
-                        required: true
-                      })}
-                      placeholder='Ingrese la fecha'
-                      className='border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50'
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className='col-span-2'>
-                <label
-                  htmlFor='accessPolicy'
-                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                >
-                  {t('select_access_policy')}
+                  {t('access_policy')}
                 </label>
                 <select
-                  id='accessPolicy'
+                  id='accessPolicySelect'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                  {...createContractForm.register('accessPolicy', {
+                  {...createContractForm.register('access_policy_id', {
                     required: true
                   })}
                 >
-                  <option selected>{t('select_access_policy')}</option>
-                  <option value='PROVIDE_ACCESS'>{t('allow_access')}</option>
+                  <option value=''>{t('select_access_policy')}</option>
+                  {policiesOptionsForSelect?.map((policy) => (
+                    <option key={policy.value} value={policy.value}>
+                      {policy.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor='contractPolicy'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  {t('contract_policy')}
+                </label>
+                <select
+                  id='contractPolicy'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  {...createContractForm.register('contract_policy_id', {
+                    required: true
+                  })}
+                >
+                  <option value=''>{t('select_contract_policy')}</option>
+                  {policiesOptionsForSelect?.map((policy) => (
+                    <option key={policy.value} value={policy.value}>
+                      {policy.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-span-2'>
+                <label
+                  htmlFor='asset'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  {t('asset')}
+                </label>
+                <select
+                  id='asset'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  {...createContractForm.register('asset_id', {
+                    required: true
+                  })}
+                >
+                  <option value=''>{t('select_asset')}</option>
+                  {assetsOptionsForSelect?.map((asset) => (
+                    <option key={asset.value} value={asset.value}>
+                      {asset.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -145,7 +143,7 @@ export const CreateContractModal: FC<ICreateContractModalProps> = ({
               className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
             >
               <IoAddCircleOutline className='font-white size-5' />
-              {t('create_contract')}
+              {contractId ? t('edit_contract') : t('create_contract')}
             </button>
           </form>
         </div>
