@@ -39,7 +39,7 @@ export const CreateContractModal: FC<ICreateContractModalProps> = ({
               data-modal-hide='authentication-modal'
               onClick={onClose}
             >
-              <IoClose className='group-hover:rotate-180 transition-transform size-6' />
+              <IoClose className='group-hover:rotate-90 transition-transform size-6' />
               <span className='sr-only'>Close modal</span>
             </button>
           </div>

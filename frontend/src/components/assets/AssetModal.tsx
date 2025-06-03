@@ -1,21 +1,21 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
-import { usePolicyForm } from '../../hooks/policies/usePolicyForm'
 import { MdEdit } from 'react-icons/md'
+import { useAssetForm } from '../../hooks/assets/useAssetForm'
 
-interface IPolicyModalProps {
+interface IAssetModalProps {
   isOpen: boolean
   onClose: () => void
-  policyId?: string // Optional, if you want to edit an existing policy
+  assetId?: string // Optional, if you want to edit an existing asset
 }
-export const PolicyModal: FC<IPolicyModalProps> = ({
+export const AssetModal: FC<IAssetModalProps> = ({
   isOpen,
   onClose,
-  policyId
+  assetId
 }) => {
   const { t } = useTranslation()
-  const { createPolicyForm, onSubmit } = usePolicyForm({ policyId, onClose })
+  const { assetForm, onSubmit } = useAssetForm({ assetId, onClose })
 
   return (
     <div
@@ -34,7 +34,7 @@ export const PolicyModal: FC<IPolicyModalProps> = ({
         <div className='relative bg-white rounded-lg shadow-sm z-[60] dark:bg-gray-700'>
           <div className='flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200'>
             <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
-              {policyId ? t('update_policy') : t('create_policy')}
+              {assetId ? t('update_asset') : t('create_asset')}
             </h3>
             <button
               type='button'
@@ -48,10 +48,10 @@ export const PolicyModal: FC<IPolicyModalProps> = ({
           </div>
           <form
             className='p-4 md:p-5'
-            onSubmit={createPolicyForm.handleSubmit(onSubmit)}
+            onSubmit={assetForm.handleSubmit(onSubmit)}
           >
             <div className='grid gap-4 mb-4 grid-cols-2'>
-              {/* Name */}
+              {/* Title */}
               <div className='col-span-2'>
                 <label
                   htmlFor='name'
@@ -65,116 +65,109 @@ export const PolicyModal: FC<IPolicyModalProps> = ({
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
                   placeholder={t('name_placeholder')}
                   required
-                  {...createPolicyForm.register('name', { required: true })}
+                  {...assetForm.register('name', {
+                    required: true
+                  })}
                 />
               </div>
 
-              {/* Action (drop-down) */}
+              {/* Description */}
               <div className='col-span-2'>
                 <label
-                  htmlFor='action'
+                  htmlFor='description'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
-                  {t('action')}
+                  {t('description')}
                 </label>
-                <select
-                  id='action'
+                <input
+                  type='text'
+                  id='description'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  {...createPolicyForm.register('action', { required: true })}
-                >
-                  <option value='use'>{t('use')}</option>
-                  {/* <option value='DENY'>{t('deny')}</option> */}
-                </select>
+                  placeholder={t('description_placeholder')}
+                  required
+                  {...assetForm.register('description', {
+                    required: true
+                  })}
+                />
               </div>
 
-              <p>{t('requirements')}</p>
-
-              {/* type (drop-down with one option, DATA ACCESS) */}
+              {/* Type (select, only HTTPDATA for now) */}
               <div className='col-span-2'>
                 <label
-                  htmlFor='type'
+                  htmlFor='asset_data_type'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
                   {t('type')}
                 </label>
                 <select
-                  id='type'
+                  id='asset_data_type'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                  {...createPolicyForm.register('policy_constraints.type', {
+                  {...assetForm.register('data_source.type', {
                     required: true
                   })}
                 >
-                  <option value='DATA_ACCESS'>{t('data_access')}</option>
+                  <option value='HttpData'>{t('httpdata', 'HTTPDATA')}</option>
                 </select>
               </div>
 
-              {/* operator and value drop-downs, shown only if type is DATA_ACCESS */}
-              {createPolicyForm.watch('policy_constraints.type') ===
-                'DATA_ACCESS' && (
-                <>
-                  <div className='col-span-2'>
-                    <label
-                      htmlFor='operator'
-                      className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                    >
-                      {t('operator')}
-                    </label>
-                    <select
-                      id='operator'
-                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                      {...createPolicyForm.register(
-                        'policy_constraints.operator',
-                        {
-                          required: true
-                        }
-                      )}
-                    >
-                      <option value='eq'>{t('eq', 'Equals')}</option>
-                    </select>
-                  </div>
-                  <div className='col-span-2'>
-                    <label
-                      htmlFor='value'
-                      className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-                    >
-                      {t('value')}
-                    </label>
-                    <select
-                      id='value'
-                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-                      {...createPolicyForm.register(
-                        'policy_constraints.value',
-                        {
-                          required: true
-                        }
-                      )}
-                    >
-                      <option value='public'>{t('public', 'Public')}</option>
-                      <option value='private'>{t('private', 'Private')}</option>
-                      <option value='sensitive'>
-                        {t('sensitive', 'Sensitive')}
-                      </option>
-                    </select>
-                  </div>
-                </>
+              {/* Flow (PULL OR PUSH) */}
+              <div className='col-span-2'>
+                <label
+                  htmlFor='asset_data_flow'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                >
+                  {t('flow')}
+                </label>
+                <select
+                  id='asset_data_flow'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                  {...assetForm.register('data_source.flow', {
+                    required: true
+                  })}
+                >
+                  <option value='PULL'>{t('pull', 'PULL')}</option>
+                  <option value='PUSH'>{t('push', 'PUSH')}</option>
+                </select>
+              </div>
+
+              {/* Data address, only if type is HTTPDATA */}
+              {assetForm.watch('data_source.type') === 'HttpData' && (
+                <div className='col-span-2'>
+                  <label
+                    htmlFor='asset_data_address'
+                    className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                  >
+                    {t('data_address')}
+                  </label>
+                  <input
+                    type='text'
+                    id='asset_data_address'
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                    placeholder={t('data_address_placeholder')}
+                    required
+                    {...assetForm.register('data_source.source', {
+                      required: true
+                    })}
+                  />
+                </div>
               )}
             </div>
             <button
               type='submit'
               className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
               disabled={
-                !createPolicyForm.formState.isValid ||
-                createPolicyForm.formState.isSubmitting ||
-                (policyId && !createPolicyForm.formState.isDirty ? true : false)
+                !assetForm.formState.isValid ||
+                assetForm.formState.isSubmitting ||
+                (assetId && !assetForm.formState.isDirty ? true : false)
               }
             >
-              {policyId ? (
+              {assetId ? (
                 <MdEdit className='font-white size-5' />
               ) : (
                 <IoAddCircleOutline className='font-white size-5' />
               )}
               {/* {t('create_policy')} */}
-              {policyId ? t('update_policy') : t('create_policy')}
+              {assetId ? t('update_asset') : t('create_asset')}
             </button>
           </form>
         </div>
