@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
 import { useContractForm } from '../../hooks/contracts/useContractForm'
+import { Divider } from '../shared/Divider'
 
 interface ICreateContractModalProps {
   isOpen: boolean
@@ -138,13 +139,16 @@ export const ContractModal: FC<ICreateContractModalProps> = ({
                 </select>
               </div>
             </div>
-            <button
-              type='submit'
-              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
-            >
-              <IoAddCircleOutline className='font-white size-5' />
-              {contractId ? t('edit_contract') : t('create_contract')}
-            </button>
+            <Divider />
+            <footer className='flex justify-end py-2'>
+              <button
+                type='submit'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
+              >
+                <IoAddCircleOutline className='font-white size-5' />
+                {contractId ? t('edit_contract') : t('create_contract')}
+              </button>
+            </footer>
           </form>
         </div>
       </div>
