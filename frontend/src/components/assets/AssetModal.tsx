@@ -1,8 +1,9 @@
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
+import { IoAddCircleOutline, IoChevronDown, IoClose } from 'react-icons/io5'
 import { MdEdit } from 'react-icons/md'
 import { useAssetForm } from '../../hooks/assets/useAssetForm'
+import { Divider } from '../shared/Divider'
 
 interface IAssetModalProps {
   isOpen: boolean
@@ -92,7 +93,7 @@ export const AssetModal: FC<IAssetModalProps> = ({
               </div>
 
               {/* Type (select, only HTTPDATA for now) */}
-              <div className='col-span-2'>
+              <div className='col-span-2 relative'>
                 <label
                   htmlFor='asset_data_type'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
@@ -101,17 +102,18 @@ export const AssetModal: FC<IAssetModalProps> = ({
                 </label>
                 <select
                   id='asset_data_type'
-                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                  className='appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
                   {...assetForm.register('data_source.type', {
                     required: true
                   })}
                 >
                   <option value='HttpData'>{t('httpdata', 'HTTPDATA')}</option>
                 </select>
+                <IoChevronDown className='absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 dark:text-gray-300' />
               </div>
 
               {/* Flow (PULL OR PUSH) */}
-              <div className='col-span-2'>
+              <div className='col-span-2 relative'>
                 <label
                   htmlFor='asset_data_flow'
                   className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
@@ -120,7 +122,7 @@ export const AssetModal: FC<IAssetModalProps> = ({
                 </label>
                 <select
                   id='asset_data_flow'
-                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+                  className='appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
                   {...assetForm.register('data_source.flow', {
                     required: true
                   })}
@@ -128,6 +130,7 @@ export const AssetModal: FC<IAssetModalProps> = ({
                   <option value='PULL'>{t('pull', 'PULL')}</option>
                   <option value='PUSH'>{t('push', 'PUSH')}</option>
                 </select>
+                <IoChevronDown className='absolute right-3 top-[70%] -translate-y-1/2 text-gray-400 dark:text-gray-300' />
               </div>
 
               {/* Data address, only if type is HTTPDATA */}
@@ -152,23 +155,27 @@ export const AssetModal: FC<IAssetModalProps> = ({
                 </div>
               )}
             </div>
-            <button
-              type='submit'
-              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
-              disabled={
-                !assetForm.formState.isValid ||
-                assetForm.formState.isSubmitting ||
-                (assetId && !assetForm.formState.isDirty ? true : false)
-              }
-            >
-              {assetId ? (
-                <MdEdit className='font-white size-5' />
-              ) : (
-                <IoAddCircleOutline className='font-white size-5' />
-              )}
-              {/* {t('create_policy')} */}
-              {assetId ? t('update_asset') : t('create_asset')}
-            </button>
+
+            <Divider />
+            <footer className='flex justify-end py-2'>
+              <button
+                type='submit'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] focus:ring-4 focus:outline-none  cursor-pointer gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400'
+                disabled={
+                  !assetForm.formState.isValid ||
+                  assetForm.formState.isSubmitting ||
+                  (assetId && !assetForm.formState.isDirty ? true : false)
+                }
+              >
+                {assetId ? (
+                  <MdEdit className='font-white size-5' />
+                ) : (
+                  <IoAddCircleOutline className='font-white size-5' />
+                )}
+                {/* {t('create_policy')} */}
+                {assetId ? t('update_asset') : t('create_asset')}
+              </button>
+            </footer>
           </form>
         </div>
       </div>

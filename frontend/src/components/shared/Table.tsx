@@ -48,53 +48,55 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
   const { t } = useTranslation()
 
   return (
-    <div className='flex-1 overflow-x-auto px-0.5 w-full border border-gray-300 rounded-lg! shadow-md!'>
-      <table className='table-auto w-full h-full p-2'>
-        <thead className='bg-gray-100  border-b border-gray-300 sticky top-0 z-10 pb-2'>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className='text-gray-700'
+    <div className='flex-1 min-h-0 h-full overflow-x-auto px-0.5 w-full border border-gray-300 rounded-lg! shadow-md!'>
+      <table className='table-fixed w-full h-full'>
+        <thead className='bg-gray-100 border-b border-gray-300 sticky top-0 z-10'>
+          {/* Primera fila: nombres de columnas y orden */}
+          <tr className='border-b border-slate-300'>
+            {table.getHeaderGroups()[0].headers.map((header) => (
+              <th
+                key={header.id}
+                colSpan={header.colSpan}
+                className='text-gray-700 py-4 px-2'
+              >
+                {header.isPlaceholder ? null : (
+                  <div
+                    className={
+                      header.column.getCanSort()
+                        ? 'cursor-pointer select-none flex items-center justify-center'
+                        : 'flex items-center justify-center'
+                    }
+                    onClick={header.column.getToggleSortingHandler()}
                   >
-                    {header.isPlaceholder ? null : (
-                      <div className='flex flex-col gap-2 py-2 items-center'>
-                        <div
-                          {...{
-                            className: header.column.getCanSort()
-                              ? 'cursor-pointer select-none'
-                              : '',
-                            onClick: header.column.getToggleSortingHandler()
-                          }}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {{
-                            asc: <IoChevronUpOutline className='inline ml-1' />,
-                            desc: (
-                              <IoChevronDownOutline className='inline ml-1' />
-                            )
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </div>
-                        {header.column.getCanFilter() ? (
-                          <div>
-                            <Filter column={header.column} />
-                          </div>
-                        ) : null}
-                      </div>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
                     )}
-                  </th>
-                )
-              })}
-            </tr>
-          ))}
+                    {{
+                      asc: <IoChevronUpOutline className='inline ml-1' />,
+                      desc: <IoChevronDownOutline className='inline ml-1' />
+                    }[header.column.getIsSorted() as string] ?? null}
+                  </div>
+                )}
+              </th>
+            ))}
+          </tr>
+          {/* Segunda fila: filtros */}
+          <tr className='border-b border-slate-300'>
+            {table.getHeaderGroups()[0].headers.map((header) => (
+              <th
+                key={header.id + '-filter'}
+                colSpan={header.colSpan}
+                className='text-gray-700 py-4 px-2'
+              >
+                {header.isPlaceholder ? null : header.column.getCanFilter() ? (
+                  <Filter column={header.column} />
+                ) : null}
+              </th>
+            ))}
+          </tr>
         </thead>
-        <tbody>
+        <tbody className='bg-white align-middle' style={{ height: '100%' }}>
           {table.getRowModel().rows.map((row, index) => {
             return (
               <tr
@@ -103,7 +105,11 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
               >
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <td key={cell.id} className='py-2 text-center'>
+                    <td
+                      key={cell.id}
+                      className='py-2 text-center'
+                      style={{ verticalAlign: 'middle' }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -114,6 +120,16 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
               </tr>
             )
           })}
+          {/* Fila fantasma para empujar el footer abajo si hay pocas filas */}
+          <tr
+            style={{ height: '100%', pointerEvents: 'none' }}
+            aria-hidden='true'
+          >
+            <td
+              colSpan={columns.length}
+              style={{ padding: 0, border: 'none', background: 'transparent' }}
+            ></td>
+          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -208,53 +224,100 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
 function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue()
   //@ts-ignore
-  const { filterVariant } = column.columnDef.meta ?? {}
+  const { filterVariant, filterOptions } = column.columnDef.meta ?? {}
 
-  return filterVariant === 'range' ? (
-    <div>
-      <div className='flex space-x-2'>
-        {/* See faceted column filters example for min max values functionality */}
-        <DebouncedInput
-          type='number'
-          value={(columnFilterValue as [number, number])?.[0] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-          }
-          placeholder={`Min`}
-          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
-        />
-        <DebouncedInput
-          type='number'
-          value={(columnFilterValue as [number, number])?.[1] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [old?.[0], value])
-          }
-          placeholder={`Max`}
-          className='w-24 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
-        />
+  // Range (number min/max)
+  if (filterVariant === 'range') {
+    return (
+      <div>
+        <div className='flex space-x-2'>
+          <DebouncedInput
+            type='number'
+            value={(columnFilterValue as [number, number])?.[0] ?? ''}
+            onChange={(value) =>
+              column.setFilterValue((old: [number, number]) => [
+                value,
+                old?.[1]
+              ])
+            }
+            placeholder={`Min`}
+            className='w-24 border shadow rounded px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
+          />
+          <DebouncedInput
+            type='number'
+            value={(columnFilterValue as [number, number])?.[1] ?? ''}
+            onChange={(value) =>
+              column.setFilterValue((old: [number, number]) => [
+                old?.[0],
+                value
+              ])
+            }
+            placeholder={`Max`}
+            className='w-24 border shadow rounded px-2 py-1 border-gray-400 placeholder:text-gray-400 font-normal'
+          />
+        </div>
+        <div className='h-1' />
       </div>
-      <div className='h-1' />
-    </div>
-  ) : filterVariant === 'select' ? (
-    <select
-      onChange={(e) => column.setFilterValue(e.target.value)}
-      value={columnFilterValue?.toString()}
-    >
-      {/* See faceted column filters example for dynamic select options */}
-      <option value=''>All</option>
-      <option value='complicated'>complicated</option>
-      <option value='relationship'>relationship</option>
-      <option value='single'>single</option>
-    </select>
-  ) : (
+    )
+  }
+
+  // Select (dropdown)
+  if (filterVariant === 'select') {
+    // filterOptions puede venir en meta para opciones dinámicas
+    const options = filterOptions || [
+      { value: '', label: 'All' },
+      { value: 'complicated', label: 'complicated' },
+      { value: 'relationship', label: 'relationship' },
+      { value: 'single', label: 'single' }
+    ]
+    return (
+      <select
+        onChange={(e) => column.setFilterValue(e.target.value)}
+        value={columnFilterValue?.toString()}
+        className='w-36 border shadow rounded px-2 py-1 border-gray-400 font-normal'
+      >
+        {options.map((opt: any) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    )
+  }
+
+  // Date
+  if (filterVariant === 'date') {
+    return (
+      <input
+        type='date'
+        value={(columnFilterValue ?? '') as any}
+        onChange={(e) => column.setFilterValue(e.target.value)}
+        className='w-36 border shadow rounded px-2 py-1 border-gray-400 font-normal'
+      />
+    )
+  }
+
+  if (filterVariant === 'number') {
+    return (
+      <DebouncedInput
+        className='w-36 border shadow rounded px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal font-normal'
+        onChange={(value) => column.setFilterValue(value)}
+        placeholder={`Buscar...`}
+        type='number'
+        value={(columnFilterValue ?? '') as string | number}
+      />
+    )
+  }
+
+  // Text (default)
+  return (
     <DebouncedInput
-      className='w-36 border shadow rounded  px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal font-normal'
+      className='w-36 border shadow rounded px-2 py-1 border-gray-400 placeholder:text-gray-400 placeholder:font-normal font-normal'
       onChange={(value) => column.setFilterValue(value)}
       placeholder={`Buscar...`}
       type='text'
       value={(columnFilterValue ?? '') as string}
     />
-    // See faceted column filters example for datalist search suggestions
   )
 }
 

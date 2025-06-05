@@ -54,7 +54,11 @@ export const useAssetsTable = (setOpen: Dispatch<SetStateAction<boolean>>) => {
       }),
       columnHelper.accessor('version', {
         header: t('version'),
-        cell: (info) => info.getValue()
+        cell: (info) => info.getValue(),
+        filterFn: 'inNumberRange',
+        meta: {
+          filterVariant: 'number'
+        }
       }),
       columnHelper.display({
         id: 'actions',

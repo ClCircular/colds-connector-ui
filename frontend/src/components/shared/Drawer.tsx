@@ -35,7 +35,7 @@ export const Drawer: FC<{
         />
       )}
       <div
-        className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform duration-300 bg-white w-64 dark:bg-gray-800 ${
+        className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform duration-300 bg-white min-w-xs dark:bg-gray-800 ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
         tabIndex={-1}
