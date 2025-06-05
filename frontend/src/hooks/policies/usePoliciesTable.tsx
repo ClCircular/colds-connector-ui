@@ -2,7 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { useTranslation } from 'react-i18next'
 import { PolicyRow } from '../../interfaces/policies/policies.interface'
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
-import { filterFnDate } from '../../utils/FilterFnDate'
+// import { filterFnDate } from '../../utils/FilterFnDate'
 import dayjs from 'dayjs'
 import { useGetPolicies } from '../../api/policies/useGetPolicies'
 import { IoTrash } from 'react-icons/io5'
@@ -43,10 +43,7 @@ export const usePoliciesTable = (
       //action
       columnHelper.accessor('action', {
         header: t('action'),
-        cell: (info) => {
-          const action = info.getValue()
-          return t(`policy_action.${action}`, action)
-        }
+        cell: (info) => info.getValue()
       }),
       //restriction
       columnHelper.accessor('restriction', {
@@ -57,15 +54,15 @@ export const usePoliciesTable = (
         }
       }),
       //createdAt
-      columnHelper.accessor('createdAt', {
-        header: t('created_at'),
-        cell: (info) => {
-          const dateValue = info.getValue()
-          if (dayjs(dateValue).year() < 2000) return '—'
-          return dayjs(dateValue).format('YYYY/MM/DD HH:mm:ss')
-        },
-        filterFn: filterFnDate
-      }),
+      // columnHelper.accessor('createdAt', {
+      //   header: t('created_at'),
+      //   cell: (info) => {
+      //     const dateValue = info.getValue()
+      //     if (dayjs(dateValue).year() < 2000) return '—'
+      //     return dayjs(dateValue).format('YYYY/MM/DD HH:mm:ss')
+      //   },
+      //   filterFn: filterFnDate
+      // }),
       //actions
       columnHelper.display({
         id: 'actions',
@@ -110,7 +107,8 @@ export const usePoliciesTable = (
         !policy.created_at || !dayjs(policy.created_at).isValid()
           ? dayjs('0001-01-01T00:00:00.000Z').toDate()
           : dayjs(policy.created_at).toDate(),
-      action: policy.action,
+      // action: policy.action,
+      action: t(`policy_action.${policy.action}`, policy.action),
       restriction: policy.policy_constraints
         ? `${t(policy.policy_constraints[0]?.type.toLocaleLowerCase())} ${t(
             policy.policy_constraints[0]?.operator
