@@ -19,7 +19,10 @@ const handleCreatePolicy = async ({
     body: JSON.stringify({
       type: 'POST',
       url: '/v1/policies',
-      body: JSON.stringify(policyData)
+      body: JSON.stringify({
+        ...policyData,
+        policy_constraints: [policyData.policy_constraints]
+      })
     }),
     headers: {
       'Content-Type': 'application/json'
@@ -56,7 +59,14 @@ export const useCreatePolicy = () => {
       const optimisticPolicy: Policy = {
         policy_id: 'temp-id-' + Date.now(),
         created_at: dayjs().toDate(),
-        ...policyData
+        ...policyData,
+        policy_constraints: [
+          {
+            type: policyData.policy_constraints.type,
+            value: policyData.policy_constraints.value,
+            operator: policyData.policy_constraints.operator
+          }
+        ]
       }
 
       queryClient.setQueryData<Policy[]>(['policies', user?.userId], (old) => [

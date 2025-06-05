@@ -17,7 +17,7 @@ export interface Policy {
   name: string
   action: string
   created_at: Date
-  policy_constraints: PolicyConstraints
+  policy_constraints: PolicyConstraints[]
 }
 
 export interface PolicyConstraints {

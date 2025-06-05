@@ -112,9 +112,9 @@ export const usePoliciesTable = (
           : dayjs(policy.created_at).toDate(),
       action: policy.action,
       restriction: policy.policy_constraints
-        ? `${t(policy.policy_constraints.type.toLocaleLowerCase())} ${t(
-            policy.policy_constraints.operator
-          )} ${t(policy.policy_constraints.value)}`
+        ? `${t(policy.policy_constraints[0]?.type.toLocaleLowerCase())} ${t(
+            policy.policy_constraints[0]?.operator
+          )} ${t(policy.policy_constraints[0]?.value)}`
         : '—'
     }))
   }, [policiesData.data, policiesData.isLoading, policiesData.isError])

@@ -51,9 +51,9 @@ export const usePolicyForm = ({
           name: existingPolicy.name,
           action: existingPolicy.action,
           policy_constraints: {
-            type: existingPolicy.policy_constraints.type,
-            value: existingPolicy.policy_constraints.value,
-            operator: existingPolicy.policy_constraints.operator
+            type: existingPolicy.policy_constraints[0]?.type,
+            value: existingPolicy.policy_constraints[0]?.value,
+            operator: existingPolicy.policy_constraints[0]?.operator
           }
         })
         // return {
