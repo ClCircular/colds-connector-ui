@@ -128,7 +128,8 @@
     "confirm_password_placeholder": "Confirm your password",
     "password_reset_success": "Password reset successfully",
     "save_new_password": "Save new password",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "search_in_table": "Search in table"
   },
   "policy_action": {
     "use": "Usar"

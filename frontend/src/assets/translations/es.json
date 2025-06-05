@@ -32,6 +32,7 @@
   "data_address": "Dirección de datos",
   "data_address_placeholder": "Ingrese una dirección de datos",
   "page": "Página",
+  "search_in_table": "Buscar en la tabla",
   "access_policy": "Política de acceso",
   "contract_policy": "Política de contrato",
   "asset": "Recurso",
