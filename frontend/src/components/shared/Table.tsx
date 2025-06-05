@@ -163,34 +163,38 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
             <td colSpan={columns.length}>
               <div className='flex flex-wrap items-center gap-4 px-4 py-3 bg-gray-50 border-t border-gray-300 rounded-b-lg'>
                 {/* Botones de navegación */}
-                <div className='flex items-center space-x-2'>
+                <div className='flex items-center gap-1'>
                   <button
-                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    className='flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm'
                     onClick={() => table.setPageIndex(0)}
                     disabled={!table.getCanPreviousPage()}
+                    aria-label={t('first_page')}
                   >
-                    <FiChevronsLeft size={16} />
+                    <FiChevronsLeft size={18} />
                   </button>
                   <button
-                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    className='flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm'
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
+                    aria-label={t('previous_page')}
                   >
-                    <IoChevronBackOutline size={16} />
+                    <IoChevronBackOutline size={18} />
                   </button>
                   <button
-                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    className='flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm'
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
+                    aria-label={t('next_page')}
                   >
-                    <IoChevronForwardOutline size={16} />
+                    <IoChevronForwardOutline size={18} />
                   </button>
                   <button
-                    className='p-2 border cursor-pointer rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                    className='flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 hover:text-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm'
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                     disabled={!table.getCanNextPage()}
+                    aria-label={t('last_page')}
                   >
-                    <FiChevronsRight size={16} />
+                    <FiChevronsRight size={18} />
                   </button>
                 </div>
 
@@ -220,7 +224,7 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
                         : 0
                       table.setPageIndex(page)
                     }}
-                    className='w-16 p-1 border rounded text-center border-gray-400 placeholder:text-gray-400'
+                    className='w-16 px-2 py-1 border border-gray-300 rounded text-center text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder:text-gray-400 transition'
                   />
                 </div>
 
@@ -229,7 +233,7 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
                   <select
                     value={table.getState().pagination.pageSize}
                     onChange={(e) => table.setPageSize(Number(e.target.value))}
-                    className='p-1 border rounded border-gray-400'
+                    className='px-2 py-1 border border-gray-300 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition'
                   >
                     {[10, 20, 30, 40, 50].map((size) => (
                       <option key={size} value={size}>
@@ -290,12 +294,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
   // Select (dropdown)
   if (filterVariant === 'select') {
     // filterOptions puede venir en meta para opciones dinámicas
-    const options = filterOptions || [
-      { value: '', label: 'All' },
-      { value: 'complicated', label: 'complicated' },
-      { value: 'relationship', label: 'relationship' },
-      { value: 'single', label: 'single' }
-    ]
+    const options = filterOptions || [{ value: '', label: 'All' }]
     return (
       <select
         onChange={(e) => column.setFilterValue(e.target.value)}
@@ -330,7 +329,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
         placeholder={`Buscar...`}
         type='number'
         value={(columnFilterValue ?? '') as string | number}
-        className='w-fit p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+        className='w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 font-normal'
       />
     )
   }
@@ -342,7 +341,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       placeholder={`Buscar...`}
       type='text'
       value={(columnFilterValue ?? '') as string}
-      className='w-fit p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+      className='w-full p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 font-normal'
     />
   )
 }
