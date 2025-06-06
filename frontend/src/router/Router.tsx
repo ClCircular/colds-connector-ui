@@ -1,7 +1,15 @@
 import { Switch, Route } from 'wouter'
 
 import { ProtectedRoute } from '../components/shared/ProtectedRoute'
-import { Assets, Contracts, LoginPage, MainPage, Policies } from '../pages'
+import {
+  Assets,
+  CatalogBrowser,
+  Contracts,
+  LoginPage,
+  MainPage,
+  Negotiations,
+  Policies
+} from '../pages'
 
 export const Router = () => {
   return (
@@ -22,6 +30,14 @@ export const Router = () => {
       <Route
         path='/assets'
         component={() => <ProtectedRoute Component={Assets} />}
+      />
+      <Route
+        path='/negotiations'
+        component={() => <ProtectedRoute Component={Negotiations} />}
+      />
+      <Route
+        path='/catalog-browser'
+        component={() => <ProtectedRoute Component={CatalogBrowser} />}
       />
       <Route>404 - Not Found</Route>
     </Switch>

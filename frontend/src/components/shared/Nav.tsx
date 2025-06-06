@@ -33,6 +33,18 @@ export const Nav: FC<{
       href: '/assets',
       label: t('assets'),
       icon: <IoDocuments className='size-6' />
+    },
+    // negotiations
+    {
+      href: '/negotiations',
+      label: t('negotiations'),
+      icon: <IoFileTrayFull className='size-6' />
+    },
+    // catalog browser
+    {
+      href: '/catalog-browser',
+      label: t('catalogBrowser'),
+      icon: <IoFileTrayFull className='size-6' />
     }
   ]
 
