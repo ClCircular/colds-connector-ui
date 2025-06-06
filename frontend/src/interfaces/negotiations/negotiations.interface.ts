@@ -91,3 +91,12 @@ export interface Constraint {
   operator: string
   rightOperand: string
 }
+
+export interface NegotiationRow {
+  assetName: string
+  provider: string
+  signingDate: Date | null
+  contractId: string
+  negotiationId: string
+  transfer: string
+}
