@@ -43,7 +43,7 @@ export const Nav: FC<{
     // catalog browser
     {
       href: '/catalog-browser',
-      label: t('catalogBrowser'),
+      label: t('catalog_browser'),
       icon: <IoFileTrayFull className='size-6' />
     }
   ]

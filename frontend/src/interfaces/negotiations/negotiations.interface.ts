@@ -93,7 +93,7 @@ export interface Constraint {
 }
 
 export interface NegotiationRow {
-  assetName: string
+  contractName: string
   provider: string
   signingDate: Date | null
   contractId: string

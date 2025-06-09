@@ -3,6 +3,7 @@ import { useCatalogRequest } from '../api/negotiations/useCatalogRequest'
 import { Loader } from '../components'
 import { useGetAssets } from '../api/assets/useGetAssets'
 import { useRequestNegotiation } from '../api/negotiations/useRequestNegotiation'
+import { useTranslation } from 'react-i18next'
 
 export const CatalogBrowser = () => {
   const [providerURL, setProviderURL] = useState('')
@@ -10,6 +11,8 @@ export const CatalogBrowser = () => {
   const { data, isLoading, isError } = useCatalogRequest(searchURL)
 
   const assetsData = useGetAssets()
+
+  const { t } = useTranslation()
 
   const { mutate } = useRequestNegotiation()
 
@@ -31,7 +34,7 @@ export const CatalogBrowser = () => {
       <form onSubmit={handleSearch} className='flex gap-2 mb-6 justify-end'>
         <input
           type='text'
-          placeholder='Provider URL'
+          placeholder={t('provider_url')}
           value={providerURL}
           onChange={(e) => setProviderURL(e.target.value)}
           className='w-sm border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500'
@@ -41,7 +44,7 @@ export const CatalogBrowser = () => {
           className='px-4 py-2 bg-[#94bf43] hover:bg-[#7a9e32] text-white rounded transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed hover:cursor-pointer'
           disabled={!providerURL}
         >
-          Buscar
+          {t('search')}
         </button>
       </form>
 
@@ -58,9 +61,6 @@ export const CatalogBrowser = () => {
 
       {data && (
         <div className='rounded-lg p-4 bg-white shadow-md w-md'>
-          <h2 className='text-lg font-semibold mb-4 text-black'>
-            Catálogo de Servicios
-          </h2>
           {/* <h3>
             {
               assetsData.data?.find(
@@ -71,7 +71,9 @@ export const CatalogBrowser = () => {
           </h3> */}
           {assetsDataInCatalog.map((asset) => (
             <>
-              <h3 key={asset.asset_id}>{asset.name}</h3>
+              <h2 className='text-lg' key={asset.asset_id}>
+                {asset.name}
+              </h2>
               <p className='text-gray-600 mb-2'>
                 {asset.description || 'No description available'}
               </p>
