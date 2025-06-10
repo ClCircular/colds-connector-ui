@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import { useGetContracts } from '../../api/contracts/useGetContracts'
 import { useAgreeNegotiation } from '../../api/negotiations/useAgreeNegotiation'
+import { useTransfersRequest } from '../../api/transfers/useTransfersRequest'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
@@ -13,6 +14,7 @@ export const useNegotiationsTable = () => {
   const columnHelper = createColumnHelper<NegotiationRow>()
 
   const agreeMutation = useAgreeNegotiation()
+  const transfersRequestMutation = useTransfersRequest()
 
   const { t } = useTranslation()
 
@@ -34,12 +36,12 @@ export const useNegotiationsTable = () => {
         header: t('transfer'),
         cell: (info) => {
           // Solo mostrar si agree existe (que es agreement_id)
-          const agreementId = info.row.original.agreement_id
+          const agreementId = info.getValue()
           if (!agreementId) return null
           return (
             <button
               className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
-              onClick={() => console.log('Transfer clicked', info.getValue())}
+              onClick={() => transfersRequestMutation.mutate({ agreementId })}
             >
               {t('transfer_action')}
             </button>
@@ -78,7 +80,7 @@ export const useNegotiationsTable = () => {
         contractName: contract?.name,
         // provider: negotiation.provider_pid,
         signingDate: negotiation.signed_at,
-        transfer: negotiation.cn_id,
+        transfer: negotiation.agreement_id,
         agree: negotiation.cn_id,
         agreement_id: negotiation.agreement_id
       }
