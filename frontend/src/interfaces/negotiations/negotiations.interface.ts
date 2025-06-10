@@ -99,4 +99,6 @@ export interface NegotiationRow {
   contractId: string
   negotiationId: string
   transfer: string
+  agree: string
+  agreement_id: string
 }

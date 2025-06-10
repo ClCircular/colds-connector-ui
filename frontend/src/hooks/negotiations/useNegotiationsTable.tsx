@@ -4,12 +4,15 @@ import { NegotiationRow } from '../../interfaces/negotiations/negotiations.inter
 import { useTranslation } from 'react-i18next'
 import { useMemo } from 'react'
 import { useGetContracts } from '../../api/contracts/useGetContracts'
+import { useAgreeNegotiation } from '../../api/negotiations/useAgreeNegotiation'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
   const contractsData = useGetContracts()
 
   const columnHelper = createColumnHelper<NegotiationRow>()
+
+  const agreeMutation = useAgreeNegotiation()
 
   const { t } = useTranslation()
 
@@ -29,14 +32,35 @@ export const useNegotiationsTable = () => {
       }),
       columnHelper.accessor('transfer', {
         header: t('transfer'),
-        cell: (info) => (
-          <button
-            className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
-            onClick={() => console.log('Transfer clicked', info.getValue())}
-          >
-            {t('transfer_action')}
-          </button>
-        )
+        cell: (info) => {
+          // Solo mostrar si agree existe (que es agreement_id)
+          const agreementId = info.row.original.agreement_id
+          if (!agreementId) return null
+          return (
+            <button
+              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+              onClick={() => console.log('Transfer clicked', info.getValue())}
+            >
+              {t('transfer_action')}
+            </button>
+          )
+        }
+      }),
+      columnHelper.accessor('agree', {
+        header: t('agree'),
+        cell: (info) => {
+          // Solo mostrar si agree NO existe (que es agreement_id)
+          const agreementId = info.row.original.agreement_id
+          if (agreementId) return null
+          return (
+            <button
+              className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+              onClick={() => agreeMutation.mutate({ cn_id: info.getValue() })}
+            >
+              {t('agree_action')}
+            </button>
+          )
+        }
       })
     ],
     [t]
@@ -54,7 +78,9 @@ export const useNegotiationsTable = () => {
         contractName: contract?.name,
         // provider: negotiation.provider_pid,
         signingDate: negotiation.signed_at,
-        transfer: negotiation.cn_id
+        transfer: negotiation.cn_id,
+        agree: negotiation.cn_id,
+        agreement_id: negotiation.agreement_id
       }
     })
   }, [negotiationsData.data, contractsData.data])
