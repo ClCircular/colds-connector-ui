@@ -10,6 +10,7 @@
   "login.toast_forgot_password_error": "Error sending password reset code",
   "actions": "Actions",
   "add_contract": "Add contract",
+  "transfers_history": "Transfers history",
   "contracts": "Contracts",
   "create_contract": "Create contract",
   "create_new_contract": "Create new contract",
