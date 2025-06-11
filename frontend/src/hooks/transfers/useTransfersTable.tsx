@@ -3,6 +3,8 @@ import { useGetTransfers } from '../../api/transfers/useGetTransfers'
 import { TransfersTableRow } from '../../interfaces/transfers/transfers.interface'
 import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
+import { filterFnDate } from '../../utils/FilterFnDate'
+import dayjs from 'dayjs'
 
 export const useTransfersTable = () => {
   const { t } = useTranslation()
@@ -23,7 +25,17 @@ export const useTransfersTable = () => {
       }),
       columnHelper.accessor('created_at', {
         header: t('created_at'),
-        cell: (info) => info.getValue()
+        cell: (props) => {
+          const dateValue = props.getValue()
+          // check if the date is equal to '0001-01-01T00:00:00.000Z'
+          // if it is, then we return a dash
+          if (dayjs(dateValue).year() < 2000) return '—'
+          return dayjs(dateValue).format('YYYY/MM/DD HH:mm:ss')
+        },
+        meta: {
+          filterVariant: 'date'
+        },
+        filterFn: filterFnDate
       })
     ],
     [t]
@@ -35,7 +47,10 @@ export const useTransfersTable = () => {
         transfer_id: transfer.transfer_id,
         agreement_id: transfer.agreement_id,
         status: transfer.transfer_state,
-        created_at: new Date(transfer.created_at).toLocaleString()
+        created_at:
+          !transfer.created_at || !dayjs(transfer.created_at).isValid()
+            ? dayjs('0001-01-01T00:00:00.000Z').toDate()
+            : dayjs(transfer.created_at).toDate()
       })) || []
     )
   }, [transfersData.data])

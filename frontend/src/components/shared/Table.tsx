@@ -19,6 +19,8 @@ import {
 } from 'react-icons/io5'
 import { FiChevronsLeft, FiChevronsRight } from 'react-icons/fi'
 import { useTranslation } from 'react-i18next'
+import { DateRangeInput } from './DateRangeInput'
+import { filterFnDate } from '../../utils/FilterFnDate'
 
 interface TableProps {
   rows: any[]
@@ -35,7 +37,9 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
     data: rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    filterFns: {},
+    filterFns: {
+      date: filterFnDate
+    },
     state: {
       columnFilters,
       globalFilter
@@ -312,14 +316,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
   // Date
   if (filterVariant === 'date') {
-    return (
-      <input
-        type='date'
-        value={(columnFilterValue ?? '') as any}
-        onChange={(e) => column.setFilterValue(e.target.value)}
-        className='w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-normal bg-white'
-      />
-    )
+    return <DateRangeInput onChange={(range) => column.setFilterValue(range)} />
   }
 
   if (filterVariant === 'number') {

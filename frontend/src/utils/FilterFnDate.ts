@@ -11,9 +11,15 @@ export const filterFnDate = (
 
   if (!rowValue.isValid()) return false // No hay ningún valor en la fila
 
-  if (Array.isArray(filterValue)) {
+  if (!filterValue.from && !filterValue.to) {
+    return true // No se aplica ningún filtro (rango vacío)
+  }
+
+  if (filterValue.from && filterValue.to) {
     // Manejo de rango: filterValue es un array [startDate, endDate]
-    const [startDate, endDate] = filterValue
+    // const [startDate, endDate] = filterValue
+    const startDate = filterValue.from
+    const endDate = filterValue.to
 
     if (!startDate && !endDate) return true // No se aplica ningún filtro (rango vacío)
     // si no hay fecha de inicio, se toma como fecha mínima el 1 de enero de 1970
