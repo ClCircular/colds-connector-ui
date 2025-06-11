@@ -117,7 +117,7 @@ export const Table: FC<TableProps> = ({ columns, rows, initialFilters }) => {
               <th
                 key={header.id + '-filter'}
                 colSpan={header.colSpan}
-                className='text-gray-700 py-4 px-2 min-w-44'
+                className='text-gray-700 py-4 px-2'
               >
                 {header.isPlaceholder ? null : header.column.getCanFilter() ? (
                   <Filter column={header.column} />
