@@ -6,6 +6,8 @@ import { useMemo } from 'react'
 import { useGetContracts } from '../../api/contracts/useGetContracts'
 import { useAgreeNegotiation } from '../../api/negotiations/useAgreeNegotiation'
 import { useTransfersRequest } from '../../api/transfers/useTransfersRequest'
+import dayjs from 'dayjs'
+import { filterFnDate } from '../../utils/FilterFnDate'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
@@ -30,7 +32,17 @@ export const useNegotiationsTable = () => {
       // }),
       columnHelper.accessor('signingDate', {
         header: t('signing_date'),
-        cell: (info) => info.getValue()
+        cell: (props) => {
+          const dateValue = props.getValue()
+          // check if the date is equal to '0001-01-01T00:00:00.000Z'
+          // if it is, then we return a dash
+          if (dayjs(dateValue).year() < 2000) return '—'
+          return dayjs(dateValue).format('YYYY/MM/DD HH:mm:ss')
+        },
+        meta: {
+          filterVariant: 'date'
+        },
+        filterFn: filterFnDate
       }),
       columnHelper.accessor('transfer', {
         header: t('transfer'),
