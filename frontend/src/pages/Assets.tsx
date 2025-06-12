@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoCreateOutline } from 'react-icons/io5'
 import { Table } from '../components/shared/Table'
-import { useAssetsTable } from '../hooks/assets/UseAssetsTable'
+import { useAssetsTable } from '../hooks/assets/useAssetsTable'
 import { AssetModal } from '../components/assets/AssetModal'
 
 export const Assets = () => {

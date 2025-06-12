@@ -3,11 +3,15 @@ import { useGetPolicies } from '../api/policies/useGetPolicies'
 import { useGetAssets } from '../api/assets/useGetAssets'
 import { useTranslation } from 'react-i18next'
 import { NavigationCard } from '../components'
+import { useGetNegotiations } from '../api/negotiations/useGetNegotiations'
+import { useGetTransfers } from '../api/transfers/useGetTransfers'
 
 export const MainPage = () => {
   const contractsData = useGetContracts()
   const policiesData = useGetPolicies()
   const assets = useGetAssets()
+  const negotiationsData = useGetNegotiations()
+  const transfersHistoryData = useGetTransfers()
   const { t } = useTranslation()
   const cardsInfo = [
     {
@@ -24,6 +28,19 @@ export const MainPage = () => {
       title: t('assets'),
       description: `${assets.data?.length || 0} ${t('assets')}`,
       link: '/assets'
+    },
+    //negotiations
+    {
+      title: t('negotiations'),
+      description: `${negotiationsData.data?.length || 0} ${t('negotiations')}`,
+      link: '/negotiations'
+    },
+    {
+      title: t('transfers_history'),
+      description: `${transfersHistoryData.data?.length || 0} ${t(
+        'transfers_history'
+      )}`,
+      link: '/transfers-history'
     }
   ]
 

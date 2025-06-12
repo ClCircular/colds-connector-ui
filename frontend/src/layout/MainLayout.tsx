@@ -1,6 +1,10 @@
 import { ReactNode, useState } from 'react'
 import { Drawer, Header, Loader } from '../components'
 import { useGetPolicies } from '../api/policies/useGetPolicies'
+import { useGetAssets } from '../api/assets/useGetAssets'
+import { useGetContracts } from '../api/contracts/useGetContracts'
+import { useGetNegotiations } from '../api/negotiations/useGetNegotiations'
+import { useGetTransfers } from '../api/transfers/useGetTransfers'
 
 interface MainLayoutProps {
   children: ReactNode
@@ -8,24 +12,24 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const [open, setOpen] = useState(false)
+  const contractsData = useGetContracts()
   const policiesData = useGetPolicies()
-  // // const datasourcesData = useGetDataSources()
-
-  // useEffect(() => {
-  //   const langSelected = localStorage.getItem('i18nextLng')
-  //   if (langSelected) {
-  //     i18next.changeLanguage(langSelected, () => {
-  //       console.log('Language changed to:', langSelected)
-  //     })
-  //   } else {
-  //     console.log('No language selected, defaulting to English')
-  //   }
-  // }, [])
+  const assets = useGetAssets()
+  const negotiationsData = useGetNegotiations()
+  const transfersHistoryData = useGetTransfers()
 
   if (
     // contractsData.isLoading ||
     policiesData.isLoading ||
-    policiesData.isFetching
+    policiesData.isFetching ||
+    assets.isLoading ||
+    assets.isFetching ||
+    negotiationsData.isLoading ||
+    negotiationsData.isFetching ||
+    transfersHistoryData.isLoading ||
+    transfersHistoryData.isFetching ||
+    contractsData.isLoading ||
+    contractsData.isFetching
   ) {
     return (
       <div className='flex justify-center items-center h-screen w-full bg-black opacity-50 fixed top-0 left-0 z-[100]'>

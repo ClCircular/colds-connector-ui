@@ -20,6 +20,7 @@ app.use(cors({ credentials: true, origin: true }))
 
 // let connectorUrl = 'https://3.223.70.98:8080'
 let connectorUrl = 'http://localhost:18080'
+let consumerUrl = 'http://localhost:28080'
 let auth = {
   username: 'admin',
   password: 'secret'
@@ -98,6 +99,64 @@ app.post('/', async (req, res) => {
   // console.log(response.data)
   dataFromConnector = response?.data
   res.send(dataFromConnector)
+})
+
+app.post('/consumers', async (req, res) => {
+  let petition = req.body
+  console.log(`Received consumer petition ${JSON.stringify(petition)}`)
+
+  let body = petition.body
+  let params = petition.params
+  let requestParams = ''
+  let i = 0
+  if (params != undefined) {
+    console.log('Adding request params to the endpointURL')
+    for (let key in params) {
+      if (i === 0) {
+        requestParams += '?' + key + '=' + params[key]
+      } else {
+        requestParams += '&' + key + '=' + params[key]
+      }
+      i++
+    }
+  }
+  let dataFromConsumer
+  let fullURL = `${consumerUrl}${petition.url}${requestParams}`
+  console.log(`Sending ${petition.type} request to ${fullURL}`)
+  switch (petition.type) {
+    case 'GET':
+      var response = await axios.get(fullURL, {
+        headers: { 'content-type': 'application/json' },
+        auth,
+        httpsAgent
+      })
+      break
+    case 'POST':
+      var response = await axios.post(fullURL, body, {
+        headers: { 'content-type': 'application/json' },
+        auth,
+        httpsAgent
+      })
+      break
+    case 'PUT':
+      var response = await axios.put(fullURL, body, {
+        headers: { 'content-type': 'application/json' },
+        auth,
+        httpsAgent
+      })
+      break
+    case 'DELETE':
+      var response = await axios.delete(fullURL, {
+        data: body,
+        headers: { 'content-type': 'application/json' },
+        auth,
+        httpsAgent
+      })
+      break
+  }
+  // console.log(response.data)
+  dataFromConsumer = response?.data
+  res.send(dataFromConsumer)
 })
 
 app.listen(port, () => {

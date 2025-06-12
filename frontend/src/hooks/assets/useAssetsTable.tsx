@@ -54,7 +54,11 @@ export const useAssetsTable = (setOpen: Dispatch<SetStateAction<boolean>>) => {
       }),
       columnHelper.accessor('version', {
         header: t('version'),
-        cell: (info) => info.getValue()
+        cell: (info) => info.getValue(),
+        filterFn: 'inNumberRange',
+        meta: {
+          filterVariant: 'number'
+        }
       }),
       columnHelper.display({
         id: 'actions',
@@ -66,7 +70,7 @@ export const useAssetsTable = (setOpen: Dispatch<SetStateAction<boolean>>) => {
             <div className='flex space-x-2 items-center justify-center'>
               {/* Add action buttons here, e.g., Edit, Delete */}
               <button
-                className='text-blue-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
+                className='text-[#0096b9] hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
                 onClick={() => {
                   setOpen(true)
                   setAssetId(id)
@@ -75,7 +79,7 @@ export const useAssetsTable = (setOpen: Dispatch<SetStateAction<boolean>>) => {
                 <MdEdit className='size-6' />
               </button>
               <button
-                className='text-red-500 hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
+                className='text-[#d00000] hover:bg-slate-100 transition-colors rounded-full p-3 cursor-pointer'
                 onClick={() => handleDeleteAsset(id)}
               >
                 <IoTrash className='size-6' />

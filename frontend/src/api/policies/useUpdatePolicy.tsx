@@ -19,7 +19,10 @@ const handleUpdatePolicy = async ({
     body: JSON.stringify({
       type: 'PUT',
       url: `/v1/policies/${policyId}`,
-      body: newPolicyData
+      body: {
+        ...newPolicyData,
+        policy_constraints: [newPolicyData.policy_constraints]
+      }
     }),
     headers: {
       'Content-Type': 'application/json'
@@ -48,7 +51,13 @@ export const useUpdatePolicy = () => {
       ])
       queryClient.setQueryData<Policy[]>(['policies', user?.userId], (old) =>
         (old ?? []).map((p) =>
-          p.policy_id === policyId ? { ...p, ...newPolicyData } : p
+          p.policy_id === policyId
+            ? {
+                ...p,
+                ...newPolicyData,
+                policy_constraints: [newPolicyData.policy_constraints]
+              }
+            : p
         )
       )
       return { previousPolicies }
