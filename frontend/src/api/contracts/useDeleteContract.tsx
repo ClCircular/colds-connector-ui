@@ -15,7 +15,7 @@ const handleDeleteContract = async ({ contractId }: { contractId: string }) => {
       'Content-Type': 'application/json'
     }
   }
-  const url = `http://localhost:8083`
+  const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
   await fetch(url, requestOptions)
   return { contractId }
 }

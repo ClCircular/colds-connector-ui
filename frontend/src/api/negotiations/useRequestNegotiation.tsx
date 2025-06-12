@@ -23,7 +23,7 @@ const handleRequestNegotiation = async ({
       'Content-Type': 'application/json'
     }
   }
-  const url = `http://localhost:8083/consumers`
+  const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
   const response = await fetch(url, requestOptions)
   const dataFormatted = await response.json()
   return dataFormatted as Negotiation

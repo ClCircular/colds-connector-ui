@@ -25,7 +25,7 @@ const handleCreateContract = async ({
       'Content-Type': 'application/json'
     }
   }
-  const url = `http://localhost:8083`
+  const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
 
   console.log({ url, requestOptions })
   const response = await fetch(url, requestOptions)
