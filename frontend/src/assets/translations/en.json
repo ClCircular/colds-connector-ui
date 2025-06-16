@@ -114,6 +114,8 @@
   "contract": "Contract",
   "search": "Search",
   "negotiation": "Negotiation",
+  "negotiate": "Negotiate",
+  "no_transfers_history_available": "No transfers history available",
   "provider": "Provider",
   "updated_at": "Updated at",
 

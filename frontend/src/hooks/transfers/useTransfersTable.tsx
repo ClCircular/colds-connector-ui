@@ -2,14 +2,17 @@ import { useTranslation } from 'react-i18next'
 import { useGetTransfers } from '../../api/transfers/useGetTransfers'
 import { TransfersTableRow } from '../../interfaces/transfers/transfers.interface'
 import { createColumnHelper } from '@tanstack/react-table'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { filterFnDate } from '../../utils/FilterFnDate'
 import dayjs from 'dayjs'
 import { useGetNegotiations } from '../../api/negotiations/useGetNegotiations'
 import { useLocation } from 'wouter'
 import { useTransferStart } from '../../api/transfers/useTransferStart'
+import { useTransfersRequestData } from '../../api/transfers/useTransfersRequestData'
 
 export const useTransfersTable = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [jsonData, setJsonData] = useState('')
   const { t } = useTranslation()
   const [_, setLocation] = useLocation()
 
@@ -17,6 +20,7 @@ export const useTransfersTable = () => {
   const negotiationsData = useGetNegotiations()
 
   const transferStartMutation = useTransferStart()
+  const transferRequestDataMutation = useTransfersRequestData()
 
   const columnHelper = createColumnHelper<TransfersTableRow>()
 
@@ -70,7 +74,6 @@ export const useTransfersTable = () => {
         header: t('actions'),
         cell: (props) => {
           const row = props.row.original
-          console.log({ role: row.role, transfer_format: row.transfer_format })
           if (
             row.role === 'PROVIDER' &&
             row.transfer_format.toUpperCase().includes('PULL')
@@ -97,7 +100,15 @@ export const useTransfersTable = () => {
               <button
                 className='px-2 py-1 bg-[#007bff] text-white rounded hover:bg-blue-600'
                 onClick={() => {
-                  // Handle download data action
+                  transferRequestDataMutation
+                    .mutateAsync({
+                      transferId: row.transfer_id
+                    })
+                    .then((data) => {
+                      console.log('Entro aqui', data)
+                      setIsModalOpen(true)
+                      setJsonData(JSON.stringify(data, null, 2))
+                    })
                 }}
               >
                 {t('download_data')}
@@ -133,5 +144,5 @@ export const useTransfersTable = () => {
     })
   }, [transfersData.data, negotiationsData.data])
 
-  return { columns, rows }
+  return { columns, rows, isModalOpen, setIsModalOpen, jsonData, setJsonData }
 }

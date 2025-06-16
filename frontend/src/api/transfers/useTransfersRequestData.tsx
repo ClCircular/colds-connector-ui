@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useAuthUser } from '../../contexts/UserContext'
 
-const handleTransferStart = async ({ transferId }: { transferId: string }) => {
+const handleTransfersRequestData = async ({
+  transferId
+}: {
+  transferId: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
       type: 'POST',
-      url: `/v1/transfers/start/${transferId}`
+      url: `/v1/transfers/requestData/${transferId}`
     }),
     headers: {
       'Content-Type': 'application/json'
@@ -18,27 +22,24 @@ const handleTransferStart = async ({ transferId }: { transferId: string }) => {
   const response = await fetch(url, requestOptions)
   const dataFormatted = await response.json()
   console.log({ dataFormatted })
-  return dataFormatted as { message: string }
+  return dataFormatted
 }
 
-export const useTransferStart = () => {
-  const queryClient = useQueryClient()
-
+export const useTransfersRequestData = () => {
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
-
   const mutation = useMutation({
-    mutationFn: handleTransferStart,
+    mutationFn: handleTransfersRequestData,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['transfers', user?.userId]
-      })
+      // queryClient.invalidateQueries({
+      //   queryKey: ['transfers', user?.userId]
+      // })
       toast.success(t('transfers.request.success'))
     },
     onError: () => {
       toast.error(t('transfers.request.error'))
     }
   })
+
   return mutation
 }
