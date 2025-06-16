@@ -43,6 +43,9 @@ export interface Dataset {
   '@type': string
   hasPolicy: HasPolicy[]
   distribution: Distribution[]
+  name: string
+  description: string
+  properties: Properties
 }
 
 export interface Distribution {
@@ -68,6 +71,10 @@ export interface Constraint {
   rightOperand: string
 }
 
+export interface Properties {
+  version: string
+}
+
 export interface Service {
   '@id': string
   '@type': string
@@ -81,24 +88,18 @@ export interface RequestNegotiationBody {
   permissions: Permission[]
 }
 
-export interface Permission {
-  action: string
-  constraint: Constraint[]
-}
-
-export interface Constraint {
-  leftOperand: string
-  operator: string
-  rightOperand: string
-}
-
 export interface NegotiationRow {
   contractName: string
   provider: string
   signingDate: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
   contractId: string
   negotiationId: string
   transfer: string
+  cn_state: string
   agree: string
   agreement_id: string
+  role: string // CONSUMER | PROVIDER
+  cn_id: string // id real de la negotiation
 }

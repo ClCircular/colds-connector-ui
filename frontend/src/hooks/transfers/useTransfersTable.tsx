@@ -5,30 +5,39 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
 import { filterFnDate } from '../../utils/FilterFnDate'
 import dayjs from 'dayjs'
+import { useGetNegotiations } from '../../api/negotiations/useGetNegotiations'
+import { useLocation } from 'wouter'
 
 export const useTransfersTable = () => {
   const { t } = useTranslation()
+  const [_, setLocation] = useLocation()
 
   const transfersData = useGetTransfers()
+  const negotiationsData = useGetNegotiations()
 
   const columnHelper = createColumnHelper<TransfersTableRow>()
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('transfer_id', {
-        header: t('transfer_id'),
-        cell: (info) => info.getValue()
+      columnHelper.accessor('negotiation', {
+        header: t('negotiation'),
+        cell: (props) => {
+          const negotiationName = props.getValue()
+          const agreementId = props.row.original.agreement_id
+          return (
+            <button
+              className='text-blue-600 underline hover:text-blue-800 transition-colors'
+              onClick={() => setLocation(`/negotiations/${agreementId}`)}
+            >
+              {negotiationName}
+            </button>
+          )
+        }
       }),
-      columnHelper.accessor('agreement_id', {
-        header: t('agreement_id'),
-        cell: (info) => info.getValue()
-      }),
-      columnHelper.accessor('created_at', {
+      columnHelper.accessor('createdAt', {
         header: t('created_at'),
         cell: (props) => {
           const dateValue = props.getValue()
-          // check if the date is equal to '0001-01-01T00:00:00.000Z'
-          // if it is, then we return a dash
           if (dayjs(dateValue).year() < 2000) return '—'
           return dayjs(dateValue).format('YYYY/MM/DD HH:mm:ss')
         },
@@ -36,24 +45,37 @@ export const useTransfersTable = () => {
           filterVariant: 'date'
         },
         filterFn: filterFnDate
+      }),
+      columnHelper.accessor('transfer_state', {
+        header: t('transfer_state'),
+        cell: (props) => props.getValue()
+      }),
+      columnHelper.accessor('transfer_format', {
+        header: t('transfer_format'),
+        cell: (props) => props.getValue()
       })
     ],
-    [t]
+    [t, setLocation, columnHelper]
   )
 
   const rows = useMemo(() => {
-    return (
-      transfersData.data?.map((transfer) => ({
-        transfer_id: transfer.transfer_id,
+    if (!transfersData.data || !negotiationsData.data) return []
+    return transfersData.data.map((transfer) => {
+      const negotiation = negotiationsData.data.find(
+        (n) => n.agreement_id === transfer.agreement_id
+      )
+      return {
+        negotiation: negotiation?.contract_id || transfer.agreement_id,
         agreement_id: transfer.agreement_id,
-        status: transfer.transfer_state,
-        created_at:
+        createdAt:
           !transfer.created_at || !dayjs(transfer.created_at).isValid()
             ? dayjs('0001-01-01T00:00:00.000Z').toDate()
-            : dayjs(transfer.created_at).toDate()
-      })) || []
-    )
-  }, [transfersData.data])
+            : dayjs(transfer.created_at).toDate(),
+        transfer_state: transfer.transfer_state,
+        transfer_format: transfer.transfer_format
+      }
+    })
+  }, [transfersData.data, negotiationsData.data])
 
   return { columns, rows }
 }
