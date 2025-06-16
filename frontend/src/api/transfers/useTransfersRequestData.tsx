@@ -1,7 +1,6 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { useAuthUser } from '../../contexts/UserContext'
 
 const handleTransfersRequestData = async ({
   transferId
@@ -34,10 +33,10 @@ export const useTransfersRequestData = () => {
       // queryClient.invalidateQueries({
       //   queryKey: ['transfers', user?.userId]
       // })
-      toast.success(t('transfers.request.success'))
+      toast.success(t('transfers_request_data_success'))
     },
     onError: () => {
-      toast.error(t('transfers.request.error'))
+      toast.error(t('transfers_request_data_error'))
     }
   })
 

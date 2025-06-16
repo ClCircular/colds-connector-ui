@@ -80,7 +80,7 @@ export const useNegotiationsTable = () => {
       }),
       //state
       columnHelper.accessor('cn_state', {
-        header: t('state'),
+        header: t('status'),
         cell: (info) => info.getValue()
       })
     ]

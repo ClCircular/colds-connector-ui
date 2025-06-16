@@ -80,14 +80,14 @@ export const useTransfersTable = () => {
           ) {
             return (
               <button
-                className='px-2 py-1 bg-[#94bf43] text-white rounded hover:bg-green-600'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
                 onClick={() => {
                   transferStartMutation.mutate({
                     transferId: row.transfer_id
                   }) // Handle agree action
                 }}
               >
-                {t('agree')}
+                {t('agree_action')}
               </button>
             )
           } else if (
@@ -98,14 +98,13 @@ export const useTransfersTable = () => {
             // If role is CONSUMER and format is PULL, show download data button
             return (
               <button
-                className='px-2 py-1 bg-[#007bff] text-white rounded hover:bg-blue-600'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#0096b9] rounded-lg hover:bg-[#448290] cursor-pointer capitalize'
                 onClick={() => {
                   transferRequestDataMutation
                     .mutateAsync({
                       transferId: row.transfer_id
                     })
                     .then((data) => {
-                      console.log('Entro aqui', data)
                       setIsModalOpen(true)
                       setJsonData(JSON.stringify(data, null, 2))
                     })

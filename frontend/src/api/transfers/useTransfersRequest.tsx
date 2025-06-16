@@ -41,10 +41,10 @@ export const useTransfersRequest = () => {
       queryClient.invalidateQueries({
         queryKey: ['transfers', user?.userId]
       })
-      toast.success(t('transfers.request.success'))
+      toast.success(t('transfers_request_success'))
     },
     onError: () => {
-      toast.error(t('transfers.request.error'))
+      toast.error(t('transfers_request_error'))
     }
   })
 

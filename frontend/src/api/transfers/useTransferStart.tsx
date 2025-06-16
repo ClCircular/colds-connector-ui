@@ -34,10 +34,10 @@ export const useTransferStart = () => {
       queryClient.invalidateQueries({
         queryKey: ['transfers', user?.userId]
       })
-      toast.success(t('transfers.request.success'))
+      toast.success(t('transfers_start_success'))
     },
     onError: () => {
-      toast.error(t('transfers.request.error'))
+      toast.error(t('transfers_start_error'))
     }
   })
   return mutation

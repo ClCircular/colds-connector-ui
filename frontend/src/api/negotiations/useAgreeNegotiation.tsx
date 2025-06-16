@@ -34,10 +34,10 @@ export const useAgreeNegotiation = () => {
       queryClient.invalidateQueries({
         queryKey: ['negotiations', user?.userId]
       })
-      toast.success(t('negotiations.agree.success'))
+      toast.success(t('negotiations_agree_success'))
     },
     onError: () => {
-      toast.error(t('negotiations.agree.error'))
+      toast.error(t('negotiations_agree_error'))
     }
   })
   return mutation
