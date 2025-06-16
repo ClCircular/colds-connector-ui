@@ -24,5 +24,7 @@ export interface TransfersTableRow {
   agreement_id: string // para el enlace
   createdAt: Date
   transfer_state: string
+  transfer_id: string // para el enlace
+  role: string // consumer / provider
   transfer_format: string // PULL / PUSH
 }

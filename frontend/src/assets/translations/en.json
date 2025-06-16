@@ -113,8 +113,12 @@
   "transfer_action": "Transfer",
   "contract": "Contract",
   "search": "Search",
+  "negotiation": "Negotiation",
   "provider": "Provider",
   "updated_at": "Updated at",
+
+  "status": "Status",
+  "format": "Format",
   "select_access_policy": "Select access policy",
   "login": {
     "title": "Login",

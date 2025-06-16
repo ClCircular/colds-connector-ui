@@ -7,6 +7,7 @@ import { filterFnDate } from '../../utils/FilterFnDate'
 import dayjs from 'dayjs'
 import { useGetNegotiations } from '../../api/negotiations/useGetNegotiations'
 import { useLocation } from 'wouter'
+import { useTransferStart } from '../../api/transfers/useTransferStart'
 
 export const useTransfersTable = () => {
   const { t } = useTranslation()
@@ -15,6 +16,8 @@ export const useTransfersTable = () => {
   const transfersData = useGetTransfers()
   const negotiationsData = useGetNegotiations()
 
+  const transferStartMutation = useTransferStart()
+
   const columnHelper = createColumnHelper<TransfersTableRow>()
 
   const columns = useMemo(
@@ -22,14 +25,17 @@ export const useTransfersTable = () => {
       columnHelper.accessor('negotiation', {
         header: t('negotiation'),
         cell: (props) => {
-          const negotiationName = props.getValue()
-          const agreementId = props.row.original.agreement_id
+          const negotiationAgreementId = props.getValue()
           return (
             <button
               className='text-blue-600 underline hover:text-blue-800 transition-colors'
-              onClick={() => setLocation(`/negotiations/${agreementId}`)}
+              onClick={() =>
+                setLocation(
+                  `/negotiations?agreementId=${negotiationAgreementId}`
+                )
+              }
             >
-              {negotiationName}
+              {negotiationAgreementId}
             </button>
           )
         }
@@ -47,12 +53,60 @@ export const useTransfersTable = () => {
         filterFn: filterFnDate
       }),
       columnHelper.accessor('transfer_state', {
-        header: t('transfer_state'),
+        header: t('status'),
         cell: (props) => props.getValue()
       }),
       columnHelper.accessor('transfer_format', {
-        header: t('transfer_format'),
+        header: t('format'),
         cell: (props) => props.getValue()
+      }),
+      columnHelper.accessor('role', {
+        header: t('role'),
+        cell: (props) => props.getValue()
+      }),
+      //actions with buttons agree and download_data SOLO si role es PROVIDER y format es PULL
+      columnHelper.display({
+        id: 'actions',
+        header: t('actions'),
+        cell: (props) => {
+          const row = props.row.original
+          console.log({ role: row.role, transfer_format: row.transfer_format })
+          if (
+            row.role === 'PROVIDER' &&
+            row.transfer_format.toUpperCase().includes('PULL')
+          ) {
+            return (
+              <button
+                className='px-2 py-1 bg-[#94bf43] text-white rounded hover:bg-green-600'
+                onClick={() => {
+                  transferStartMutation.mutate({
+                    transferId: row.transfer_id
+                  }) // Handle agree action
+                }}
+              >
+                {t('agree')}
+              </button>
+            )
+          } else if (
+            row.role === 'CONSUMER' &&
+            row.transfer_format.toUpperCase().includes('PULL') &&
+            row.transfer_state === 'STARTED'
+          ) {
+            // If role is CONSUMER and format is PULL, show download data button
+            return (
+              <button
+                className='px-2 py-1 bg-[#007bff] text-white rounded hover:bg-blue-600'
+                onClick={() => {
+                  // Handle download data action
+                }}
+              >
+                {t('download_data')}
+              </button>
+            )
+          } else {
+            return null
+          }
+        }
       })
     ],
     [t, setLocation, columnHelper]
@@ -65,14 +119,16 @@ export const useTransfersTable = () => {
         (n) => n.agreement_id === transfer.agreement_id
       )
       return {
-        negotiation: negotiation?.contract_id || transfer.agreement_id,
+        negotiation: transfer.agreement_id,
         agreement_id: transfer.agreement_id,
+        transfer_id: transfer.transfer_id,
         createdAt:
           !transfer.created_at || !dayjs(transfer.created_at).isValid()
             ? dayjs('0001-01-01T00:00:00.000Z').toDate()
             : dayjs(transfer.created_at).toDate(),
         transfer_state: transfer.transfer_state,
-        transfer_format: transfer.transfer_format
+        transfer_format: transfer.transfer_format,
+        role: negotiation?.connector_role || 'consumer' // Default to 'consumer' if role is not defined
       }
     })
   }, [transfersData.data, negotiationsData.data])

@@ -8,6 +8,7 @@ import { useAgreeNegotiation } from '../../api/negotiations/useAgreeNegotiation'
 import { useTransfersRequest } from '../../api/transfers/useTransfersRequest'
 import dayjs from 'dayjs'
 import { filterFnDate } from '../../utils/FilterFnDate'
+import { useSearch } from 'wouter'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
@@ -19,6 +20,11 @@ export const useNegotiationsTable = () => {
   const transfersRequestMutation = useTransfersRequest()
 
   const { t } = useTranslation()
+
+  // Obtener query string con Wouter
+  const search = useSearch()
+  const params = new URLSearchParams(search)
+  const agreementIdParam = params.get('agreementId')
 
   const columns = useMemo(() => {
     const baseColumns = [
@@ -120,15 +126,13 @@ export const useNegotiationsTable = () => {
   const rows = useMemo(() => {
     if (!negotiationsData.data || !contractsData.data) return []
 
-    return negotiationsData.data.map((negotiation) => {
+    const allRows = negotiationsData.data.map((negotiation) => {
       const contract = contractsData.data?.find(
         (c) => c.contract_id === negotiation.contract_id
       )
       return {
         ...negotiation,
         contractName: contract?.name,
-        // provider: negotiation.provider_pid,
-        // signingDate: negotiation.signed_at,
         signingDate:
           !negotiation.signed_at || !dayjs(negotiation.signed_at).isValid()
             ? dayjs('0001-01-01T00:00:00.000Z').toDate()
@@ -145,10 +149,16 @@ export const useNegotiationsTable = () => {
         cn_state: negotiation.cn_state,
         role: negotiation.connector_role,
         agree: negotiation.cn_id,
-        agreement_id: negotiation.agreement_id
+        agreement_id: negotiation.agreement_id,
+        cn_id: negotiation.cn_id
       }
     })
-  }, [negotiationsData.data, contractsData.data])
+    // Si hay parámetro de query, filtrar
+    if (agreementIdParam) {
+      return allRows.filter((row) => row.agreement_id === agreementIdParam)
+    }
+    return allRows
+  }, [negotiationsData.data, contractsData.data, agreementIdParam])
 
   return { columns, rows }
 }
