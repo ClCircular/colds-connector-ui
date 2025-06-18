@@ -124,10 +124,12 @@
   "transfer_action": "Transfer",
   "contract": "Contract",
   "search": "Search",
+  "select_provider": "Select a provider",
   "negotiation": "Negotiation",
   "negotiate": "Negotiate",
   "no_transfers_history_available": "No transfers history available",
   "provider": "Provider",
+  "distributions": "Distributions",
   "updated_at": "Updated at",
 
   "status": "Status",
