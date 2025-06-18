@@ -5,11 +5,15 @@ import { Table } from '../components/shared/Table'
 import { useNegotiationsTable } from '../hooks/negotiations/useNegotiationsTable'
 
 export const Negotiations = () => {
-  const { data, isLoading } = useGetNegotiations()
+  const { isLoading } = useGetNegotiations()
   const { columns, rows } = useNegotiationsTable()
   const { t } = useTranslation()
   if (isLoading) {
-    return <Loader />
+    return (
+      <div className='flex justify-center items-center h-screen w-full bg-black opacity-50 fixed top-0 left-0 z-[100]'>
+        <Loader />
+      </div>
+    )
   }
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>

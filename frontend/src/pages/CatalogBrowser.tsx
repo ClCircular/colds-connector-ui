@@ -6,9 +6,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAuthUser } from '../contexts/UserContext'
 import { CatalogRequest } from '../interfaces/negotiations/negotiations.interface'
 import { Loader } from '../components'
+import { useGetParticipants } from '../api/participants/useGetParticipants'
 
 export const CatalogBrowser = () => {
   const [providerURL, setProviderURL] = useState('')
+  const participatsQuery = useGetParticipants()
   const catalogRequestMuation = useCatalogRequest()
 
   const { t } = useTranslation()
@@ -51,9 +53,14 @@ export const CatalogBrowser = () => {
           required
         >
           <option value=''>-- {t('select_provider')} --</option>
-          <option value='https://host.docker.internal:19194'>
+          {/* <option value='https://host.docker.internal:19194'>
             https://host.docker.internal:19194
-          </option>
+          </option> */}
+          {participatsQuery.data?.map((participant) => (
+            <option key={participant.did} value={participant.endpoint || ''}>
+              {participant.name}
+            </option>
+          ))}
         </select>
         <button
           type='submit'
@@ -64,8 +71,11 @@ export const CatalogBrowser = () => {
         </button>
       </form>
 
-      {catalogRequestMuation.isPending && (
-        <div className='text-center text-gray-500'>
+      {(catalogRequestMuation.isPending ||
+        participatsQuery.isLoading ||
+        participatsQuery.isFetching ||
+        participatsQuery.isPending) && (
+        <div className='flex justify-center items-center h-screen w-full bg-black opacity-50 fixed top-0 left-0 z-[100]'>
           <Loader />
         </div>
       )}
