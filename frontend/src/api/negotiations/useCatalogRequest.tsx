@@ -1,10 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { CatalogRequest } from '../../interfaces/negotiations/negotiations.interface'
 
-const handleCatalogRequest = async (
-  providerURL: string = 'https://host.docker.internal:19194'
-) => {
+const handleCatalogRequest = async ({
+  providerURL = 'https://host.docker.internal:19194'
+}: {
+  providerURL: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -25,15 +27,21 @@ const handleCatalogRequest = async (
   return dataFormatted as CatalogRequest
 }
 
-export const useCatalogRequest = (providerURL: string) => {
+export const useCatalogRequest = () => {
   const { user } = useAuthUser()
-  return useQuery({
-    queryKey: ['catalogRequest', providerURL, user?.userId],
-    queryFn: () => handleCatalogRequest(providerURL),
-    refetchOnWindowFocus: false,
-    enabled: !!user?.userId && !!providerURL, // Only run if user is authenticated and providerURL is provided
-    retry: false,
-    staleTime: 1000 * 60 * 60, // 1 hour
-    gcTime: 1000 * 60 * 60 // 1 hour
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationKey: ['catalogRequest', user?.userId],
+    mutationFn: handleCatalogRequest,
+    onError: (error) => {
+      console.error('Error fetching catalog request:', error)
+    },
+    onSuccess: (data) => {
+      console.log('Catalog request successful:', data)
+      queryClient.setQueryData<CatalogRequest[]>(
+        ['catalogRequests', user?.userId],
+        (oldData) => (oldData ? [...oldData, data] : [data])
+      )
+    }
   })
 }

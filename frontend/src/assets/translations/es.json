@@ -30,6 +30,8 @@
   "description": "Descripción",
   "status": "Estado",
   "negotiate": "Negociar",
+  "select_provider": "Seleccione un proveedor",
+  "distributions": "Distribuciones",
   "format": "Formato",
   "no_transfers_history_available": "No hay historial de transferencias disponible",
   "enter_keywords_separated_by_commas": "Ingrese palabras clave separadas por comas",
