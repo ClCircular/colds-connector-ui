@@ -8,9 +8,9 @@ export interface Transfer {
   provider_address: string
   consumer_address: string
   transfer_state: string
-  data_plane_id: string
+  data_plane_id: string | null
   transfer_format: string
-  data_address: DataAddress
+  data_address: DataAddress | null
 }
 
 export interface DataAddress {
@@ -20,9 +20,11 @@ export interface DataAddress {
 }
 
 export interface TransfersTableRow {
-  transfer_id: string
-  agreement_id: string
-  created_at: string
+  negotiation: string
+  agreement_id: string // para el enlace
+  createdAt: Date
+  transfer_state: string
+  transfer_id: string // para el enlace
+  role: string // consumer / provider
+  transfer_format: string // PULL / PUSH
 }
-
-export interface TransferRequestResponse {}

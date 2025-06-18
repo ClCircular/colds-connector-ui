@@ -104,6 +104,17 @@
   "data_access": "Data access",
   "type": "Type",
   "action": "Action",
+  "download_data": "Download data",
+  "role": "Role",
+  "agree_action": "Agree",
+  "negotiation_requested_successfully": "Negotiation requested successfully",
+  "transfers_request_success": "Transfers request successful",
+  "transfers_request_error": "Error requesting transfers",
+  "transfers_request_data_success": "Transfers request data successful",
+  "transfers_request_data_error": "Error requesting transfers data",
+  "transfers_start_success": "Transfers started successfully",
+  "transfers_start_error": "Error starting transfers",
+  "negotiations_agree_success": "Negotiation agreed successfully",
   "signing_out": "Signing out...",
   "negotiations": "Negotiations",
   "catalog_browser": "Catalog browser",
@@ -113,7 +124,14 @@
   "transfer_action": "Transfer",
   "contract": "Contract",
   "search": "Search",
+  "negotiation": "Negotiation",
+  "negotiate": "Negotiate",
+  "no_transfers_history_available": "No transfers history available",
   "provider": "Provider",
+  "updated_at": "Updated at",
+
+  "status": "Status",
+  "format": "Format",
   "select_access_policy": "Select access policy",
   "login": {
     "title": "Login",
@@ -138,9 +156,9 @@
     "confirm_password_placeholder": "Confirm your password",
     "password_reset_success": "Password reset successfully",
     "save_new_password": "Save new password",
-    "saving": "Saving...",
-    "search_in_table": "Search in table"
+    "saving": "Saving..."
   },
+  "search_in_table": "Search in table",
   "policy_action": {
     "use": "Usar"
   },

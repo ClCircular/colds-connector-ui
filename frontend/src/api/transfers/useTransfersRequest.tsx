@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TransferRequestResponse } from '../../interfaces/transfers/transfers.interface'
+import { Transfer } from '../../interfaces/transfers/transfers.interface'
 import { useTranslation } from 'react-i18next'
 import { useAuthUser } from '../../contexts/UserContext'
 import { toast } from 'sonner'
@@ -25,7 +25,7 @@ const handleTransferRequest = async ({
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
   const response = await fetch(url, requestOptions)
   const dataFormatted = await response.json()
-  return dataFormatted as TransferRequestResponse
+  return dataFormatted as Transfer
 }
 
 export const useTransfersRequest = () => {
@@ -41,10 +41,10 @@ export const useTransfersRequest = () => {
       queryClient.invalidateQueries({
         queryKey: ['transfers', user?.userId]
       })
-      toast.success(t('transfers.request.success'))
+      toast.success(t('transfers_request_success'))
     },
     onError: () => {
-      toast.error(t('transfers.request.error'))
+      toast.error(t('transfers_request_error'))
     }
   })
 

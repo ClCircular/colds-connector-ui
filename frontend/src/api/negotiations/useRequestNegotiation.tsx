@@ -56,8 +56,8 @@ export const useRequestNegotiation = () => {
 
       toast.success(
         t(
-          'negotiation_updated_successfully',
-          'Negotiation updated successfully'
+          'negotiation_requested_successfully',
+          'Negotiation requested successfully'
         )
       )
     }
