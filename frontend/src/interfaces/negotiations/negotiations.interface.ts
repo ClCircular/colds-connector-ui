@@ -98,6 +98,7 @@ export interface NegotiationRow {
   negotiationId: string
   transfer: string
   cn_state: string
+  hasTransfers: boolean
   agree: string
   agreement_id: string
   role: string // CONSUMER | PROVIDER

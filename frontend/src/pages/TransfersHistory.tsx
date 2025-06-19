@@ -7,7 +7,6 @@ export const TransfersHistory = () => {
   const { columns, rows, isModalOpen, setIsModalOpen, jsonData } =
     useTransfersTable()
 
-  console.log({ isModalOpen, jsonData })
   const { t } = useTranslation()
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>
