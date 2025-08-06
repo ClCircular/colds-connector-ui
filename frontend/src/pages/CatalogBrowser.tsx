@@ -6,9 +6,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAuthUser } from '../contexts/UserContext'
 import { CatalogRequest } from '../interfaces/negotiations/negotiations.interface'
 import { Loader } from '../components'
+import { useGetParticipants } from '../api/participants/useGetParticipants'
 
 export const CatalogBrowser = () => {
   const [providerURL, setProviderURL] = useState('')
+  const participatsQuery = useGetParticipants()
   const catalogRequestMuation = useCatalogRequest()
 
   const { t } = useTranslation()
@@ -30,19 +32,11 @@ export const CatalogBrowser = () => {
     catalogRequestMuation.mutate({
       providerURL: providerURL || 'https://host.docker.internal:19194'
     })
-    // refetch is not strictly needed because useCatalogRequest will refetch on searchURL change
   }
 
   return (
     <section className='flex flex-col gap-2 p-4 h-full'>
       <form onSubmit={handleSearch} className='flex gap-2 mb-6 justify-end'>
-        {/* <input
-          type='text'
-          placeholder={t('provider_url')}
-          value={providerURL}
-          onChange={(e) => setProviderURL(e.target.value)}
-          className='w-sm border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500'
-        /> */}
         <select
           id='asset_data_flow'
           className='appearance-none w-xs  border border-gray-300 text-gray-900 text-sm rounded focus:ring-primary-600 focus:border-primary-600 block p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
@@ -51,9 +45,11 @@ export const CatalogBrowser = () => {
           required
         >
           <option value=''>-- {t('select_provider')} --</option>
-          <option value='https://host.docker.internal:19194'>
-            https://host.docker.internal:19194
-          </option>
+          {participatsQuery.data?.map((participant) => (
+            <option key={participant.did} value={participant.endpoint || ''}>
+              {participant.name} - {participant.endpoint || ''}
+            </option>
+          ))}
         </select>
         <button
           type='submit'
@@ -64,8 +60,11 @@ export const CatalogBrowser = () => {
         </button>
       </form>
 
-      {catalogRequestMuation.isPending && (
-        <div className='text-center text-gray-500'>
+      {(catalogRequestMuation.isPending ||
+        participatsQuery.isLoading ||
+        participatsQuery.isFetching ||
+        participatsQuery.isPending) && (
+        <div className='flex justify-center items-center h-screen w-full bg-black opacity-50 fixed top-0 left-0 z-[100]'>
           <Loader />
         </div>
       )}

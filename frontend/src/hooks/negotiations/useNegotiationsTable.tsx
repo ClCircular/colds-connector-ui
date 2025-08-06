@@ -9,10 +9,12 @@ import { useTransfersRequest } from '../../api/transfers/useTransfersRequest'
 import dayjs from 'dayjs'
 import { filterFnDate } from '../../utils/FilterFnDate'
 import { useSearch } from 'wouter'
+import { useGetTransfers } from '../../api/transfers/useGetTransfers'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
   const contractsData = useGetContracts()
+  const transfersData = useGetTransfers()
 
   const columnHelper = createColumnHelper<NegotiationRow>()
 
@@ -94,10 +96,11 @@ export const useNegotiationsTable = () => {
         const role = row.role
         const agreementId = row.agreement_id
         const cnId = row.cn_id
+        const hasTransfers = row.hasTransfers
         return (
           <div className='flex gap-2'>
             {/* Botón Transferir solo para CONSUMER y si hay agreementId */}
-            {role === 'CONSUMER' && agreementId && (
+            {role === 'CONSUMER' && agreementId && !hasTransfers && (
               <button
                 className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
                 onClick={() => transfersRequestMutation.mutate({ agreementId })}
@@ -130,6 +133,9 @@ export const useNegotiationsTable = () => {
       const contract = contractsData.data?.find(
         (c) => c.contract_id === negotiation.contract_id
       )
+      const transfer = transfersData.data?.find(
+        (t) => t.agreement_id === negotiation.agreement_id
+      )
       return {
         ...negotiation,
         contractName: contract?.name,
@@ -150,7 +156,8 @@ export const useNegotiationsTable = () => {
         role: negotiation.connector_role,
         agree: negotiation.cn_id,
         agreement_id: negotiation.agreement_id,
-        cn_id: negotiation.cn_id
+        cn_id: negotiation.cn_id,
+        hasTransfers: !!transfer
       }
     })
     // Si hay parámetro de query, filtrar
