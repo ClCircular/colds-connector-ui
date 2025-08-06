@@ -77,7 +77,8 @@ export const useTransfersTable = () => {
           if (
             row.role === 'PROVIDER' &&
             row.transfer_format.toUpperCase().includes('PULL') &&
-            row.transfer_state !== 'COMPLETED' &&
+            row.transfer_state !== 'COMPLETED' && 
+            row.transfer_state !== 'TERMINATED' &&
             row.transfer_state !== 'STARTED'
           ) {
             return (
