@@ -4,7 +4,13 @@ import { useAuthUser } from '../../contexts/UserContext'
 import { Contract } from '../../interfaces/contracts/contracts.interface'
 import { toast } from 'sonner'
 
-const handleDeleteContract = async ({ contractId }: { contractId: string }) => {
+const handleDeleteContract = async ({
+  contractId,
+  userEmail
+}: {
+  contractId: string
+  userEmail: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -12,7 +18,8 @@ const handleDeleteContract = async ({ contractId }: { contractId: string }) => {
       url: `/v1/contracts/${contractId}`
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -23,10 +30,11 @@ const handleDeleteContract = async ({ contractId }: { contractId: string }) => {
 export const useDeleteContract = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleDeleteContract,
+    mutationFn: ({ contractId }: { contractId: string }) =>
+      handleDeleteContract({ contractId, userEmail: userInfo?.email || '' }),
     mutationKey: ['deleteContract'],
     onMutate: async ({ contractId }) => {
       await queryClient.cancelQueries({ queryKey: ['contracts', user?.userId] })

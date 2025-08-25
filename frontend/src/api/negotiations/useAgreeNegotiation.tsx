@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useAuthUser } from '../../contexts/UserContext'
 import { toast } from 'sonner'
 
-const handleAgreeNegotiation = async ({ cn_id }: { cn_id: string }) => {
+const handleAgreeNegotiation = async ({
+  cn_id,
+  userEmail
+}: {
+  cn_id: string
+  userEmail: string
+}) => {
   console.log({ cn_id })
   const requestOptions = {
     method: 'POST',
@@ -12,7 +18,8 @@ const handleAgreeNegotiation = async ({ cn_id }: { cn_id: string }) => {
       url: `/v1/negotiations/agree/${cn_id}`
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -26,10 +33,11 @@ export const useAgreeNegotiation = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleAgreeNegotiation,
+    mutationFn: ({ cn_id }: { cn_id: string }) =>
+      handleAgreeNegotiation({ cn_id, userEmail: userInfo?.email || '' }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['negotiations', user?.userId]

@@ -8,9 +8,11 @@ import { useAuthUser } from '../../contexts/UserContext'
 import { toast } from 'sonner'
 
 const handleRequestNegotiation = async ({
-  data
+  data,
+  userEmail
 }: {
   data: RequestNegotiationBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -20,7 +22,8 @@ const handleRequestNegotiation = async ({
       body: data
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -34,10 +37,11 @@ export const useRequestNegotiation = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleRequestNegotiation,
+    mutationFn: ({ data }: { data: RequestNegotiationBody }) =>
+      handleRequestNegotiation({ data, userEmail: userInfo?.email || '' }),
     mutationKey: ['requestNegotiation'],
     onSuccess: async (data) => {
       // ponemos la respuesta en cache de negotiations

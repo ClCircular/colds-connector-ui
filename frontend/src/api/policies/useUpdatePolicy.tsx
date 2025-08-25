@@ -9,10 +9,12 @@ import { useAuthUser } from '../../contexts/UserContext'
 
 const handleUpdatePolicy = async ({
   newPolicyData,
-  policyId
+  policyId,
+  userEmail
 }: {
   policyId: string
   newPolicyData: CreatePolicyBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -25,7 +27,8 @@ const handleUpdatePolicy = async ({
       }
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -38,10 +41,21 @@ export const useUpdatePolicy = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleUpdatePolicy,
+    mutationFn: ({
+      policyId,
+      newPolicyData
+    }: {
+      policyId: string
+      newPolicyData: CreatePolicyBody
+    }) =>
+      handleUpdatePolicy({
+        policyId,
+        newPolicyData,
+        userEmail: userInfo?.email || ''
+      }),
     mutationKey: ['updatePolicy'],
     onMutate: async ({ policyId, newPolicyData }) => {
       await queryClient.cancelQueries({ queryKey: ['policies', user?.userId] })

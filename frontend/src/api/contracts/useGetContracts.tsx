@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Contract } from '../../interfaces/contracts/contracts.interface'
 import { useAuthUser } from '../../contexts/UserContext'
 
-export const getContracts = async () => {
+export const getContracts = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ export const getContracts = async () => {
       url: '/v1/contracts'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -27,10 +28,10 @@ export const getContracts = async () => {
 }
 
 export const useGetContracts = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   const contractsData = useQuery({
     queryKey: ['contracts', user?.userId],
-    queryFn: getContracts,
+    queryFn: () => getContracts({ userEmail: userInfo?.email || '' }),
     enabled: !!user?.userId, // Only run if user is authenticated
     refetchOnWindowFocus: false,
     retry: false,

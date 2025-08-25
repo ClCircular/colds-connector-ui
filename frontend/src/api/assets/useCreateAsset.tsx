@@ -10,9 +10,11 @@ import { toast } from 'sonner'
 import dayjs from 'dayjs'
 
 const handleCreateAsset = async ({
-  assetData
+  assetData,
+  userEmail
 }: {
   assetData: CreateAssetBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -22,7 +24,8 @@ const handleCreateAsset = async ({
       body: JSON.stringify(assetData)
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -38,12 +41,13 @@ const handleCreateAsset = async ({
 export const useCreateAsset = () => {
   const queryClient = useQueryClient()
 
-  const { t } = useTranslation() // Ensure the translation function is initialized
+  const { t } = useTranslation()
 
-  const { user } = useAuthUser() // Ensure the user context is initialized
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleCreateAsset,
+    mutationFn: ({ assetData }: { assetData: CreateAssetBody }) =>
+      handleCreateAsset({ assetData, userEmail: userInfo?.email ?? '' }),
     mutationKey: ['createAsset'],
     onMutate: async ({ assetData }) => {
       await queryClient.cancelQueries({ queryKey: ['assets', user?.userId] })
@@ -78,31 +82,20 @@ export const useCreateAsset = () => {
       }
       toast.error(t('asset_creation_error'))
     },
-    // onSuccess: () => {
-    //   toast.success(t('asset_created_successfully'))
-    //   queryClient.invalidateQueries({ queryKey: ['assets', user?.userId] })
-    // }
 
     onSuccess: (data, _, context) => {
-      // data es tu PolicyCreateResponse
-      // Actualiza la caché con la política real que vino de la API
       queryClient.setQueryData<AssetsResponse[]>(
         ['assets', user?.userId],
         (old) => {
-          return (
-            old
-              // quitamos la temporal
-              ?.filter((p) => p.asset_id !== context?.optimisticAsset.asset_id)
-              // añadimos la real
-              .concat(data.data)
-          )
+          return old
+            ?.filter((p) => p.asset_id !== context?.optimisticAsset.asset_id)
+            .concat(data.data)
         }
       )
       toast.success(
         t('asset_created_successfully', 'Asset created successfully')
       )
     },
-    // 4) Opcional: invalidar para sincronizar
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['assets', user?.userId] })
     }

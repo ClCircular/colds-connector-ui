@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useAuthUser } from '../../contexts/UserContext'
 
-const handleTransferStart = async ({ transferId }: { transferId: string }) => {
+const handleTransferStart = async ({
+  transferId,
+  userEmail
+}: {
+  transferId: string
+  userEmail: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -11,7 +17,8 @@ const handleTransferStart = async ({ transferId }: { transferId: string }) => {
       url: `/v1/transfers/start/${transferId}`
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -26,10 +33,11 @@ export const useTransferStart = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleTransferStart,
+    mutationFn: ({ transferId }: { transferId: string }) =>
+      handleTransferStart({ transferId, userEmail: userInfo?.email || '' }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['transfers', user?.userId]

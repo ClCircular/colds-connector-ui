@@ -3,9 +3,11 @@ import { useAuthUser } from '../../contexts/UserContext'
 import { CatalogRequest } from '../../interfaces/negotiations/negotiations.interface'
 
 const handleCatalogRequest = async ({
-  providerURL = 'https://host.docker.internal:19194'
+  providerURL = 'https://host.docker.internal:19194',
+  userEmail
 }: {
   providerURL: string
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -17,7 +19,8 @@ const handleCatalogRequest = async ({
       }
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -28,11 +31,12 @@ const handleCatalogRequest = async ({
 }
 
 export const useCatalogRequest = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ['catalogRequest', user?.userId],
-    mutationFn: handleCatalogRequest,
+    mutationFn: ({ providerURL }: { providerURL: string }) =>
+      handleCatalogRequest({ providerURL, userEmail: userInfo?.email || '' }),
     onError: (error) => {
       console.error('Error fetching catalog request:', error)
     },

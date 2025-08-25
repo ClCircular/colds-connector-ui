@@ -9,10 +9,12 @@ import { toast } from 'sonner'
 
 const handleUpdateAsset = async ({
   newAssetData,
-  assetId
+  assetId,
+  userEmail
 }: {
   assetId: string
   newAssetData: CreateAssetBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -22,7 +24,8 @@ const handleUpdateAsset = async ({
       body: newAssetData
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -35,10 +38,21 @@ export const useUpdateAsset = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleUpdateAsset,
+    mutationFn: ({
+      assetId,
+      newAssetData
+    }: {
+      assetId: string
+      newAssetData: CreateAssetBody
+    }) =>
+      handleUpdateAsset({
+        assetId,
+        newAssetData,
+        userEmail: userInfo?.email || ''
+      }),
     mutationKey: ['updateAsset'],
     onMutate: async ({ assetId, newAssetData }) => {
       await queryClient.cancelQueries({ queryKey: ['assets', user?.userId] })

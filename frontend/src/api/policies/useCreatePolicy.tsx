@@ -10,9 +10,11 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 
 const handleCreatePolicy = async ({
-  policyData
+  policyData,
+  userEmail
 }: {
   policyData: CreatePolicyBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -25,7 +27,8 @@ const handleCreatePolicy = async ({
       })
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -43,10 +46,11 @@ export const useCreatePolicy = () => {
 
   const { t } = useTranslation() // Ensure the translation function is initialized
 
-  const { user } = useAuthUser() // Ensure the user context is initialized
+  const { user, userInfo } = useAuthUser() // Ensure the user context is initialized
 
   const mutation = useMutation({
-    mutationFn: handleCreatePolicy,
+    mutationFn: ({ policyData }: { policyData: CreatePolicyBody }) =>
+      handleCreatePolicy({ policyData, userEmail: userInfo?.email || '' }),
     mutationKey: ['createPolicy'],
     onMutate: async ({ policyData }) => {
       await queryClient.cancelQueries({ queryKey: ['policies', user?.userId] })

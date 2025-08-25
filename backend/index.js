@@ -87,6 +87,7 @@ app.post('/', async (req, res) => {
   let commonHeaders = {
     'content-type': 'application/json'
   }
+  console.log(userEmail)
   if (userEmail) {
     commonHeaders['X-User-Email'] = userEmail
   }
