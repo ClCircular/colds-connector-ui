@@ -1,10 +1,10 @@
-import express from "express";
-import bodyParser from "body-parser";
-import https from "https";
 import axios from "axios";
+import bodyParser from "body-parser";
 import cors from "cors";
-import * as proxy from "./proxy.js";
 import dotenv from "dotenv";
+import express from "express";
+import https from "https";
+import * as proxy from "./proxy.js";
 
 dotenv.config({ path: ".env" });
 const app = express();

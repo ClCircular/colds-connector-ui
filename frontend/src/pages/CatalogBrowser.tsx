@@ -45,7 +45,7 @@ export const CatalogBrowser = () => {
           required
         >
           <option value=''>-- {t('select_provider')} --</option>
-          {participatsQuery.data?.map((participant) => (
+          {participatsQuery.data?.filter(item=>item.name!='identity-hub').map((participant) => (
             <option key={participant.did} value={participant.endpoint || ''}>
               {participant.name} - {participant.endpoint || ''}
             </option>
