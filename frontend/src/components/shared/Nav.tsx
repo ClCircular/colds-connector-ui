@@ -6,7 +6,8 @@ import {
   IoShieldCheckmark,
   IoPeople,
   IoSearch,
-  IoSwapVertical
+  IoSwapVertical,
+  IoKey
 } from 'react-icons/io5'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -52,6 +53,11 @@ export const Nav: FC<{
       href: '/transfers-history',
       label: t('transfers_history'),
       icon: <IoSwapVertical className='text-lg' />
+    },
+    {
+      href: '/credentials',
+      label: t('credentials'),
+      icon: <IoKey className='text-lg' />
     }
   ]
 
