@@ -4,9 +4,12 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import https from 'https'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import * as proxy from './proxy.js'
 
-dotenv.config({ path: '.env' })
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') }) // /app/.env
 const app = express()
 const port = process.env.VITE_BACKEND_PORT
 
@@ -34,12 +37,17 @@ app.use(
   })
 )
 app.use(cors({ credentials: true, origin: true }))
-console.log(process.env.CONNECTOR_PORT)
 // let connectorUrl = 'https://3.223.70.98:8080'
 let connectorUrl = isRunningInDocker()
   ? `http://host.docker.internal:${process.env.CONNECTOR_PORT}`
   : `http://localhost:${process.env.CONNECTOR_PORT}`
 console.log(connectorUrl)
+
+const credHost =
+  process.env.CREDENTIALS_HOST ||
+  (isRunningInDocker() ? 'colds-connector-consumer' : 'localhost')
+const credPort = process.env.CREDENTIALS_PORT || '20002'
+const credentialsUrl = `http://${credHost}:${credPort}`
 
 let auth = {
   username: 'admin',
@@ -65,6 +73,10 @@ app.post('/', async (req, res) => {
   // Recoger la cabecera X-User-Email
   const userEmail = req.headers['x-user-email']
 
+  // Nuevo: elegir el endpoint base
+  let useIdentityHub = petition.useIdentityHub === true
+  let baseUrl = useIdentityHub ? credentialsUrl : connectorUrl
+
   let body = petition.body
   let params = petition.params
   let requestParams = ''
@@ -81,7 +93,7 @@ app.post('/', async (req, res) => {
     }
   }
   let dataFromConnector
-  let fullURL = `${connectorUrl}${petition.url}${requestParams}`
+  let fullURL = `${baseUrl}${petition.url}${requestParams}`
   console.log(`Sending ${petition.type} request to ${fullURL}`)
   // Cabeceras comunes
   let commonHeaders = {
@@ -93,28 +105,26 @@ app.post('/', async (req, res) => {
   }
   switch (petition.type) {
     case 'GET':
-      if (petition.url === '/v1/offers')
+      if (!useIdentityHub && petition.url === '/v1/offers')
         var response = await proxy.getAllOffers(fullURL, auth, httpsAgent)
-      // else if (petition.url === '/v1/contracts')
-      //   var response = await proxy.getAllContracts(fullURL, auth, httpsAgent)
       else
         var response = await axios.get(fullURL, {
           headers: commonHeaders,
-          auth,
+          auth: useIdentityHub ? undefined : auth,
           httpsAgent
         })
       break
     case 'POST':
       var response = await axios.post(fullURL, body, {
         headers: commonHeaders,
-        auth,
+        auth: useIdentityHub ? undefined : auth,
         httpsAgent
       })
       break
     case 'PUT':
       var response = await axios.put(fullURL, body, {
         headers: commonHeaders,
-        auth,
+        auth: useIdentityHub ? undefined : auth,
         httpsAgent
       })
       break
@@ -122,7 +132,7 @@ app.post('/', async (req, res) => {
       var response = await axios.delete(fullURL, {
         data: body,
         headers: commonHeaders,
-        auth,
+        auth: useIdentityHub ? undefined : auth,
         httpsAgent
       })
       break
