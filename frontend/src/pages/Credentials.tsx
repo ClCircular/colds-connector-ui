@@ -85,13 +85,13 @@ export const Credentials = () => {
                 <span className='font-medium text-gray-700 dark:text-gray-200'>
                   Credential Subject:
                 </span>
-                <pre className='bg-gray-50 dark:bg-gray-900 rounded p-2 mt-1 text-xs text-gray-800 dark:text-gray-100 overflow-x-auto'>
-                  {JSON.stringify(
-                    cred.credential_payload.credentialSubject,
-                    null,
-                    2
-                  )}
-                </pre>
+                <span className='ml-2 text-gray-900 dark:text-white'>
+                  {'role' in cred.credential_payload.credentialSubject
+                    ? cred.credential_payload.credentialSubject.role
+                    : 'level' in cred.credential_payload.credentialSubject
+                    ? cred.credential_payload.credentialSubject.level
+                    : 'N/A'}
+                </span>
               </div>
             </div>
           ))}
