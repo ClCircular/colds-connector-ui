@@ -172,6 +172,7 @@
     "es": "ES"
   },
   "credentials": "Credenciales",
+  "audit": "Historial Acciones",
   "request_credentials": "Solicitar credenciales",
   "credentials_requested_successfully": "Credenciales solicitadas con éxito",
   "credentials_request_error": "Error al solicitar credenciales",
@@ -182,5 +183,7 @@
   "issuer": "Emisor",
   "credential_subject": "Sujeto de la credencial",
   "issued": "Emitido",
-  "requested": "Solicitado"
+  "requested": "Solicitado",
+  "timestamp": "Marca de tiempo",
+  "details": "Detalles"
 }

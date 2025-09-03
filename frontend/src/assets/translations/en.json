@@ -172,6 +172,7 @@
     "es": "ES"
   },
   "credentials": "Credentials",
+  "audit": "Audit",
   "request_credentials": "Request credentials",
   "credentials_requested_successfully": "Credentials requested successfully",
   "credentials_request_error": "Error requesting credentials",
@@ -182,5 +183,7 @@
   "issuer": "Issuer",
   "issued": "Issued",
   "requested": "Requested",
-  "credential_subject": "Credential subject"
+  "credential_subject": "Credential subject",
+  "timestamp": "Timestamp",
+  "details": "Details"
 }

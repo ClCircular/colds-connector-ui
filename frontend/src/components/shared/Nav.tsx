@@ -7,7 +7,8 @@ import {
   IoPeople,
   IoSearch,
   IoSwapVertical,
-  IoKey
+  IoKey,
+  IoTimeOutline
 } from 'react-icons/io5'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -58,6 +59,11 @@ export const Nav: FC<{
       href: '/credentials',
       label: t('credentials'),
       icon: <IoKey className='text-lg' />
+    },
+    {
+      href: '/audit',
+      label: t('audit'),
+      icon: <IoTimeOutline className='text-lg' />
     }
   ]
 
