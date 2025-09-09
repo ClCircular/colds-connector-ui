@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { Policy } from '../../interfaces/policies/policies.interface'
 
-const handleGetPolicies = async () => {
+const handleGetPolicies = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ const handleGetPolicies = async () => {
       url: '/v1/policies'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -22,10 +23,10 @@ const handleGetPolicies = async () => {
 }
 
 export const useGetPolicies = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   return useQuery({
     queryKey: ['policies', user?.userId],
-    queryFn: handleGetPolicies,
+    queryFn: () => handleGetPolicies({ userEmail: userInfo?.email || '' }),
     enabled: !!user?.userId, // Only run if user is authenticated
     refetchOnWindowFocus: false,
     retry: false,

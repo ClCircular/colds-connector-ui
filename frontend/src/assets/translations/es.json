@@ -170,5 +170,20 @@
   "lang": {
     "en": "EN",
     "es": "ES"
-  }
+  },
+  "credentials": "Credenciales",
+  "audit": "Historial Acciones",
+  "request_credentials": "Solicitar credenciales",
+  "credentials_requested_successfully": "Credenciales solicitadas con éxito",
+  "credentials_request_error": "Error al solicitar credenciales",
+  "no_credentials_found": "No se encontraron credenciales.",
+  "loading": "Cargando",
+  "issuance_date": "Fecha de emisión",
+  "credential_type": "Tipo de credencial",
+  "issuer": "Emisor",
+  "credential_subject": "Sujeto de la credencial",
+  "issued": "Emitido",
+  "requested": "Solicitado",
+  "timestamp": "Marca de tiempo",
+  "details": "Detalles"
 }

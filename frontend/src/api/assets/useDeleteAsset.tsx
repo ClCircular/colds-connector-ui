@@ -4,7 +4,13 @@ import { useAuthUser } from '../../contexts/UserContext'
 import { toast } from 'sonner'
 import { AssetsResponse } from '../../interfaces/assets/assets.interface'
 
-const handleDeleteAsset = async ({ assetId }: { assetId: string }) => {
+const handleDeleteAsset = async ({
+  assetId,
+  userEmail
+}: {
+  assetId: string
+  userEmail: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -12,7 +18,8 @@ const handleDeleteAsset = async ({ assetId }: { assetId: string }) => {
       url: `/v1/assets/${assetId}`
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -23,10 +30,11 @@ const handleDeleteAsset = async ({ assetId }: { assetId: string }) => {
 export const useDeleteAsset = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleDeleteAsset,
+    mutationFn: ({ assetId }: { assetId: string }) =>
+      handleDeleteAsset({ assetId, userEmail: userInfo?.email || '' }),
     mutationKey: ['deleteAsset'],
     onMutate: async ({ assetId }) => {
       await queryClient.cancelQueries({ queryKey: ['assets', user?.userId] })

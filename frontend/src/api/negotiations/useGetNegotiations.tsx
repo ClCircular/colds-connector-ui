@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { Negotiation } from '../../interfaces/negotiations/negotiations.interface'
 
-const handleGetNegotiations = async () => {
+const handleGetNegotiations = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ const handleGetNegotiations = async () => {
       url: '/v1/negotiations'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -22,10 +23,10 @@ const handleGetNegotiations = async () => {
 }
 
 export const useGetNegotiations = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   return useQuery({
     queryKey: ['negotiations', user?.userId],
-    queryFn: handleGetNegotiations,
+    queryFn: () => handleGetNegotiations({ userEmail: userInfo?.email || '' }),
     refetchOnWindowFocus: false,
     enabled: !!user?.userId, // Only run if user is authenticated
     retry: false,

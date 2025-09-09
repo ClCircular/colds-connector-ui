@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { Participant } from '../../interfaces/participants/participants.interface'
 
-const handleGetParticipants = async () => {
+const handleGetParticipants = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ const handleGetParticipants = async () => {
       url: '/v1/participants'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -22,10 +23,10 @@ const handleGetParticipants = async () => {
 }
 
 export const useGetParticipants = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   return useQuery({
     queryKey: ['participants', user?.userId],
-    queryFn: handleGetParticipants,
+    queryFn: () => handleGetParticipants({ userEmail: userInfo?.email || '' }),
     refetchOnWindowFocus: false,
     enabled: !!user?.userId, // Only run if user is authenticated
     retry: false,

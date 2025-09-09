@@ -10,9 +10,11 @@ import dayjs from 'dayjs'
 import { toast } from 'sonner'
 
 const handleCreateContract = async ({
-  contractData
+  contractData,
+  userEmail
 }: {
   contractData: CreateContractBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -22,7 +24,8 @@ const handleCreateContract = async ({
       body: JSON.stringify(contractData)
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -40,10 +43,11 @@ export const useCreateContract = () => {
 
   const { t } = useTranslation() // Ensure the translation function is initialized
 
-  const { user } = useAuthUser() // Ensure the user context is initialized
+  const { user, userInfo } = useAuthUser() // Ensure the user context is initialized
 
   const mutation = useMutation({
-    mutationFn: handleCreateContract,
+    mutationFn: ({ contractData }: { contractData: CreateContractBody }) =>
+      handleCreateContract({ contractData, userEmail: userInfo?.email || '' }),
     mutationKey: ['createContract'],
     onMutate: async ({ contractData }) => {
       await queryClient.cancelQueries({ queryKey: ['contracts', user?.userId] })

@@ -5,9 +5,11 @@ import { useAuthUser } from '../../contexts/UserContext'
 import { toast } from 'sonner'
 
 const handleTransferRequest = async ({
-  agreementId
+  agreementId,
+  userEmail
 }: {
   agreementId: string
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -19,7 +21,8 @@ const handleTransferRequest = async ({
       }
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -33,10 +36,11 @@ export const useTransfersRequest = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleTransferRequest,
+    mutationFn: ({ agreementId }: { agreementId: string }) =>
+      handleTransferRequest({ agreementId, userEmail: userInfo?.email || '' }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['transfers', user?.userId]

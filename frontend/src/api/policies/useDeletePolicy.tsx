@@ -4,7 +4,13 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { Policy } from '../../interfaces/policies/policies.interface'
 
-const handleDeletePolicy = async ({ policyId }: { policyId: string }) => {
+const handleDeletePolicy = async ({
+  policyId,
+  userEmail
+}: {
+  policyId: string
+  userEmail: string
+}) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -12,7 +18,8 @@ const handleDeletePolicy = async ({ policyId }: { policyId: string }) => {
       url: `/v1/policies/${policyId}`
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -23,10 +30,11 @@ const handleDeletePolicy = async ({ policyId }: { policyId: string }) => {
 export const useDeletePolicy = () => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   return useMutation({
-    mutationFn: handleDeletePolicy,
+    mutationFn: ({ policyId }: { policyId: string }) =>
+      handleDeletePolicy({ policyId, userEmail: userInfo?.email || '' }),
     mutationKey: ['deletePolicy'],
     onMutate: async ({ policyId }) => {
       await queryClient.cancelQueries({ queryKey: ['policies', user?.userId] })

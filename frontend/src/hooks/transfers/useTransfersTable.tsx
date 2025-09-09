@@ -83,12 +83,13 @@ export const useTransfersTable = () => {
           ) {
             return (
               <button
-                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize disabled:bg-gray-200 disabled:cursor-not-allowed'
                 onClick={() => {
                   transferStartMutation.mutate({
                     transferId: row.transfer_id
                   }) // Handle agree action
                 }}
+                disabled={transferStartMutation.isPending}
               >
                 {t('agree_action')}
               </button>
@@ -101,7 +102,8 @@ export const useTransfersTable = () => {
             // If role is CONSUMER and format is PULL, show download data button
             return (
               <button
-                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#0096b9] rounded-lg hover:bg-[#448290] cursor-pointer capitalize'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#0096b9] rounded-lg hover:bg-[#448290] cursor-pointer capitalize disabled:bg-gray-200 disabled:cursor-not-allowed'
+                disabled={transferRequestDataMutation.isPending}
                 onClick={() => {
                   transferRequestDataMutation
                     .mutateAsync({

@@ -9,10 +9,12 @@ import { toast } from 'sonner'
 
 const handleUpdateContract = async ({
   newContractData,
-  contractId
+  contractId,
+  userEmail
 }: {
   contractId: string
   newContractData: CreateContractBody
+  userEmail: string
 }) => {
   const requestOptions = {
     method: 'POST',
@@ -22,7 +24,8 @@ const handleUpdateContract = async ({
       body: newContractData
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -35,10 +38,21 @@ export const useUpdateContract = () => {
 
   const { t } = useTranslation()
 
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   const mutation = useMutation({
-    mutationFn: handleUpdateContract,
+    mutationFn: ({
+      contractId,
+      newContractData
+    }: {
+      contractId: string
+      newContractData: CreateContractBody
+    }) =>
+      handleUpdateContract({
+        contractId,
+        newContractData,
+        userEmail: userInfo?.email || ''
+      }),
     mutationKey: ['updateContract'],
     onMutate: async ({ contractId, newContractData }) => {
       await queryClient.cancelQueries({ queryKey: ['contracts', user?.userId] })

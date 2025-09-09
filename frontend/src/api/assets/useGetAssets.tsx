@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { AssetsResponse } from '../../interfaces/assets/assets.interface'
 
-const handleGetAssets = async () => {
+const handleGetAssets = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ const handleGetAssets = async () => {
       url: '/v1/assets'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -22,10 +23,10 @@ const handleGetAssets = async () => {
 }
 
 export const useGetAssets = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
   return useQuery({
     queryKey: ['assets', user?.userId],
-    queryFn: handleGetAssets,
+    queryFn: () => handleGetAssets({ userEmail: userInfo?.email || '' }),
     refetchOnWindowFocus: false,
     enabled: !!user?.userId, // Only run if user is authenticated
     retry: false,

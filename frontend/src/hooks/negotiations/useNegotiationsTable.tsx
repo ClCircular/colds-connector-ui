@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { filterFnDate } from '../../utils/FilterFnDate'
 import { useSearch } from 'wouter'
 import { useGetTransfers } from '../../api/transfers/useGetTransfers'
+import { Loader } from '../../components'
 
 export const useNegotiationsTable = () => {
   const negotiationsData = useGetNegotiations()
@@ -102,17 +103,23 @@ export const useNegotiationsTable = () => {
             {/* Botón Transferir solo para CONSUMER y si hay agreementId */}
             {role === 'CONSUMER' && agreementId && !hasTransfers && (
               <button
-                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize disabled:bg-gray-200 disabled:cursor-not-allowed'
                 onClick={() => transfersRequestMutation.mutate({ agreementId })}
+                disabled={transfersRequestMutation.isPending}
               >
-                {t('transfer_action')}
+                {transfersRequestMutation.isPending ? (
+                  <Loader />
+                ) : (
+                  t('transfer_action')
+                )}
               </button>
             )}
             {/* Botón Agree solo para PROVIDER y si no hay agreementId */}
             {role === 'PROVIDER' && !agreementId && (
               <button
-                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize'
+                className='inline-flex items-center w-fit transition-colors px-3 py-2 text-sm font-medium text-center text-white bg-[#94bf43] rounded-lg hover:bg-[#819e4a] cursor-pointer capitalize disabled:bg-gray-200 disabled:cursor-not-allowed'
                 onClick={() => agreeMutation.mutate({ cn_id: cnId })}
+                disabled={agreeMutation.isPending}
               >
                 {t('agree_action')}
               </button>

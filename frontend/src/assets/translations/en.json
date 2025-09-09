@@ -170,5 +170,20 @@
   "lang": {
     "en": "EN",
     "es": "ES"
-  }
+  },
+  "credentials": "Credentials",
+  "audit": "Audit",
+  "request_credentials": "Request credentials",
+  "credentials_requested_successfully": "Credentials requested successfully",
+  "credentials_request_error": "Error requesting credentials",
+  "no_credentials_found": "No credentials found.",
+  "loading": "Loading",
+  "issuance_date": "Issuance date",
+  "credential_type": "Credential type",
+  "issuer": "Issuer",
+  "issued": "Issued",
+  "requested": "Requested",
+  "credential_subject": "Credential subject",
+  "timestamp": "Timestamp",
+  "details": "Details"
 }

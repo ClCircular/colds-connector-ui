@@ -9,7 +9,9 @@ import {
   MainPage,
   Negotiations,
   Policies,
-  TransfersHistory
+  TransfersHistory,
+  Credentials,
+  Audit
 } from '../pages'
 
 export const Router = () => {
@@ -44,6 +46,14 @@ export const Router = () => {
       <Route
         path='/transfers-history'
         component={() => <ProtectedRoute Component={TransfersHistory} />}
+      />
+      <Route
+        path='/credentials'
+        component={() => <ProtectedRoute Component={Credentials} />}
+      />
+      <Route
+        path='/audit'
+        component={() => <ProtectedRoute Component={Audit} />}
       />
       <Route>404 - Not Found</Route>
     </Switch>

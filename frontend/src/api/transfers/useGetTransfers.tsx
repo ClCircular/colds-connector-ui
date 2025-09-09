@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuthUser } from '../../contexts/UserContext'
 import { Transfer } from '../../interfaces/transfers/transfers.interface'
 
-const handleGetTransfers = async () => {
+const handleGetTransfers = async ({ userEmail }: { userEmail: string }) => {
   const requestOptions = {
     method: 'POST',
     body: JSON.stringify({
@@ -10,7 +10,8 @@ const handleGetTransfers = async () => {
       url: '/v1/transfers'
     }),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-User-Email': userEmail
     }
   }
   const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
@@ -27,11 +28,11 @@ const handleGetTransfers = async () => {
 }
 
 export const useGetTransfers = () => {
-  const { user } = useAuthUser()
+  const { user, userInfo } = useAuthUser()
 
   return useQuery({
     queryKey: ['transfers', user?.userId],
-    queryFn: handleGetTransfers,
+    queryFn: () => handleGetTransfers({ userEmail: userInfo?.email || '' }),
     enabled: !!user?.userId, // Only run if user is authenticated
     refetchOnWindowFocus: false,
     retry: false,
