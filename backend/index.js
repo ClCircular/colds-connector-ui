@@ -38,9 +38,10 @@ app.use(
 )
 app.use(cors({ credentials: true, origin: true }))
 // let connectorUrl = 'https://3.223.70.98:8080'
-let connectorUrl = isRunningInDocker()
-  ? `http://host.docker.internal:${process.env.CONNECTOR_PORT}`
-  : `http://localhost:${process.env.CONNECTOR_PORT}`
+// let connectorUrl = isRunningInDocker()
+//   ? `http://host.docker.internal:${process.env.CONNECTOR_PORT}`
+//   : `http://localhost:${process.env.CONNECTOR_PORT}`
+let connectorUrl = `http://${process.env.CONNECTOR_IP}`
 console.log(connectorUrl)
 
 const credHost =
