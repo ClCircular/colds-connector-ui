@@ -1,7 +1,6 @@
 // lambdas/express_proxy/handler.ts
 
-//@ts-ignore
-import app from './app'
+import app from './index.js'
 import serverlessExpress from '@codegenie/serverless-express'
 
 //@ts-ignore

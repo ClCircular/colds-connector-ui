@@ -60,7 +60,7 @@ export class ColdsApiStack extends cdk.Stack {
       securityGroups: [securityGroup],
       environment: {
         CONNECTOR_PORT: process.env.CONNECTOR_PORT!,
-        PCONNECTOR_IPUSER: process.env.CONNECTOR_IP!,
+        CONNECTOR_IP: process.env.CONNECTOR_IP!,
         IDENTITY_HUB_PORT: process.env.IDENTITY_HUB_PORT!
       }
     })

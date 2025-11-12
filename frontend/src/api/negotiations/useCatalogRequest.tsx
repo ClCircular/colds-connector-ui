@@ -23,7 +23,7 @@ const handleCatalogRequest = async ({
       'X-User-Email': userEmail
     }
   }
-  const url = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
+  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
   const data = await fetch(url, requestOptions)
   console.log({ data })
   const dataFormatted = await data.json()
