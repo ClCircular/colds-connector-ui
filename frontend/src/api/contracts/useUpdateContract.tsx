@@ -28,7 +28,7 @@ const handleUpdateContract = async ({
       'X-User-Email': userEmail
     }
   }
-  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
+  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com`
   await fetch(url, requestOptions)
   return { contractId, newContractData }
 }

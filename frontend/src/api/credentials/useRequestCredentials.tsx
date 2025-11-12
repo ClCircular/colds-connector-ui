@@ -15,7 +15,7 @@ const handleRequestCredentials = async () => {
       'Content-Type': 'application/json'
     }
   }
-  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
+  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com`
   const response = await fetch(url, requestOptions)
   console.log({ response })
   response.status

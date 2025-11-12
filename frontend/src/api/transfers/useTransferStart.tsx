@@ -21,7 +21,7 @@ const handleTransferStart = async ({
       'X-User-Email': userEmail
     }
   }
-  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
+  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com`
   const response = await fetch(url, requestOptions)
   const dataFormatted = await response.json()
   console.log({ dataFormatted })
