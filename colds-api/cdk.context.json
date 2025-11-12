@@ -1,0 +1,72 @@
+{
+  "vpc-provider:account=975613724354:filter.tag:Name=vpc-colds:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0b0e2c7668c8ea850",
+    "vpcCidrBlock": "192.169.0.0/16",
+    "ownerAccountId": "975613724354",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "private-subnet",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0718a4f4116b73c93",
+            "cidr": "192.169.2.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-083693dca173a6bb9"
+          },
+          {
+            "subnetId": "subnet-098bc038edd48cb1b",
+            "cidr": "192.169.3.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-090c72dfd48e44955"
+          }
+        ]
+      },
+      {
+        "name": "public-subnet",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-04e917c69c2ee9713",
+            "cidr": "192.169.0.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0d51015668950c6b9"
+          },
+          {
+            "subnetId": "subnet-07410ff01a7148df6",
+            "cidr": "192.169.1.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-08bf464de5358f47f"
+          }
+        ]
+      },
+      {
+        "name": "isolated-subnet",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-0b5448f8fb934db35",
+            "cidr": "192.169.4.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0f9c088d49ff3760c"
+          },
+          {
+            "subnetId": "subnet-0cef52a874182a765",
+            "cidr": "192.169.5.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-0782c38338916747b"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=975613724354:region=us-east-1:securityGroupName=colds-ec2-sg:vpcId=vpc-0b0e2c7668c8ea850": {
+    "securityGroupId": "sg-0fc3217ed43644b1f",
+    "allowAllOutbound": false
+  },
+  "security-group:account=975613724354:region=us-east-1:securityGroupName=default-lambda-security-group-colds:vpcId=vpc-0b0e2c7668c8ea850": {
+    "securityGroupId": "sg-060dc4e0a64fa0e35",
+    "allowAllOutbound": false
+  }
+}

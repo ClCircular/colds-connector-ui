@@ -1,0 +1,32 @@
+{
+  "name": "colds-api",
+  "version": "0.1.0",
+  "bin": {
+    "colds-api": "bin/colds-api.js"
+  },
+  "scripts": {
+    "build": "tsc && npm run post-build",
+    "post-build": "npm run copy-package && npm run install-deps",
+    "copy-package": "ncp lambdas/colds_api/package.json dist/lambdas/colds_api/package.json && ncp lambdas/colds_api/package-lock.json dist/lambdas/colds_api/package-lock.json",
+    "install-deps": "cd dist/lambdas/colds_api && npm install",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "dev": "npm run build && cdk deploy --profile clc-dev",
+    "prod": "cdk deploy --profile clc-prod"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.1030.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "dotenv": "^17.2.3",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.215.0",
+    "constructs": "^10.0.0"
+  }
+}
