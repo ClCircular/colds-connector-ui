@@ -20,7 +20,7 @@
 }
 
 .background-login {
-  background-image: url('assets/fondo-login.png');
+  background-image: url('/assets/fondo-login.png');
   background-size: cover;
   background-position: center;
 }
