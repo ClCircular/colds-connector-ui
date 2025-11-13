@@ -78,7 +78,10 @@ export class ColdsApiStack extends cdk.Stack {
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowMethods: Cors.ALL_METHODS,
-        allowHeaders: ['Content-Type', 'X-User-Email']
+        allowHeaders: Cors.DEFAULT_HEADERS.concat([
+          'X-User-Email',
+          'x-user-email'
+        ])
       }
     })
 
@@ -93,12 +96,18 @@ export class ColdsApiStack extends cdk.Stack {
     api.root.addCorsPreflight({
       allowOrigins: Cors.ALL_ORIGINS,
       allowMethods: Cors.ALL_METHODS,
-      allowHeaders: ['Content-Type', 'X-User-Email']
+      allowHeaders: Cors.DEFAULT_HEADERS.concat([
+        'X-User-Email',
+        'x-user-email'
+      ])
     })
     api.root.getResource('{proxy+}')?.addCorsPreflight({
       allowOrigins: Cors.ALL_ORIGINS,
       allowMethods: Cors.ALL_METHODS,
-      allowHeaders: ['Content-Type', 'X-User-Email']
+      allowHeaders: Cors.DEFAULT_HEADERS.concat([
+        'X-User-Email',
+        'x-user-email'
+      ])
     })
 
     new cdk.CfnOutput(this, 'ApiUrl', { value: api.url })
