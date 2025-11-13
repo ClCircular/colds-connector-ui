@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev_backend": "node ./backend/index.js",
+    "dev_backend": "node ./colds-api/lambdas/colds_api/index.ts",
     "dev_frontend": "cd frontend && npm run dev",
-    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix colds-api/lambdas/colds_api\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/ClCircular/colds-connector-ui#readme",
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "ts-node": "^10.9.2"
   }
 }

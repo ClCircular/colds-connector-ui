@@ -21,7 +21,9 @@ const handleTransferStart = async ({
       'X-User-Email': userEmail
     }
   }
-  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
+  const url =
+    import.meta.env.VITE_API_URL ??
+    `http://localhost:${import.meta.env.VITE_BACKEND_PORT}`
   const response = await fetch(url, requestOptions)
   const dataFormatted = await response.json()
   console.log({ dataFormatted })

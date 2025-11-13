@@ -4,23 +4,22 @@ FROM node:lts
 # Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json for dependency installation
+# Copiamos los package.json para instalar deps
 COPY package*.json ./
 COPY frontend/package*.json ./frontend/
-COPY backend/package*.json ./backend/
+COPY colds-api/lambdas/colds_api/package*.json ./colds-api/lambdas/colds_api/
 
-# Install dependencies
+# Instalamos dependencias raíz, frontend y backend-proxy
 RUN npm install && \
     cd frontend && npm install && \
-    cd ../backend && npm install
+    cd ../colds-api/lambdas/colds_api && npm install
 
-# Copy all source files to the container
+# Copiamos todo el código
 COPY . .
 
-# Expose the frontend port your app runs on
-EXPOSE 5173 
-EXPOSE 8083 
+# Exponemos los puertos de dev
+EXPOSE 5173
+EXPOSE 8083
 
-# Start the server using concurrently
+# Arrancamos usando el script dev del monorepo (concurrently frontend + backend)
 CMD ["npm", "run", "dev"]
-

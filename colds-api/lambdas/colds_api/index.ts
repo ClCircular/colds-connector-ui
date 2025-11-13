@@ -7,9 +7,23 @@ import express from 'express'
 import https from 'https'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
+
+function isRunningInDocker() {
+  try {
+    // Método 1: archivo típico presente en contenedores Docker
+    if (fs.existsSync('/.dockerenv')) return true
+
+    // Método 2: cgroup típico con palabra 'docker' en su contenido
+    const cgroup = fs.readFileSync('/proc/1/cgroup', 'utf8')
+    return cgroup.includes('docker') || cgroup.includes('containerd')
+  } catch {
+    return false
+  }
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') })
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') })
 
 const app = express()
 const port = process.env.VITE_BACKEND_PORT || 3000
@@ -18,11 +32,20 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors({ credentials: true, origin: true }))
 
-let connectorUrl = `http://${process.env.CONNECTOR_IP}:${process.env.CONNECTOR_PORT}`
+let connectorUrl = process.env.AWS_LAMBDA_FUNCTION_NAME
+  ? `http://${process.env.CONNECTOR_IP}:${process.env.CONNECTOR_PORT}`
+  : isRunningInDocker()
+  ? `http://host.docker.internal:${process.env.CONNECTOR_PORT}`
+  : `http://localhost:${process.env.CONNECTOR_PORT}`
 console.log('connectorUrl:', connectorUrl)
 
+const credHost =
+  process.env.CREDENTIALS_HOST ||
+  (isRunningInDocker() ? 'colds-connector-consumer' : 'localhost')
 const credPort = process.env.CREDENTIALS_PORT || '20002'
-const credentialsUrl = `http://${process.env.CONNECTOR_IP}:${credPort}`
+const credentialsUrl = process.env.AWS_LAMBDA_FUNCTION_NAME
+  ? `http://${process.env.CONNECTOR_IP}:${credPort}`
+  : `http://${credHost}:${credPort}`
 
 let auth = { username: 'admin', password: 'secret' }
 
