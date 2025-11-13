@@ -8,7 +8,7 @@ const handleRequestCredentials = async () => {
     method: 'POST',
     body: JSON.stringify({
       type: 'POST',
-      url: '/credentials/request',
+      url: '/v1/credentials/request',
       useIdentityHub: true
     }),
     headers: {
