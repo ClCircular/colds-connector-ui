@@ -28,7 +28,7 @@ const handleCreateContract = async ({
       'X-User-Email': userEmail
     }
   }
-  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com`
+  const url = `https://0bfzsz9z0c.execute-api.us-east-1.amazonaws.com/v1/`
 
   console.log({ url, requestOptions })
   const response = await fetch(url, requestOptions)
