@@ -23,6 +23,19 @@ export class ColdsApiStack extends cdk.Stack {
 
     dotenv.config({ path: './.env' })
 
+    const defaultClientId = process.env.DEFAULT_CLIENT_ID ?? 'default'
+    const credentialsPort =
+      process.env.CREDENTIALS_PORT ?? process.env.IDENTITY_HUB_PORT!
+    const clientsConfig =
+      process.env.CLIENTS_CONFIG ??
+      JSON.stringify({
+        [defaultClientId]: {
+          connectorIp: process.env.CONNECTOR_IP!,
+          connectorPort: process.env.CONNECTOR_PORT!,
+          credentialsPort
+        }
+      })
+
     /** GET VPC AND PRIVATE SUBNET */
     const vpc = ec2.Vpc.fromLookup(this, 'vpc-colds', { vpcName: 'vpc-colds' })
 
@@ -61,7 +74,10 @@ export class ColdsApiStack extends cdk.Stack {
       environment: {
         CONNECTOR_PORT: process.env.CONNECTOR_PORT!,
         CONNECTOR_IP: process.env.CONNECTOR_IP!,
-        IDENTITY_HUB_PORT: process.env.IDENTITY_HUB_PORT!
+        IDENTITY_HUB_PORT: process.env.IDENTITY_HUB_PORT!,
+        CREDENTIALS_PORT: credentialsPort,
+        DEFAULT_CLIENT_ID: defaultClientId,
+        CLIENTS_CONFIG: clientsConfig
       }
     })
 
@@ -80,7 +96,9 @@ export class ColdsApiStack extends cdk.Stack {
         allowMethods: Cors.ALL_METHODS,
         allowHeaders: Cors.DEFAULT_HEADERS.concat([
           'X-User-Email',
-          'x-user-email'
+          'x-user-email',
+          'X-Client-Id',
+          'x-client-id'
         ])
       }
     })

@@ -28,24 +28,112 @@ dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') })
 const app = express()
 const port = process.env.VITE_BACKEND_PORT || 3000
 
+type ClientConfig = {
+  connectorIp: string
+  connectorPort?: string
+  credentialsPort?: string
+}
+
+type ClientsConfig = Record<string, ClientConfig>
+
+type ProxyPetition = {
+  body?: unknown
+  clientId?: string
+  params?: Record<string, string | number | boolean>
+  type: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  url: string
+  useIdentityHub?: boolean
+}
+
+const defaultClientId = process.env.DEFAULT_CLIENT_ID || 'default'
+const defaultConnectorPort = process.env.CONNECTOR_PORT || '18080'
+const defaultCredentialsPort =
+  process.env.CREDENTIALS_PORT || process.env.IDENTITY_HUB_PORT || '20002'
+
+function normalizeClientsConfig(config: unknown): ClientsConfig {
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    return {}
+  }
+
+  return Object.entries(config).reduce<ClientsConfig>((acc, [clientId, value]) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return acc
+    }
+
+    const candidate = value as ClientConfig
+    if (!candidate.connectorIp) {
+      return acc
+    }
+
+    acc[clientId] = {
+      connectorIp: candidate.connectorIp,
+      connectorPort: candidate.connectorPort || defaultConnectorPort,
+      credentialsPort: candidate.credentialsPort || defaultCredentialsPort
+    }
+
+    return acc
+  }, {})
+}
+
+function buildFallbackClientsConfig(): ClientsConfig {
+  if (!process.env.CONNECTOR_IP) {
+    return {}
+  }
+
+  return {
+    [defaultClientId]: {
+      connectorIp: process.env.CONNECTOR_IP,
+      connectorPort: defaultConnectorPort,
+      credentialsPort: defaultCredentialsPort
+    }
+  }
+}
+
+function parseClientsConfig(): ClientsConfig {
+  if (!process.env.CLIENTS_CONFIG) {
+    return buildFallbackClientsConfig()
+  }
+
+  try {
+    const parsed = JSON.parse(process.env.CLIENTS_CONFIG)
+    const normalized = normalizeClientsConfig(parsed)
+    return Object.keys(normalized).length > 0
+      ? normalized
+      : buildFallbackClientsConfig()
+  } catch (error) {
+    console.error('Unable to parse CLIENTS_CONFIG:', error)
+    return buildFallbackClientsConfig()
+  }
+}
+
+function resolveClientId(req: express.Request, petition: ProxyPetition) {
+  const headerClientId = req.headers['x-client-id']
+  const rawClientId = Array.isArray(headerClientId)
+    ? headerClientId[0]
+    : headerClientId || petition.clientId || defaultClientId
+
+  return String(rawClientId).trim()
+}
+
+function buildLocalUrls() {
+  const connectorHost = isRunningInDocker()
+    ? 'host.docker.internal'
+    : 'localhost'
+  const credentialsHost =
+    process.env.CREDENTIALS_HOST ||
+    (isRunningInDocker() ? 'colds-connector-consumer' : 'localhost')
+
+  return {
+    connectorUrl: `http://${connectorHost}:${defaultConnectorPort}`,
+    credentialsUrl: `http://${credentialsHost}:${defaultCredentialsPort}`
+  }
+}
+
+const clientsConfig = parseClientsConfig()
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors({ credentials: true, origin: true }))
-
-let connectorUrl = process.env.AWS_LAMBDA_FUNCTION_NAME
-  ? `http://${process.env.CONNECTOR_IP}:${process.env.CONNECTOR_PORT}`
-  : isRunningInDocker()
-  ? `http://host.docker.internal:${process.env.CONNECTOR_PORT}`
-  : `http://localhost:${process.env.CONNECTOR_PORT}`
-console.log('connectorUrl:', connectorUrl)
-
-const credHost =
-  process.env.CREDENTIALS_HOST ||
-  (isRunningInDocker() ? 'colds-connector-consumer' : 'localhost')
-const credPort = process.env.CREDENTIALS_PORT || '20002'
-const credentialsUrl = process.env.AWS_LAMBDA_FUNCTION_NAME
-  ? `http://${process.env.CONNECTOR_IP}:${credPort}`
-  : `http://${credHost}:${credPort}`
 
 let auth = { username: 'admin', password: 'secret' }
 
@@ -61,12 +149,31 @@ app.use('/health', function (req, res) {
 
 app.post('/', async (req, res) => {
   try {
-    let petition = req.body
+    const petition = req.body as ProxyPetition
     console.log(`Received petition ${JSON.stringify(petition)}`)
 
     const userEmail = req.headers['x-user-email']
+    const clientId = resolveClientId(req, petition)
+    const isLambdaRuntime = Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME)
+    const clientConfig = clientsConfig[clientId]
+
+    if (isLambdaRuntime && !clientConfig) {
+      return res.status(404).json({
+        error: 'Unknown client',
+        details: `Client "${clientId}" is not configured`
+      })
+    }
+
+    const { connectorUrl, credentialsUrl } = isLambdaRuntime
+      ? {
+          connectorUrl: `http://${clientConfig!.connectorIp}:${clientConfig!.connectorPort || defaultConnectorPort}`,
+          credentialsUrl: `http://${clientConfig!.connectorIp}:${clientConfig!.credentialsPort || defaultCredentialsPort}`
+        }
+      : buildLocalUrls()
+
     const useIdentityHub = petition.useIdentityHub === true
     const baseUrl = useIdentityHub ? credentialsUrl : connectorUrl
+    console.log(`Resolved client "${clientId}" to baseUrl ${baseUrl}`)
 
     const body = petition.body
     const params = petition.params
