@@ -3,7 +3,7 @@ export interface Credential {
   holder_pid: string
   request_id: string
   issuance_date: Date
-  credential_payload: CredentialPayload
+  credential_payload: string
   status: string
   credential_type: string
   issuer: string
@@ -11,26 +11,23 @@ export interface Credential {
   format: string
 }
 
-export interface CredentialPayload {
+export interface CredentialJWTDecoded {
+  vc?: Vc
+}
+
+export interface Vc {
+  '@context': string[]
   id: string
   type: string[]
-  proof: Proof
   issuer: string
-  '@context': string[]
-  issuanceDate: Date
-  credentialSubject: CredentialSubject
+  validFrom: Date
+  validUntil: Date
+  credentialSubject: JwtCredentialSubject
 }
 
-export interface CredentialSubject {
+export interface JwtCredentialSubject {
   id: string
+  accessLevel?: string
   level?: string
   role?: string
-}
-
-export interface Proof {
-  jwt: string
-  type: string
-  created: Date
-  proofPurpose: string
-  verificationMethod: string
 }

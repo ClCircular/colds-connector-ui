@@ -3,6 +3,44 @@ import { useGetCredentials } from '../api/credentials/useGetCredentials'
 import { Loader } from '../components'
 import { useRequestCredentials } from '../api/credentials/useRequestCredentials'
 import dayjs from 'dayjs'
+import type { CredentialJWTDecoded, JwtCredentialSubject } from '../interfaces/credentials/credentials.interface'
+
+const decodeCredentialPayload = (
+  credentialPayload: string
+): CredentialJWTDecoded | null => {
+  try {
+    const [, payload] = credentialPayload.split('.')
+
+    if (!payload) {
+      return null
+    }
+
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
+    const paddedBase64 = base64.padEnd(
+      base64.length + ((4 - (base64.length % 4)) % 4),
+      '='
+    )
+
+    return JSON.parse(atob(paddedBase64)) as CredentialJWTDecoded
+  } catch {
+    return null
+  }
+}
+
+const getCredentialSubjectLabel = (
+  credentialSubject?: JwtCredentialSubject
+): string => {
+  if (!credentialSubject) {
+    return 'N/A'
+  }
+
+  return (
+    credentialSubject.role ??
+    credentialSubject.level ??
+    credentialSubject.accessLevel ??
+    'N/A'
+  )
+}
 
 export const Credentials = () => {
   const { t } = useTranslation()
@@ -37,64 +75,66 @@ export const Credentials = () => {
       {/* Mostrar los datos si existen */}
       {Array.isArray(data) && data.length > 0 ? (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mt-4'>
-          {data.map((cred, idx) => (
-            <div
-              key={idx}
-              className='bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col gap-2 border border-gray-200 dark:border-gray-700'
-            >
-              <div className='flex justify-between items-center mb-2'>
-                <span className='text-sm font-semibold text-gray-500 dark:text-gray-400'>
-                  {cred.credential_type || 'Credential'}
-                </span>
-                <span
-                  className={`px-2 py-1 rounded text-xs font-bold ${
-                    cred.status?.toLowerCase() === 'issued'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  {t(cred.status?.toLowerCase())}
-                </span>
+          {data.map((cred, idx) => {
+            const decodedPayload = decodeCredentialPayload(
+              cred.credential_payload
+            )
+            const credentialSubject = decodedPayload?.vc?.credentialSubject
+
+            return (
+              <div
+                key={idx}
+                className='bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col gap-2 border border-gray-200 dark:border-gray-700'
+              >
+                <div className='flex justify-between items-center mb-2'>
+                  <span className='text-sm font-semibold text-gray-500 dark:text-gray-400'>
+                    {cred.credential_type || 'Credential'}
+                  </span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold ${
+                      cred.status?.toLowerCase() === 'issued'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    {t(cred.status?.toLowerCase())}
+                  </span>
+                </div>
+                <div>
+                  <span className='font-medium text-gray-700 dark:text-gray-200'>
+                    {t('issuer')}:
+                  </span>
+                  <span className='ml-2 text-gray-900 dark:text-white'>
+                    {cred.issuer}
+                  </span>
+                </div>
+                <div>
+                  <span className='font-medium text-gray-700 dark:text-gray-200'>
+                    {t('issuance_date')}:
+                  </span>
+                  <span className='ml-2 text-gray-900 dark:text-white'>
+                    {dayjs(cred.issuance_date).format('DD/MM/YYYY')}
+                  </span>
+                </div>
+                <div>
+                  <span className='font-medium text-gray-700 dark:text-gray-200'>
+                    {t('format')}:
+                  </span>
+                  <span className='ml-2 text-gray-900 dark:text-white'>
+                    {cred.format}
+                  </span>
+                </div>
+                <div>
+                  <span className='font-medium text-gray-700 dark:text-gray-200'>
+                    Credential Subject:
+                  </span>
+                  <span className='ml-2 text-gray-900 dark:text-white'>
+                    {getCredentialSubjectLabel(credentialSubject)}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className='font-medium text-gray-700 dark:text-gray-200'>
-                  {t('issuer')}:
-                </span>
-                <span className='ml-2 text-gray-900 dark:text-white'>
-                  {cred.issuer}
-                </span>
-              </div>
-              <div>
-                <span className='font-medium text-gray-700 dark:text-gray-200'>
-                  {t('issuance_date')}:
-                </span>
-                <span className='ml-2 text-gray-900 dark:text-white'>
-                  {dayjs(cred.issuance_date).format('DD/MM/YYYY')}
-                </span>
-              </div>
-              {/* format */}
-              <div>
-                <span className='font-medium text-gray-700 dark:text-gray-200'>
-                  {t('format')}:
-                </span>
-                <span className='ml-2 text-gray-900 dark:text-white'>
-                  {cred.format}
-                </span>
-              </div>
-              <div>
-                <span className='font-medium text-gray-700 dark:text-gray-200'>
-                  Credential Subject:
-                </span>
-                <span className='ml-2 text-gray-900 dark:text-white'>
-                  {'role' in cred.credential_payload.credentialSubject
-                    ? cred.credential_payload.credentialSubject.role
-                    : 'level' in cred.credential_payload.credentialSubject
-                    ? cred.credential_payload.credentialSubject.level
-                    : 'N/A'}
-                </span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       ) : (
         <p className='mt-4 text-gray-500'>
